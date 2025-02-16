@@ -1,12 +1,11 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowDown, Info } from "lucide-react"
 import { styles } from "../../constants/styles"
 import React from "react"
 import img1 from "../../assets/bg_count.jpg"
-import { format } from "date-fns"
+import newlogo from "../../assets/logo_exp.png"
 
 interface TimeLeft {
   days: number
@@ -23,9 +22,7 @@ export function CountdownSection() {
     seconds: 0,
   })
   const [isCountdownOver, setIsCountdownOver] = useState(false)
-  const [showTooltip, setShowTooltip] = useState(false)
-  const tooltipRef = useRef<HTMLDivElement>(null)
-  const targetDate = new Date("2025-02-21").getTime()
+  const targetDate = new Date("2025-03-01").getTime()
 
   useEffect(() => {
     const calculateTimeLeft = () => {
@@ -49,19 +46,6 @@ export function CountdownSection() {
 
     return () => clearInterval(timer)
   }, [targetDate])
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (tooltipRef.current && !tooltipRef.current.contains(event.target as Node)) {
-        setShowTooltip(false)
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [])
 
   const numberVariants = {
     hidden: { y: 20, opacity: 0 },
@@ -90,8 +74,6 @@ export function CountdownSection() {
     },
   }
 
-  const formattedTargetDate = format(new Date(targetDate), "MMMM d, yyyy 'at' h:mm a")
-
   return (
     <section className="w-full relative overflow-hidden">
       <div
@@ -102,16 +84,21 @@ export function CountdownSection() {
         }}
       />
 
-      <div className="w-full min-h-screen flex items-center justify-center py-10 sm:py-20 px-4 relative z-10">
+      <div className="w-full min-h-screen flex flex-col items-center justify-center py-10 sm:py-20 px-4 relative z-10">
+        <img
+          src={newlogo}
+          alt="Logo"
+          className="absolute top-4 left-1/2 transform -translate-x-1/2 w-40 h-11 md:w-38 md:h-20 object-contain"
+        />
         <div className={`${styles.section.container}`}>
           <div className="flex flex-col items-center">
             <motion.h2
-              className="text-xl sm:text-2xl md:text-4xl lg:text-6xl font-semibold text-white mb-6 sm:mb-12 text-center"
+              className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-semibold text-white mb-6 sm:mb-12 text-center"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              COUNTDOWN TO THE EXPERIENCE
+              COUNTDOWN TO THE PLATEAU EXPERIENCE
             </motion.h2>
 
             <AnimatePresence>
@@ -164,47 +151,15 @@ export function CountdownSection() {
               )}
             </AnimatePresence>
 
-            {isCountdownOver ? (
-              <motion.button
-                className="flex items-center gap-2 bg-[#5A8E00] text-white px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base rounded-full hover:bg-[#4A7D00] transition-colors mt-6 sm:mt-12 md:mt-24"
+            {isCountdownOver && (
+              <motion.p
+                className="text-xl sm:text-2xl text-white mt-6"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 }}
-                whileHover={{ y: -5 }}
               >
-                EXPLORE THE CITY
-                <ArrowDown className="w-3 h-3 sm:w-4 sm:h-4" />
-              </motion.button>
-            ) : (
-              <div className="relative">
-                <motion.button
-                  className="flex items-center gap-2 text-[#5A8E00] px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base rounded-full cursor-not-allowed mt-6 sm:mt-12 md:mt-24"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.8 }}
-                  onMouseEnter={() => setShowTooltip(true)}
-                  onMouseLeave={() => setShowTooltip(false)}
-                  aria-describedby="tooltip"
-                >
-                  EXPLORE THE CITY
-                  <Info className="w-3 h-3 sm:w-4 sm:h-4" />
-                </motion.button>
-                <AnimatePresence>
-                  {showTooltip && (
-                    <motion.div
-                      ref={tooltipRef}
-                      id="tooltip"
-                      className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 bg-white p-2 rounded-md shadow-lg text-xs sm:text-sm text-gray-700 w-48 sm:w-auto"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      This button will be active on {formattedTargetDate}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+                The Plateau Experience has begun!
+              </motion.p>
             )}
           </div>
         </div>
