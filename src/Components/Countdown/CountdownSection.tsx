@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { styles } from "../../constants/styles"
 import React from "react"
 import img1 from "../../assets/bg_count.jpg"
-import newlogo from "../../assets/logo_exp.png"
+import newlogo from "../../assets/logo_white.png"
 
 interface TimeLeft {
   days: number
@@ -86,9 +86,9 @@ export function CountdownSection() {
 
       <div className="w-full min-h-screen flex flex-col items-center justify-center py-10 sm:py-20 px-4 relative z-10">
         <img
-          src={newlogo}
+          src={newlogo || "/placeholder.svg"}
           alt="Logo"
-          className="absolute top-4 left-1/2 transform -translate-x-1/2 w-40 h-11 md:w-38 md:h-20 object-contain"
+          className="absolute top-4 left-1/2 transform -translate-x-1/2 w-40 h-8 md:w-38 md:h-16 object-contain"
         />
         <div className={`${styles.section.container}`}>
           <div className="flex flex-col items-center">
@@ -104,7 +104,7 @@ export function CountdownSection() {
             <AnimatePresence>
               {!isCountdownOver && (
                 <motion.div
-                  className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-16 relative"
+                  className="flex sm:grid sm:grid-cols-4 gap-2 sm:gap-6 md:gap-8 mb-8 sm:mb-16 relative"
                   initial={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 >
@@ -125,25 +125,30 @@ export function CountdownSection() {
                         }}
                       >
                         <motion.span
-                          className="text-2xl sm:text-4xl md:text-6xl lg:text-8xl xl:text-9xl font-bold text-[#5A8E00] mb-1 sm:mb-2"
+                          className="text-lg sm:text-4xl md:text-6xl lg:text-8xl xl:text-9xl font-bold text-[#5A8E00] mb-0 sm:mb-2"
                           variants={numberVariants}
                         >
                           {value.toString().padStart(2, "0")}
                         </motion.span>
                         <motion.span
-                          className="text-xs sm:text-sm md:text-base text-white/80 uppercase tracking-wider"
+                          className="text-[10px] sm:text-sm md:text-base text-white/80 uppercase tracking-wider"
                           variants={labelVariants}
                         >
                           {unit}
                         </motion.span>
                       </motion.div>
-                      {index < 3 && index % 2 === 1 && (
-                        <div
-                          className="hidden sm:block absolute h-16 sm:h-24 w-px bg-white/20 top-1/2 -translate-y-1/2"
-                          style={{
-                            left: `${(index + 1) * 25}%`,
-                          }}
-                        />
+                      {index < 3 && (
+                        <>
+                          <div className="flex items-center justify-center mx-1 sm:hidden">
+                            <span className="text-white/50 text-lg">:</span>
+                          </div>
+                          <div
+                            className="hidden sm:block absolute h-16 sm:h-24 w-px bg-white/20 top-1/2 -translate-y-1/2"
+                            style={{
+                              left: `${(index + 1) * 25}%`,
+                            }}
+                          />
+                        </>
                       )}
                     </React.Fragment>
                   ))}
