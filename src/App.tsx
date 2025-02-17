@@ -26,6 +26,7 @@ function App() {
         <Route path="/tour" element={<TourPage />} />
         <Route path="/culture" element={<CulturePage />} />
         <Route path="/blogpost" element={<BlogPostPage />} />
+        <Route path="/blog/:slug" element={<BlogPostPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/count" element={<HomePage />} />
       </Routes>

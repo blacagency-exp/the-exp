@@ -1,11 +1,20 @@
-"use client"
-
 import { motion } from "framer-motion"
 import { styles } from "../../constants/styles"
-import img1 from "../../assets/blogimg.png"
-import img2 from "../../assets/seblog.png"
 
-const categories = ["TRAVEL", "CULTURE", "ADVENTURE", "TOURISM"]
+interface BlogPostProps {
+  categories: string[]
+  title: string
+  date: string
+  author: string
+  readTime: string
+  mainImage: string
+  secondaryImage: string
+  sections: {
+    title: string
+    content: string
+  }[]
+  authorArticles: string[]
+}
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -28,7 +37,17 @@ const itemVariants = {
   },
 }
 
-export function BlogPost() {
+export function BlogPost({
+  categories,
+  title,
+  date,
+  author,
+  readTime,
+  mainImage,
+  secondaryImage,
+  sections,
+  authorArticles,
+}: BlogPostProps) {
   return (
     <section className="py-24">
       <motion.div
@@ -41,10 +60,7 @@ export function BlogPost() {
           {/* Categories */}
           <motion.div variants={itemVariants} className="flex gap-2 mb-6">
             {categories.map((category) => (
-              <span
-                key={category}
-                className="px-6 py-2 text-xs font-medium rounded-lg bg-[#ECFFD0] text-[#82CF00]"
-              >
+              <span key={category} className="px-6 py-2 text-xs font-medium rounded-lg bg-[#ECFFD0] text-[#82CF00]">
                 {category}
               </span>
             ))}
@@ -52,27 +68,30 @@ export function BlogPost() {
 
           {/* Title */}
           <motion.h1 variants={itemVariants} className="text-4xl md:text-5xl font-semibold text-black mb-6">
-            Discover Plateau: A Journey Through Nature, Culture, and Adventure
+            {title}
           </motion.h1>
 
           {/* Meta information */}
-          <motion.div variants={itemVariants} className=" flex items-center px-4 py-2 gap-4 text-sm rounded-lg text-gray-600 mb-16 border-2 border-[#97E12B] w-[350px]">
-            <span>July 15, 1999</span>
+          <motion.div
+            variants={itemVariants}
+            className="flex items-center px-4 py-2 gap-4 text-sm rounded-lg text-gray-600 mb-16 border-2 border-[#97E12B] w-[350px]"
+          >
+            <span>{date}</span>
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded-full overflow-hidden">
-                <img src="/placeholder.svg" alt="Jeremiah Gyang" className="w-full h-full object-cover" />
+                <img src="/placeholder.svg" alt={author} className="w-full h-full object-cover" />
               </div>
-              <span>Jeremiah Gyang</span>
+              <span>{author}</span>
             </div>
-            <span>12 min</span>
+            <span>{readTime}</span>
           </motion.div>
         </div>
 
         {/* Featured Image - full width */}
-        <motion.div variants={itemVariants} className="relative w-full aspect-[16/9] rounded-xl overflow-hidden ">
+        <motion.div variants={itemVariants} className="relative w-full aspect-[16/9] rounded-xl overflow-hidden">
           <img
-            src={img1 || "/placeholder.svg"}
-            alt="Mountain landscape with waterfall"
+            src={mainImage || "/placeholder.svg"}
+            alt="Featured image"
             className="w-full h-[600px] object-cover rounded-xl"
           />
         </motion.div>
@@ -80,43 +99,22 @@ export function BlogPost() {
         <div className="max-w-4xl mx-auto">
           {/* Content */}
           <div className="space-y-8">
-            <motion.div variants={itemVariants}>
-              <h2 className="text-4xl font-medium mb-4">Discover Plateau:</h2>
-              <p className="text-gray-600 leading-relaxed font-light text-sm">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                fugiat nulla pariatur.
-              </p>
-            </motion.div>
-
-            <motion.div variants={itemVariants}>
-              <h2 className="text-3xl font-medium mb-4">A journey through nature:</h2>
-              <p className="text-gray-600 leading-relaxed mb-8 font-light text-sm">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                fugiat nulla pariatur. Et cursus elit curabitur. Lobortis non porttitor, amet id nulla eu tellus
-                porttitor amet amet et elit. Nam non tempus molestie ut libero et aliquet magna aliqua. Ut enim ad minim
-                veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-              </p>
-
-              <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-8">
-                <img
-                  src={img2 || "/placeholder.svg"}
-                  alt="Paragliding over water"
-                  className="w-full h-[500px] object-cover rounded-xl"
-                />
-                <p className="text-sm text-gray-500 mt-2">Image Caption</p>
-              </div>
-
-              <h2 className="text-3xl font-medium mb-4">A journey through nature:</h2>
-              <p className="text-gray-600 leading-relaxed font-light text-sm">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                ex ea commodo consequat.
-              </p>
-            </motion.div>
+            {sections.map((section, index) => (
+              <motion.div key={index} variants={itemVariants}>
+                <h2 className="text-4xl font-medium mb-4">{section.title}</h2>
+                <p className="text-gray-600 leading-relaxed font-light text-sm">{section.content}</p>
+                {index === 1 && (
+                  <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden my-8">
+                    <img
+                      src={secondaryImage || "/placeholder.svg"}
+                      alt="Secondary image"
+                      className="w-full h-[500px] object-cover rounded-xl"
+                    />
+                    <p className="text-sm text-gray-500 mt-2">Image Caption</p>
+                  </div>
+                )}
+              </motion.div>
+            ))}
           </div>
 
           {/* Horizontal Line */}
@@ -133,32 +131,24 @@ export function BlogPost() {
             className="mt-16 grid md:grid-cols-2 gap-16"
           >
             {/* Other Articles */}
-            <motion.div variants={itemVariants} className="p-6 rounded-lg  border-[#97E12B] border-2">
+            <motion.div variants={itemVariants} className="p-6 rounded-lg border-[#97E12B] border-2">
               <div className="flex items-center gap-6 mb-4">
                 <h3 className="text-lg font-semibold">Other Articles by</h3>
                 <div className="flex items-center gap-2">
                   <div className="w-6 h-6 rounded-full overflow-hidden">
-                    <img src="/placeholder.svg" alt="Jeremiah Gyang" className="w-full h-full object-cover" />
+                    <img src="/placeholder.svg" alt={author} className="w-full h-full object-cover" />
                   </div>
-                  <span className="text-[#9FE870]">Jeremiah Gyang</span>
+                  <span className="text-[#9FE870]">{author}</span>
                 </div>
               </div>
               <ul className="space-y-3">
-                <li>
-                  <a href="#" className="text-black hover:text-[#9FE870] border-b border-gray-300">
-                    A journey through nature
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-black hover:text-[#9FE870] border-b border-gray-300">
-                    From peaks to plains
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-black hover:text-[#9FE870] border-b border-gray-300">
-                    A journey through nature
-                  </a>
-                </li>
+                {authorArticles.map((article, index) => (
+                  <li key={index}>
+                    <a href="#" className="text-black hover:text-[#9FE870] border-b border-gray-300">
+                      {article}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </motion.div>
 
