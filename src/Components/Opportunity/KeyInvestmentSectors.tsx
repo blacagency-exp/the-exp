@@ -1,5 +1,6 @@
 import { styles } from "@/constants/styles"
 import img from "../../assets/logo_down.png"
+import logo from '../../assets/Union.png'
 
 const sectors = [
   {
@@ -78,15 +79,13 @@ export function KeyInvestmentSectors() {
                   key={sector.title}
                   className={`bg-[#1C2805] rounded-3xl p-8 space-y-4 ${sector.width} ${sector.height}`}
                 >
-                  <div className="w-12 h-12 bg-[#97E12B] rounded-xl flex items-center justify-center">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 0L24 20.7846H0L12 0Z" fill="#1C2805" />
-                    </svg>
+                  <div className="w-24 h-14 flex items-center justify-start">
+                    <img className="w-14 h-12" src={logo} alt="" />
                   </div>
                   <h3 className="text-xl font-bold text-white">{sector.title}</h3>
                   <p className="text-white/80 text-md font-normal">{sector.description}</p>
                   <div className="text-md">
-                    <span className="text-[#97E12B] font-medium">Opportunities: </span>
+                    <span className="text-white font-medium">Opportunities: </span>
                     <span className="text-white/80 ">{sector.opportunities}</span>
                   </div>
                 </div>
@@ -102,15 +101,13 @@ export function KeyInvestmentSectors() {
                     index === 0 ? "md:-mt-16" : ""
                   }`}
                 >
-                  <div className="w-12 h-12 bg-[#97E12B] rounded-xl flex items-center justify-center">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 0L24 20.7846H0L12 0Z" fill="#1C2805" />
-                    </svg>
+                  <div className="w-24 h-14 flex items-center justify-start">
+                    <img className="w-14 h-12" src={logo} alt="" />
                   </div>
                   <h3 className="text-xl font-bold text-white">{sector.title}</h3>
                   <p className="text-white/80 text-md font-normal">{sector.description}</p>
                   <div className="text-md">
-                    <span className="text-[#97E12B] font-bold">Opportunities: </span>
+                    <span className="text-white font-bold">Opportunities: </span>
                     <span className="text-white/80">{sector.opportunities}</span>
                   </div>
                 </div>

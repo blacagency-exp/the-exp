@@ -1,8 +1,50 @@
+"use client"
+
+import { useState } from "react"
 import { styles } from "@/constants/styles"
 import { ArrowLeft, ArrowRight } from "lucide-react"
-import img1 from '../../assets/elephant.png'
+import img1 from "../../assets/elephant.png"
+import img2 from "../../assets/muse.jpg"
+import img3 from "../../assets/boat.jpg"
+import img4 from "../../assets/enoch.jpg"
+import img5 from "../../assets/horses.jpg"
+
+const investmentOptions = [
+  {
+    title: "Strategic Location and Accessibility",
+    description:
+      "Plateau State's central location in Nigeria places it at a logistical advantage for trade and commerce. The state is well-connected through road and air links. With a growing population and skilled workforce, the state and regions are ready for further infrastructure development, including expanded road networks and utilities. The investment climate in Plateau is a rising competitor to its top North-Central rivals.",
+    image: img1,
+  },
+  {
+    title: "Favorable Climate for Agriculture",
+    description:
+      "Plateau State boasts a unique climate that's ideal for diverse agricultural activities. Its temperate weather and rich soil support the cultivation of a wide range of crops, from temperate vegetables to tropical fruits. This climate advantage opens up numerous opportunities in agribusiness, from large-scale farming to food processing industries.",
+    image: img2,
+  },
+  {
+    title: "Abundant Natural Resources",
+    description:
+      "The state is rich in mineral resources, including tin, columbite, and kaolin. These natural endowments present significant opportunities for mining and related industries. Additionally, the picturesque landscapes and unique rock formations offer potential for eco-tourism development.",
+    image: img3,
+  },
+  {
+    title: "Growing Population and Workforce",
+    description:
+      "With a rapidly growing population, Plateau State offers a large consumer market and a young, energetic workforce. This demographic dividend provides a solid foundation for businesses looking to tap into a vibrant market or establish labor-intensive industries.",
+    image: img4,
+  },
+  {
+    title: "Supportive Government Policies",
+    description:
+      "The Plateau State government has implemented investor-friendly policies to attract and retain investments. These include tax incentives, streamlined business registration processes, and dedicated support for investors. The government's commitment to creating an enabling environment makes Plateau an attractive destination for both local and foreign investments.",
+    image: img5,
+  },
+]
 
 export function OpportunitiesHero() {
+  const [activeIndex, setActiveIndex] = useState(0)
+
   return (
     <>
       {/* Title Section */}
@@ -58,46 +100,29 @@ export function OpportunitiesHero() {
                 <p className="text-[#97E12B]">Dive into unforgettable experiences</p>
               </div>
               <img
-                src={img1}
-                alt="Plateau State wildlife"
+                src={investmentOptions[activeIndex].image || "/placeholder.svg"}
+                alt={`Plateau State - ${investmentOptions[activeIndex].title}`}
                 className="w-[470px] aspect-[4/3] object-cover rounded-2xl"
               />
-              <p className="text-md text-white/70 max-w-[480px]">
-                Plateau State's central location in Nigeria places it at a logistical advantage for trade and commerce.
-                The state is well-connected through road and air links. With a growing population and skilled workforce,
-                the state and regions are ready for further infrastructure development, including expanded road networks
-                and utilities. The investment climate in Plateau is a rising competitor to its top North-Central rivals.
-              </p>
+              <p className="text-md text-white/70 max-w-[480px]">{investmentOptions[activeIndex].description}</p>
             </div>
 
             <div className="space-y-6">
               <p className="text-white/50 text-sm text-right mb-16 mt-12">Is there more places you want to see?</p>
 
               <div className="space-y-6">
-                <button className="w-full bg-white/90 text-black font-bold py-8 px-6 rounded-3xl flex items-center gap-4 hover:bg-white transition-colors text-left">
-                  <ArrowLeft className="h-6 w-6" />
-                  <span className="text-lg">Strategic Location and Accessibility</span>
-                </button>
-
-                <button className="w-full bg-[#5A8E00] text-white font-bold py-8 px-6 rounded-3xl flex items-center gap-4 hover:bg-[#97E12B] transition-colors text-left">
-                  <ArrowRight className="h-6 w-6" />
-                  <span className="text-lg">Favorable Climate for Agriculture</span>
-                </button>
-
-                <button className="w-full bg-[#5A8E00] text-white font-bold py-8 px-6 rounded-3xl flex items-center gap-4 hover:bg-[#97E12B] transition-colors text-left">
-                  <ArrowRight className="h-6 w-6" />
-                  <span className="text-lg">Abundant Natural Resources</span>
-                </button>
-
-                <button className="w-full bg-[#5A8E00] text-white font-bold py-8 px-6 rounded-3xl flex items-center gap-4 hover:bg-[#97E12B] transition-colors text-left">
-                  <ArrowRight className="h-6 w-6" />
-                  <span className="text-lg">Growing Population and Workforce</span>
-                </button>
-
-                <button className="w-full bg-[#5A8E00] text-white font-bold py-8 px-6 rounded-3xl flex items-center gap-4 hover:bg-[#97E12B] transition-colors text-left">
-                  <ArrowRight className="h-6 w-6" />
-                  <span className="text-lg">Supportive Government Policies</span>
-                </button>
+                {investmentOptions.map((option, index) => (
+                  <button
+                    key={index}
+                    className={`w-full ${
+                      index === activeIndex ? "bg-white/90 text-black" : "bg-[#5A8E00] text-white"
+                    } font-bold py-8 px-6 rounded-3xl flex items-center gap-4 hover:bg-white hover:text-black transition-colors text-left`}
+                    onMouseEnter={() => setActiveIndex(index)}
+                  >
+                    {index === activeIndex ? <ArrowLeft className="h-6 w-6" /> : <ArrowRight className="h-6 w-6" />}
+                    <span className="text-lg">{option.title}</span>
+                  </button>
+                ))}
               </div>
             </div>
           </div>
