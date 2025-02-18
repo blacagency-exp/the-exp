@@ -3,8 +3,8 @@
 import { useState } from "react"
 import { styles } from "@/constants/styles"
 import { ArrowLeft, ArrowRight } from "lucide-react"
-import img1 from "../../assets/elephant.png"
-import img2 from "../../assets/muse.jpg"
+import img1 from "../../assets/bg_count.jpg"
+import img2 from "../../assets/water_front.jpg"
 import img3 from "../../assets/boat.jpg"
 import img4 from "../../assets/enoch.jpg"
 import img5 from "../../assets/horses.jpg"
@@ -93,7 +93,7 @@ export function OpportunitiesHero() {
       {/* Investment Section - Full width background */}
       <section className="bg-[#141E03] -mt-64 pt-24 pb-24 relative">
         <div className={styles.section.container}>
-          <div className="grid grid-cols-2 gap-16 mt-48">
+          <div className="grid grid-cols-2 gap-12 mt-48">
             <div className="space-y-4">
               <div className="space-y-1 mb-16">
                 <h2 className="text-4xl font-bold text-white">Why Invest in Plateau State?</h2>
@@ -102,9 +102,9 @@ export function OpportunitiesHero() {
               <img
                 src={investmentOptions[activeIndex].image || "/placeholder.svg"}
                 alt={`Plateau State - ${investmentOptions[activeIndex].title}`}
-                className="w-[470px] aspect-[4/3] object-cover rounded-2xl"
+                className="w-[570px] aspect-[4/3] object-cover rounded-2xl"
               />
-              <p className="text-md text-white/70 max-w-[480px]">{investmentOptions[activeIndex].description}</p>
+              <p className="text-md text-white/70 max-w-[570px]">{investmentOptions[activeIndex].description}</p>
             </div>
 
             <div className="space-y-6">
@@ -116,7 +116,7 @@ export function OpportunitiesHero() {
                     key={index}
                     className={`w-full ${
                       index === activeIndex ? "bg-white/90 text-black" : "bg-[#5A8E00] text-white"
-                    } font-bold py-8 px-6 rounded-3xl flex items-center gap-4 hover:bg-white hover:text-black transition-colors text-left`}
+                    } font-bold py-8 px-6 rounded-full flex items-center gap-4 hover:bg-white hover:text-black transition-colors text-left`}
                     onMouseEnter={() => setActiveIndex(index)}
                   >
                     {index === activeIndex ? <ArrowLeft className="h-6 w-6" /> : <ArrowRight className="h-6 w-6" />}
