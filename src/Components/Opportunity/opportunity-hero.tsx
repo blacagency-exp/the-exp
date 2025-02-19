@@ -5,9 +5,9 @@ import { styles } from "@/constants/styles"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import img1 from "../../assets/bg_count.jpg"
 import img2 from "../../assets/water_front.jpg"
-import img3 from "../../assets/boat.jpg"
-import img4 from "../../assets/enoch.jpg"
-import img5 from "../../assets/horses.jpg"
+import img3 from "../../assets/need1.png"
+import img4 from "../../assets/peoplem.png"
+import img5 from "../../assets/need2.png"
 
 const investmentOptions = [
   {
