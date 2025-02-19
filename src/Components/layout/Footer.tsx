@@ -83,7 +83,7 @@ export function Footer() {
               </Link>
             </motion.div>
             <motion.div variants={linkVariants} whileHover="hover">
-              <Link to="/tour-guides" className="block text-3xl md:text-5xl  hover:text-white/90 font-normal">
+              <Link to="/culture" className="block text-3xl md:text-5xl  hover:text-white/90 font-normal">
                 Cultural Heritage
               </Link>
             </motion.div>
