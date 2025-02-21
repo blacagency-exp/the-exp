@@ -1,18 +1,18 @@
+"use client"
+
 import { motion } from "framer-motion"
 import { styles } from "../../constants/styles"
+import type { BlogSection, TextContent, ListContent } from "../../types/blog"
 
-interface BlogPostProps {
+export interface BlogPostProps {
   categories: string[]
   title: string
   date: string
   author: string
   readTime: string
   mainImage: string
-  secondaryImage: string
-  sections: {
-    title: string
-    content: string
-  }[]
+  secondaryImage?: string
+  sections: BlogSection[]
   authorArticles: string[]
 }
 
@@ -37,6 +37,31 @@ const itemVariants = {
   },
 }
 
+const RichContent = ({ content }: { content: TextContent | ListContent | string }) => {
+  if (typeof content === "string") {
+    return <p className="text-gray-600 leading-relaxed font-light text-sm mb-4">{content}</p>
+  }
+
+  if ("items" in content) {
+    const ListTag = content.type === "number" ? "ol" : "ul"
+    return (
+      <ListTag className={`ml-6 mb-4 ${content.type === "number" ? "list-decimal" : "list-disc"}`}>
+        {content.items.map((item, index) => (
+          <li key={index} className="text-gray-600 leading-relaxed font-light text-sm mb-2">
+            {item}
+          </li>
+        ))}
+      </ListTag>
+    )
+  }
+
+  if (content.type === "emphasis") {
+    return <p className="text-gray-800 font-medium text-sm mb-4 italic">{content.text}</p>
+  }
+
+  return <p className="text-gray-600 leading-relaxed font-light text-sm mb-4">{content.text}</p>
+}
+
 export function BlogPost({
   categories,
   title,
@@ -45,7 +70,7 @@ export function BlogPost({
   readTime,
   mainImage,
   secondaryImage,
-  sections,
+  sections = [],
   authorArticles,
 }: BlogPostProps) {
   return (
@@ -87,8 +112,8 @@ export function BlogPost({
           </motion.div>
         </div>
 
-        {/* Featured Image - full width */}
-        <motion.div variants={itemVariants} className="relative w-full aspect-[16/9] rounded-xl overflow-hidden">
+        {/* Featured Image */}
+        <motion.div variants={itemVariants} className="relative w-full aspect-[16/9] rounded-xl overflow-hidden mb-12">
           <img
             src={mainImage || "/placeholder.svg"}
             alt="Featured image"
@@ -98,12 +123,16 @@ export function BlogPost({
 
         <div className="max-w-4xl mx-auto">
           {/* Content */}
-          <div className="space-y-8">
+          <div className="space-y-12">
             {sections.map((section, index) => (
               <motion.div key={index} variants={itemVariants}>
-                <h2 className="text-4xl font-medium mb-4">{section.title}</h2>
-                <p className="text-gray-600 leading-relaxed font-light text-sm">{section.content}</p>
-                {index === 1 && (
+                <h2 className="text-3xl font-medium mb-6">{section.title}</h2>
+                {Array.isArray(section.content) ? (
+                  section.content.map((content, contentIndex) => <RichContent key={contentIndex} content={content} />)
+                ) : (
+                  <RichContent content={section.content} />
+                )}
+                {index === 1 && secondaryImage && (
                   <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden my-8">
                     <img
                       src={secondaryImage || "/placeholder.svg"}
@@ -115,11 +144,6 @@ export function BlogPost({
                 )}
               </motion.div>
             ))}
-          </div>
-
-          {/* Horizontal Line */}
-          <div className="max-w-4xl mx-auto">
-            <motion.div variants={itemVariants} className="w-full h-px bg-[#0A1400] my-16" />
           </div>
 
           {/* Author Articles and Subscribe Section */}

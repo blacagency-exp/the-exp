@@ -1,31 +1,24 @@
 "use client"
 
 import { useState } from "react"
+import { Link } from "react-router-dom"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import { styles } from "../../constants/styles"
-import img1 from "../../assets/blogimg.png"
+import { recentBlogs } from "../../data/recentBlogs"
 
 interface Slide {
   image: string
   title: string
   featured?: boolean
+  slug: string
 }
 
-const slides: Slide[] = [
-  {
-    image: img1,
-    title: "Discover Plateau: A Journey Through Nature, Culture, and Adventure",
-    featured: true,
-  },
-  {
-    image: "/placeholder.svg?height=600&width=1200",
-    title: "Exploring the Hidden Gems of Jos Plateau",
-  },
-  {
-    image: "/placeholder.svg?height=600&width=1200",
-    title: "A Guide to Local Cuisine and Traditional Dishes",
-  },
-]
+const slides: Slide[] = recentBlogs.slice(0, 3).map((blog, index) => ({
+  image: blog.imageUrl,
+  title: blog.title,
+  featured: index === 0,
+  slug: blog.slug,
+}))
 
 export default function HeroSlider() {
   const [currentSlide, setCurrentSlide] = useState(0)
@@ -50,7 +43,12 @@ export default function HeroSlider() {
             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
           >
             {slides.map((slide, index) => (
-              <div key={index} className="absolute inset-0 w-full h-full" style={{ left: `${index * 100}%` }}>
+              <Link
+                key={index}
+                to={`/blog/${slide.slug}`}
+                className="absolute inset-0 w-full h-full block"
+                style={{ left: `${index * 100}%` }}
+              >
                 {/* Image and Gradient Overlay */}
                 <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${slide.image})` }}>
                   <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/50" />
@@ -67,7 +65,7 @@ export default function HeroSlider() {
                   </div>
                   <h2 className="text-3xl font-medium text-white max-w-3xl">{slide.title}</h2>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

@@ -11,11 +11,13 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { BlogPostPage } from "./pages/BlogPostPage"
 import { ContactPage } from "./pages/ContactPage"
 import { CountDownPage } from "./pages/CountDownPage"
+import { ScrollToTop } from "./Components/ScrollToTop"
 function App() {
 
 
   return (
     <Router>
+      <ScrollToTop />
     <Routes>
         <Route path="/" element={<CountDownPage />} />
         <Route path="/virtual-tour" element={<VirtualTourPage />} />
