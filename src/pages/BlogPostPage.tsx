@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom"
 import { BlogPost, type BlogPostProps } from "../Components/BlogPost/blog-post"
 import { recentBlogs } from "../data/recentBlogs"
 import { ExploreStories } from "../Components/BlogPost/explore-stories"
-import { Footer } from "@/Components/layout/Footer"
+import { BaseLayout } from "../Components/layout/BaseLayout"
 
 export function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>()
@@ -37,9 +37,10 @@ export function BlogPostPage() {
 
   return (
     <React.Fragment>
+      <BaseLayout>
       <BlogPost {...blogPostProps} />
-      <ExploreStories />
-      <Footer/>
+      <ExploreStories currentSlug={slug || ""} />
+      </BaseLayout>  
     </React.Fragment>
   )
 }

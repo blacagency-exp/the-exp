@@ -1,8 +1,12 @@
 "use client"
 
+import { useState } from "react"
 import { motion } from "framer-motion"
 import { styles } from "../../constants/styles"
 import type { BlogSection, TextContent, ListContent } from "../../types/blog"
+import img1 from '../../assets/author_img.png'
+import { SubscribeForm } from "../SubscribeForm"
+import { LearnMoreModal } from "../LearnMoreModal"
 
 export interface BlogPostProps {
   categories: string[]
@@ -72,7 +76,19 @@ export function BlogPost({
   secondaryImage,
   sections = [],
   authorArticles,
-}: BlogPostProps) {
+}: BlogPostProps) 
+
+
+
+{
+
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+ 
+
+  const handleLearnMore = () => {
+    setIsModalOpen(true)
+  }
   return (
     <section className="py-24">
       <motion.div
@@ -104,7 +120,7 @@ export function BlogPost({
             <span>{date}</span>
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded-full overflow-hidden">
-                <img src="/placeholder.svg" alt={author} className="w-full h-full object-cover" />
+                <img src={img1} alt={author} className="w-full h-full object-cover" />
               </div>
               <span>{author}</span>
             </div>
@@ -160,7 +176,7 @@ export function BlogPost({
                 <h3 className="text-lg font-semibold">Other Articles by</h3>
                 <div className="flex items-center gap-2">
                   <div className="w-6 h-6 rounded-full overflow-hidden">
-                    <img src="/placeholder.svg" alt={author} className="w-full h-full object-cover" />
+                    <img src={img1} alt={author} className="w-full h-full object-cover" />
                   </div>
                   <span className="text-[#9FE870]">{author}</span>
                 </div>
@@ -177,23 +193,16 @@ export function BlogPost({
             </motion.div>
 
             {/* Stay Updated */}
-            <motion.div variants={itemVariants} className="p-6 rounded-lg border-2 border-[#97E12B]">
-              <h3 className="text-lg font-semibold mb-2">Stay Updated</h3>
-              <p className="text-gray-600 mb-4">
-                Subscribe to our blog for the latest travel tips and cultural insights about Plateau State.
-              </p>
-              <div className="flex gap-3">
-                <button className="px-4 py-2 bg-[#97E12B] text-black rounded-lg hover:bg-[#8ED060] transition-colors">
-                  Subscribe
-                </button>
-                <button className="px-4 py-2 bg-[#97E12B] text-black rounded-lg hover:bg-[#97E12B] transition-colors">
-                  Learn More
-                </button>
-              </div>
-            </motion.div>
+             {/* Stay Updated */}
+             <SubscribeForm onLearnMore={handleLearnMore} />
+
+
+
+
           </motion.div>
         </div>
       </motion.div>
+      <LearnMoreModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </section>
   )
 }
