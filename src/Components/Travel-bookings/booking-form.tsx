@@ -1,6 +1,62 @@
 "use client"
 
-export function BookingForm() {
+import type React from "react"
+import { useEffect, useState } from "react"
+import { PaystackButton } from "./PaystackButton"
+
+interface BookingFormProps {
+  selectedPackage?: string
+}
+
+export const BookingForm: React.FC<BookingFormProps> = ({ selectedPackage }) => {
+  const [packageType, setPackageType] = useState(selectedPackage || "")
+  const [travelerType, setTravelerType] = useState("solo")
+  const [groupSize, setGroupSize] = useState(2)
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [email, setEmail] = useState("")
+  const [phoneNumber, setPhoneNumber] = useState("")
+  const [arrivalDate, setArrivalDate] = useState("")
+  const [accommodation, setAccommodation] = useState("")
+  const [specificRequests, setSpecificRequests] = useState("")
+  const [totalAmount, setTotalAmount] = useState(0)
+
+  useEffect(() => {
+    if (selectedPackage) {
+      setPackageType(selectedPackage)
+    }
+  }, [selectedPackage])
+
+  useEffect(() => {
+    // Calculate total amount based on selected options
+    let basePrice = 0
+    switch (packageType) {
+      case "Discoverer":
+        basePrice = 50000 // 50,000 Naira
+        break
+      case "Explorer":
+        basePrice = 75000 // 75,000 Naira
+        break
+      case "Adventurer":
+        basePrice = 100000 // 100,000 Naira
+        break
+      default:
+        basePrice = 0
+    }
+
+    if (travelerType === "group") {
+      basePrice *= groupSize
+    }
+
+    setTotalAmount(basePrice)
+  }, [packageType, travelerType, groupSize])
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Form validation would go here
+    // If form is valid, the PaystackButton will be displayed
+  }
+
   return (
     <section className="bg-[#141E03] py-24 ">
       <div className="container mx-auto px-4 max-w-7xl">
@@ -15,7 +71,7 @@ export function BookingForm() {
           </div>
 
           <div className="bg-white rounded-[2rem] p-16 shadow-xl mb-32">
-            <form className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="block text-sm font-normal text-[#666666]">First Name</label>
@@ -23,6 +79,9 @@ export function BookingForm() {
                     type="text"
                     className="w-full px-3 py-2 bg-gray-100 border-0 rounded-md"
                     placeholder="First Name"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    required
                   />
                 </div>
                 <div className="space-y-2">
@@ -31,6 +90,9 @@ export function BookingForm() {
                     type="text"
                     className="w-full px-3 py-2 bg-gray-100 border-0 rounded-md"
                     placeholder="Last Name"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    required
                   />
                 </div>
               </div>
@@ -42,6 +104,9 @@ export function BookingForm() {
                     type="email"
                     className="w-full px-3 py-2 bg-gray-100 border-0 rounded-md"
                     placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
                   />
                 </div>
                 <div className="space-y-2">
@@ -50,6 +115,9 @@ export function BookingForm() {
                     type="tel"
                     className="w-full px-3 py-2 bg-gray-100 border-0 rounded-md"
                     placeholder="Phone Number"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    required
                   />
                 </div>
               </div>
@@ -57,12 +125,29 @@ export function BookingForm() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="block text-sm font-normal text-[#666666]">Arrival Date</label>
-                  <input type="date" className="w-full px-3 py-2 bg-gray-100 border-0 rounded-md" />
+                  <input
+                    type="date"
+                    className="w-full px-3 py-2 bg-gray-100 border-0 rounded-md"
+                    value={arrivalDate}
+                    onChange={(e) => setArrivalDate(e.target.value)}
+                    required
+                  />
                 </div>
-                <div className="space-y-2">
-                  <label className="block text-sm font-normal text-[#666666]">Departure Date</label>
-                  <input type="date" className="w-full px-3 py-2 bg-gray-100 border-0 rounded-md" />
-                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-normal text-[#666666]">Package Type</label>
+                <select
+                  className="w-full px-3 py-2 bg-gray-100 border-0 rounded-md appearance-none"
+                  value={packageType}
+                  onChange={(e) => setPackageType(e.target.value)}
+                  required
+                >
+                  <option value="">Select package</option>
+                  <option value="Discoverer">Discoverer</option>
+                  <option value="Explorer">Explorer</option>
+                  <option value="Adventurer">Adventurer</option>
+                </select>
               </div>
 
               <div className="space-y-2">
@@ -73,7 +158,8 @@ export function BookingForm() {
                       type="radio"
                       name="travelerType"
                       value="solo"
-                      defaultChecked
+                      checked={travelerType === "solo"}
+                      onChange={() => setTravelerType("solo")}
                       className="w-4 h-4 text-[#5A8E00] border-gray-300"
                     />
                     <span className="text-sm font-normal text-[#666666]">Solo Trip</span>
@@ -83,39 +169,45 @@ export function BookingForm() {
                       type="radio"
                       name="travelerType"
                       value="group"
+                      checked={travelerType === "group"}
+                      onChange={() => setTravelerType("group")}
                       className="w-4 h-4 text-[#5A8E00] border-gray-300"
                     />
                     <span className="text-sm font-normal text-[#666666]">Group Trip</span>
                   </label>
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="radio"
-                      name="travelerType"
-                      value="family"
-                      className="w-4 h-4 text-[#5A8E00] border-gray-300"
-                    />
-                    <span className="text-sm font-normal text-[#666666]">Family Trip</span>
-                  </label>
                 </div>
               </div>
+
+              {travelerType === "group" && (
+                <div className="space-y-2">
+                  <label className="block text-sm font-normal text-[#666666]">Number of People</label>
+                  <select
+                    className="w-full px-3 py-2 bg-gray-100 border-0 rounded-md appearance-none"
+                    value={groupSize}
+                    onChange={(e) => setGroupSize(Number(e.target.value))}
+                  >
+                    {[...Array(9)].map((_, i) => (
+                      <option key={i} value={i + 2}>
+                        {i + 2}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="block text-sm font-normal text-[#666666]">Accommodation Preferences</label>
-                  <select className="w-full px-3 py-2 bg-gray-100 border-0 rounded-md appearance-none">
+                  <select
+                    className="w-full px-3 py-2 bg-gray-100 border-0 rounded-md appearance-none"
+                    value={accommodation}
+                    onChange={(e) => setAccommodation(e.target.value)}
+                    required
+                  >
                     <option value="">Select accommodation</option>
                     <option value="hotel">Hotel</option>
                     <option value="resort">Resort</option>
                     <option value="apartment">Apartment</option>
-                  </select>
-                </div>
-                <div className="space-y-2">
-                  <label className="block text-sm font-normal text-[#666666]">Add ons</label>
-                  <select className="w-full px-3 py-2 bg-gray-100 border-0 rounded-md appearance-none">
-                    <option value="">Select add ons</option>
-                    <option value="transport">Airport Transfer</option>
-                    <option value="guide">Tour Guide</option>
-                    <option value="meals">All Meals</option>
                   </select>
                 </div>
               </div>
@@ -125,15 +217,20 @@ export function BookingForm() {
                 <textarea
                   className="w-full px-3 py-2 bg-gray-100 border-0 rounded-md min-h-[120px] resize-none"
                   placeholder="Any specific requirements or requests..."
+                  value={specificRequests}
+                  onChange={(e) => setSpecificRequests(e.target.value)}
                 />
               </div>
 
-              <button
-                type="submit"
-                className="px-8 py-2 bg-[#5A8E00] text-white rounded-md hover:bg-[#4A7500] transition-colors"
-              >
-                Book Now
-              </button>
+              <div className="text-xl font-semibold">Total Amount: ₦{totalAmount.toLocaleString()}</div>
+
+              <PaystackButton
+                amount={totalAmount}
+                email={email}
+                firstName={firstName}
+                lastName={lastName}
+                phoneNumber={phoneNumber}
+              />
             </form>
           </div>
         </div>

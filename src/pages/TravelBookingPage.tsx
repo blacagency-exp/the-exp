@@ -1,4 +1,6 @@
+"use client"
 
+import { useRef, useState } from "react"
 import { Hero } from "@/Components/Travel-bookings/hero"
 import { BaseLayout } from "../Components/layout/BaseLayout"
 import { TravelPackages } from "../Components/Travel-bookings/travel-packages"
@@ -6,15 +8,26 @@ import { BookingForm } from "@/Components/Travel-bookings/booking-form"
 import { ContactSection } from "@/Components/Home/ContactSection"
 import { InvestmentSection } from "@/Components/Home/InvestmentSection"
 
-
 export function TravelBookingPage() {
+  const bookingFormRef = useRef<HTMLDivElement>(null)
+  const [selectedPackage, setSelectedPackage] = useState<string | undefined>(undefined)
+
+  const handlePackageClick = (packageTitle: string) => {
+    setSelectedPackage(packageTitle)
+    if (bookingFormRef.current) {
+      bookingFormRef.current.scrollIntoView({ behavior: "smooth" })
+    }
+  }
+
   return (
     <BaseLayout>
-     <Hero/>
-    <TravelPackages/>
-    <BookingForm/>
-    <ContactSection/>
-    <InvestmentSection/>
+      <Hero />
+      <TravelPackages onPackageClick={handlePackageClick} />
+      <div ref={bookingFormRef}>
+        <BookingForm selectedPackage={selectedPackage} />
+      </div>
+      <ContactSection />
+      <InvestmentSection />
     </BaseLayout>
   )
 }
