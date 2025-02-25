@@ -15,6 +15,11 @@ app.use(express.json())
 const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY
 const PAYSTACK_BASE_URL = "https://api.paystack.co"
 
+// Test route
+app.get("/", (req, res) => {
+  res.json({ message: "Server is running!" })
+})
+
 // Supabase setup
 const supabaseUrl = process.env.SUPABASE_URL
 const supabaseKey = process.env.SUPABASE_ANON_KEY
@@ -27,6 +32,7 @@ if (!PAYSTACK_SECRET_KEY || !PAYSTACK_SECRET_KEY.startsWith("sk_")) {
 
 if (!supabaseUrl || !supabaseKey) {
   console.error("Missing Supabase credentials. Please check your .env file.")
+  
   process.exit(1)
 }
 
@@ -41,34 +47,64 @@ if (!fs.existsSync(subscribersFile)) {
   fs.writeFileSync(subscribersFile, "[]", "utf-8")
 }
 
-app.post("/api/subscribe", (req, res) => {
+app.post("/api/subscribe", async (req, res) => {
   const { email } = req.body
 
+  console.log("Received subscription request for email:", email)
+
   if (!email || !/\S+@\S+\.\S+/.test(email)) {
+    console.log("Invalid email address:", email)
     return res.status(400).json({ message: "Invalid email address" })
   }
 
   try {
-    let subscribers = []
+    // Check if the email already exists in the subscribers table
+    const { data: existingSubscribers, error: checkError } = await supabase
+      .from("subscribers")
+      .select("email")
+      .eq("email", email)
 
-    const fileContent = fs.readFileSync(subscribersFile, "utf-8")
-    subscribers = JSON.parse(fileContent)
+    if (checkError) {
+      console.error("Error checking existing subscriber:", checkError)
+      return res.status(500).json({ message: "Failed to check existing subscriber", error: checkError })
+    }
 
-    if (subscribers.some((subscriber) => subscriber.email === email)) {
+    if (existingSubscribers && existingSubscribers.length > 0) {
+      console.log("Email already subscribed:", email)
       return res.status(409).json({ message: "Email already subscribed" })
     }
 
-    subscribers.push({
-      email,
-      timestamp: new Date().toISOString(),
-    })
+    // Insert new subscriber
+    const { data, error } = await supabase.from("subscribers").insert([{ email }])
 
-    fs.writeFileSync(subscribersFile, JSON.stringify(subscribers, null, 2))
+    if (error) {
+      console.error("Error saving subscriber to Supabase:", error)
+      return res.status(500).json({ message: "Failed to save subscriber", error: error })
+    }
 
+    console.log("Subscriber saved successfully:", data)
     res.status(200).json({ message: "Subscription successful" })
   } catch (error) {
-    console.error("Subscription error:", error)
-    res.status(500).json({ message: "Internal server error" })
+    console.error("Unexpected error during subscription:", error)
+    res.status(500).json({ message: "Internal server error", error: error.message })
+  }
+})
+
+// New endpoint to retrieve all subscribers
+app.get("/api/subscribers", async (req, res) => {
+  try {
+    const { data, error } = await supabase.from("subscribers").select("*").order("created_at", { ascending: false })
+
+    if (error) {
+      console.error("Error fetching subscribers:", error)
+      throw new Error("Failed to fetch subscribers")
+    }
+
+    console.log("Fetched subscribers:", data)
+    res.status(200).json(data)
+  } catch (error) {
+    console.error("Error retrieving subscribers:", error)
+    res.status(500).json({ message: "Internal server error", error: error.message })
   }
 })
 

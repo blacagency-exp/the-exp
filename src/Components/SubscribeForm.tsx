@@ -27,12 +27,12 @@ export const SubscribeForm: React.FC<SubscribeFormProps> = ({ onLearnMore }) => 
         body: JSON.stringify({ email }),
       })
 
+      const data = await response.json()
+
       if (!response.ok) {
-        const data = await response.json()
         throw new Error(data.message || `HTTP error! status: ${response.status}`)
       }
 
-    //   const data = await response.json()
       setStatus("success")
       setEmail("")
     } catch (error) {
@@ -40,6 +40,10 @@ export const SubscribeForm: React.FC<SubscribeFormProps> = ({ onLearnMore }) => 
       if (error instanceof Error) {
         if (error.message.includes("Failed to fetch")) {
           setErrorMessage("Unable to connect to the server. Please try again later.")
+        } else if (error.message === "Email already subscribed") {
+          setErrorMessage("This email is already subscribed.")
+        } else if (error.message.includes("Failed to check existing subscriber")) {
+          setErrorMessage("An error occurred while checking your subscription. Please try again.")
         } else {
           setErrorMessage(error.message || "An unexpected error occurred")
         }
