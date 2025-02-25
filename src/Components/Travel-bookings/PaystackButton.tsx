@@ -32,7 +32,7 @@ declare global {
   }
 }
 
-const PAYSTACK_PUBLIC_KEY = process.env.REACT_APP_PAYSTACK_PUBLIC_KEY || ""
+const PAYSTACK_PUBLIC_KEY = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || ""
 
 export const PaystackButton: React.FC<PaystackButtonProps> = ({
   amount,
