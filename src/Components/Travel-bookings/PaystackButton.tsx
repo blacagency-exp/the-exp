@@ -3,6 +3,7 @@
 import type React from "react"
 import { useEffect, useState } from "react"
 import axios from "axios"
+import { API_URL } from "../../config/api"
 
 interface PaystackButtonProps {
   amount: number
@@ -26,13 +27,12 @@ declare global {
         ref: string
         onClose: () => void
         callback: (response: { reference: string }) => void
-
       }): { openIframe: () => void }
     }
   }
 }
 
-const PAYSTACK_PUBLIC_KEY = "pk_test_d31e8385449a891c8f0f1ab1d912d24ae2ec89fc"
+const PAYSTACK_PUBLIC_KEY = process.env.REACT_APP_PAYSTACK_PUBLIC_KEY || ""
 
 export const PaystackButton: React.FC<PaystackButtonProps> = ({
   amount,
@@ -67,7 +67,7 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/api/initialize-payment", {
+      const response = await axios.post(`${API_URL}/api/initialize-payment`, {
         email,
         amount,
         metadata: {
@@ -119,7 +119,7 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
 
   const verifyPayment = async (reference: string) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/verify-payment/${reference}`)
+      const response = await axios.get(`${API_URL}/api/verify-payment/${reference}`)
       const { data } = response
 
       if (data.data.status === "success") {
@@ -152,4 +152,3 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
     </div>
   )
 }
-

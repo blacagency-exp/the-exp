@@ -3,6 +3,7 @@
 import type React from "react"
 import { useState } from "react"
 import { motion } from "framer-motion"
+import { API_URL } from "../config/api"
 
 interface SubscribeFormProps {
   onLearnMore: () => void
@@ -19,7 +20,7 @@ export const SubscribeForm: React.FC<SubscribeFormProps> = ({ onLearnMore }) => 
     setErrorMessage("")
 
     try {
-      const response = await fetch("http://localhost:5000/api/subscribe", {
+      const response = await fetch(`${API_URL}/api/subscribe`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -97,4 +98,3 @@ export const SubscribeForm: React.FC<SubscribeFormProps> = ({ onLearnMore }) => 
     </motion.div>
   )
 }
-

@@ -1,0 +1,1 @@
+export const API_URL = 'https://exp-server2.vercel.app';
