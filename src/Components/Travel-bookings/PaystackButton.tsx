@@ -27,6 +27,12 @@ declare global {
         email: string
         amount: number
         metadata: {
+          full_name: string
+          phone_number: string
+          package_type: string
+          traveler_type: string
+          group_size?: number
+          specific_requests: string
           custom_fields: Array<{
             display_name: string
             variable_name: string
@@ -78,18 +84,49 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
     }
 
     try {
+      const metadata = {
+        full_name: `${firstName} ${lastName}`,
+        phone_number: phoneNumber,
+        package_type: packageType,
+        traveler_type: travelerType,
+        group_size: groupSize,
+        specific_requests: specificRequests,
+        custom_fields: [
+          {
+            display_name: "Full Name",
+            variable_name: "full_name",
+            value: `${firstName} ${lastName}`,
+          },
+          {
+            display_name: "Phone Number",
+            variable_name: "phone_number",
+            value: phoneNumber,
+          },
+          {
+            display_name: "Package Type",
+            variable_name: "package_type",
+            value: packageType,
+          },
+          {
+            display_name: "Traveler Type",
+            variable_name: "traveler_type",
+            value: travelerType,
+          },
+        ],
+      }
+
+      if (groupSize) {
+        metadata.custom_fields.push({
+          display_name: "Group Size",
+          variable_name: "group_size",
+          value: groupSize.toString(),
+        })
+      }
+
       const response = await axios.post(`${API_URL}/api/initialize-payment`, {
         email,
         amount,
-        metadata: {
-          firstName,
-          lastName,
-          phoneNumber,
-          packageType,
-          travelerType,
-          groupSize,
-          specificRequests,
-        },
+        metadata,
       })
 
       const { data } = response
@@ -106,20 +143,7 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
         key: PAYSTACK_PUBLIC_KEY,
         email,
         amount: amount * 100,
-        metadata: {
-          custom_fields: [
-            {
-              display_name: "Full Name",
-              variable_name: "full_name",
-              value: `${firstName} ${lastName}`,
-            },
-            {
-              display_name: "Phone Number",
-              variable_name: "phone_number",
-              value: phoneNumber,
-            },
-          ],
-        },
+        metadata,
         ref: data.data.reference,
         onClose: () => {
           setError("Transaction cancelled")
@@ -146,8 +170,8 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
     try {
       const response = await axios.get(`${API_URL}/api/verify-payment/${reference}`)
       const { data } = response
-  
-      if (data.status === "completed") {
+
+      if (data.status === "success") {
         alert("Payment successful!")
         navigate("/tour")
       } else if (data.status === "pending") {
