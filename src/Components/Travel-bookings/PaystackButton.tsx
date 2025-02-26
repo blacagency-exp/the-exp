@@ -125,13 +125,14 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
     try {
       const response = await axios.get(`${API_URL}/api/verify-payment/${reference}`)
       const { data } = response
-
-      if (data.data.status === "success") {
+  
+      if (data.status === "completed") {
         alert("Payment successful!")
-        // Redirect to the tour page
         navigate("/tour")
+      } else if (data.status === "pending") {
+        setError("Payment is still processing. Please check back later.")
       } else {
-        setError("Payment verification failed. Please contact support.")
+        setError(`Payment ${data.status}. ${data.message}`)
       }
     } catch (error) {
       console.error("Payment verification failed:", error)
