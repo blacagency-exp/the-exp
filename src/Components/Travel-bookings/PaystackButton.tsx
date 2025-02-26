@@ -26,6 +26,13 @@ declare global {
         key: string
         email: string
         amount: number
+        metadata: {
+          custom_fields: Array<{
+            display_name: string
+            variable_name: string
+            value: string
+          }>
+        }
         ref: string
         onClose: () => void
         callback: (response: { reference: string }) => void
@@ -99,6 +106,20 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
         key: PAYSTACK_PUBLIC_KEY,
         email,
         amount: amount * 100,
+        metadata: {
+          custom_fields: [
+            {
+              display_name: "Full Name",
+              variable_name: "full_name",
+              value: `${firstName} ${lastName}`,
+            },
+            {
+              display_name: "Phone Number",
+              variable_name: "phone_number",
+              value: phoneNumber,
+            },
+          ],
+        },
         ref: data.data.reference,
         onClose: () => {
           setError("Transaction cancelled")
