@@ -2,7 +2,8 @@
 
 import { motion } from "framer-motion"
 import { styles } from "../../constants/styles"
-import img1 from '../../assets/muse.jpg'
+import img1 from '../../assets/muse-one.png'
+import img2 from '../../assets/muse-two.png'
 
 const museums = [
   {
@@ -17,7 +18,7 @@ const museums = [
     name: "Museum of Traditional Nigerian Architecture",
     description:
       "Take a virtual tour through the stunning 1950s villa, where you'll explore the vast heritage of Jos's rich history, complete with a collection of Nok terracotta sculptures.",
-    image: img1,
+    image: img2,
   },
 ]
 
@@ -44,7 +45,7 @@ const itemVariants = {
 
 export function MuseumsSection() {
   return (
-    <section className="py-24">
+    <section className="py-24 ">
       <div className={`${styles.section.container}`}>
         <motion.h2
           initial={{ opacity: 0, y: -20 }}

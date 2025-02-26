@@ -4,6 +4,7 @@ import type React from "react"
 import { useEffect, useState } from "react"
 import axios from "axios"
 import { API_URL } from "../../config/api"
+import { useNavigate } from "react-router-dom"
 
 interface PaystackButtonProps {
   amount: number
@@ -15,6 +16,7 @@ interface PaystackButtonProps {
   travelerType: string
   groupSize?: number
   specificRequests: string
+  disabled: boolean
 }
 
 declare global {
@@ -44,9 +46,11 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
   travelerType,
   groupSize,
   specificRequests,
+  disabled,
 }) => {
   const [isScriptLoaded, setIsScriptLoaded] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     const script = document.createElement("script")
@@ -124,7 +128,8 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
 
       if (data.data.status === "success") {
         alert("Payment successful!")
-        // Here you can add logic to update your database or perform any other actions
+        // Redirect to the tour page
+        navigate("/tour")
       } else {
         setError("Payment verification failed. Please contact support.")
       }
@@ -143,12 +148,13 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
       <button
         type="button"
         onClick={initializePayment}
-        className="px-8 py-2 bg-[#5A8E00] text-white rounded-md hover:bg-[#4A7500] transition-colors"
-        disabled={!isScriptLoaded}
+        className="px-8 py-2 bg-[#5A8E00] text-white rounded-md hover:bg-[#4A7500] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled={disabled || !isScriptLoaded}
       >
-        Pay Now
+        Book Now
       </button>
       {error && <p className="text-red-500 mt-2">{error}</p>}
     </div>
   )
 }
+

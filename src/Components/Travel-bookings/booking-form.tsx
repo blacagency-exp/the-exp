@@ -18,7 +18,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ selectedPackage }) => 
   const [phoneNumber, setPhoneNumber] = useState("")
   const [totalAmount, setTotalAmount] = useState(0)
   const [formComplete, setFormComplete] = useState(false)
-  const [specificRequests, setSpecificRequests] = useState("")
+  const [specificRequests, setSpecificRequests] = useState("N/A")
 
   useEffect(() => {
     if (selectedPackage) {
@@ -31,7 +31,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ selectedPackage }) => 
     let basePrice = 0
     switch (packageType) {
       case "Discoverer":
-        basePrice = 50*1600 // 50,000 Naira
+        basePrice = 100 // 50,000 Naira
         break
       case "Explorer":
         basePrice = 75 *1600 // 75,000 Naira
@@ -198,7 +198,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ selectedPackage }) => 
 
               <div className="text-xl font-semibold">Total Amount: ₦{totalAmount.toLocaleString()}</div>
 
-              {formComplete && (
+            
                 <PaystackButton
                   amount={totalAmount}
                   email={email}
@@ -209,8 +209,9 @@ export const BookingForm: React.FC<BookingFormProps> = ({ selectedPackage }) => 
                   travelerType={travelerType}
                   groupSize={travelerType === "group" ? groupSize : undefined}
                   specificRequests={specificRequests}
+                  disabled={!formComplete}
                 />
-              )}
+              
             </form>
           </div>
         </div>

@@ -45,14 +45,14 @@ export function ContactHero() {
                   <input
                     type="text"
                     placeholder="First name"
-                    className="w-full px-4 py-2 rounded-lg border border-[#9FE870] focus:outline-none focus:ring-2 focus:ring-[#9FE870] focus:border-transparent transition-all"
+                    className="w-full px-4 py-2 rounded-lg border border-black focus:outline-none focus:ring-2 focus:ring-[#9FE870] focus:border-transparent transition-all"
                   />
                 </div>
                 <div className="space-y-2">
                   <input
                     type="text"
                     placeholder="Last name"
-                    className="w-full px-4 py-2 rounded-lg border border-[#9FE870] focus:outline-none focus:ring-2 focus:ring-[#9FE870] focus:border-transparent transition-all"
+                    className="w-full px-4 py-2 rounded-lg border border-black focus:outline-none focus:ring-2 focus:ring-[#9FE870] focus:border-transparent transition-all"
                   />
                 </div>
               </div>
@@ -63,7 +63,7 @@ export function ContactHero() {
               <input
                 type="email"
                 placeholder="Email"
-                className="w-full px-4 py-2 rounded-lg border border-[#9FE870] focus:outline-none focus:ring-2 focus:ring-[#9FE870] focus:border-transparent transition-all"
+                className="w-full px-4 py-2 rounded-lg border border-black focus:outline-none focus:ring-2 focus:ring-[#9FE870] focus:border-transparent transition-all"
               />
             </motion.div>
 
@@ -72,7 +72,7 @@ export function ContactHero() {
               <textarea
                 placeholder="Write your message here"
                 rows={8}
-                className="w-full px-4 py-2 rounded-lg border border-[#9FE870] focus:outline-none focus:ring-2 focus:ring-[#9FE870] focus:border-transparent transition-all resize-none"
+                className="w-full px-4 py-2 rounded-lg border border-black focus:outline-none focus:ring-2 focus:ring-[#9FE870] focus:border-transparent transition-all resize-none"
               />
             </motion.div>
 
