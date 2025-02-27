@@ -92,8 +92,16 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
         group_size: groupSize,
         specific_requests: specificRequests,
         custom_fields: [
-          
-         
+          {
+            display_name: "Full Name",
+            variable_name: "full_name",
+            value: `${firstName} ${lastName}`,
+          },
+          {
+            display_name: "Phone Number",
+            variable_name: "phone_number",
+            value: phoneNumber,
+          },
           {
             display_name: "Package Type",
             variable_name: "package_type",
@@ -120,6 +128,7 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
         amount,
         name: `${firstName} ${lastName}`.trim(), // Add this line
         phone: phoneNumber, // Add this line
+
         metadata,
       })
 
@@ -165,8 +174,8 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
       const response = await axios.get(`${API_URL}/api/verify-payment/${reference}`)
       const { data } = response
 
-      if (data.status === "success") {
-        window.alert("Payment successful! Redirecting to tour page...");
+      if (data.status === "success" || data.status === "completed") {
+        alert("Payment successful!")
         navigate("/tour")
       } else if (data.status === "pending") {
         setError("Payment is still processing. Please check back later.")
