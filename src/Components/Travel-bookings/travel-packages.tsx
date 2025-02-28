@@ -11,17 +11,17 @@ const packages = [
   {
     title: "Discoverer",
     image: img1,
-    size: "w-full md:w-2/3 lg:w-1/2",
+    size: "w-11/12 sm:w-5/6 md:w-2/3 lg:w-2/3",
   },
   {
     title: "Explorer",
     image: img2,
-    size: "w-full md:w-3/4 lg:w-2/3",
+    size: "w-[95%] sm:w-11/12 md:w-3/4 lg:w-3/4",
   },
   {
     title: "Adventurer",
     image: img3,
-    size: "w-full md:w-5/6 lg:w-5/6",
+    size: "w-full md:w-5/6 lg:w-4/5",
   },
 ]
 
@@ -31,10 +31,10 @@ interface TravelPackagesProps {
 
 export const TravelPackages: React.FC<TravelPackagesProps> = ({ onPackageClick }) => {
   return (
-    <section className="py-24">
-      <div className={styles.section.container}>
-        <h2 className="text-5xl font-bold text-center mb-16">Travel Packages</h2>
-        <div className="max-w-6xl mx-auto space-y-12">
+    <section className="py-12 md:py-24">
+      <div className={`${styles.section.container} px-4 md:px-6`}>
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-16">Travel Packages</h2>
+        <div className="max-w-6xl mx-auto space-y-8 md:space-y-12 flex flex-col items-center">
           {packages.map((pkg, index) => (
             <motion.div
               key={index}
@@ -44,7 +44,7 @@ export const TravelPackages: React.FC<TravelPackagesProps> = ({ onPackageClick }
               className="bg-white overflow-hidden flex justify-center"
             >
               <div
-                className={`relative ${pkg.size} transition-all duration-300 ease-in-out hover:scale-105 cursor-pointer`}
+                className={`relative ${pkg.size} transition-all duration-300 ease-in-out hover:scale-[1.0] md:hover:scale-105 cursor-pointer overflow-hidden`}
                 onClick={() => onPackageClick(pkg.title)}
                 role="button"
                 tabIndex={0}
@@ -60,8 +60,8 @@ export const TravelPackages: React.FC<TravelPackagesProps> = ({ onPackageClick }
                   alt={`${pkg.title} Package`}
                   className="w-full h-auto object-contain"
                 />
-                <div className="absolute bottom-0 left-0 right-0  p-4">
-                  
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  {/* You can add additional content here if needed */}
                 </div>
               </div>
             </motion.div>

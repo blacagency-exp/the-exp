@@ -3,7 +3,7 @@
 import { useRef } from "react"
 import { Link } from "react-router-dom"
 import { motion, useInView } from "framer-motion"
-import logo from "../../assets/logomobile.png"
+import logo from "../../assets/logo_white.png"
 
 const containerVariants = {
   hidden: { opacity: 0 },

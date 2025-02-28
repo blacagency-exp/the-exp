@@ -11,7 +11,7 @@ export default defineConfig({
     'import.meta.env.REACT_APP_PAYSTACK_PUBLIC_KEY': JSON.stringify(process.env.REACT_APP_PAYSTACK_PUBLIC_KEY),
   },
   server:{
-      // host:true,
+      host:true,
   },
 
   resolve: {

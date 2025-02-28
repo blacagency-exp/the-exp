@@ -26,60 +26,71 @@ const itemVariants = {
 
 export function ContactHero() {
   return (
-    <section className="py-24">
-      <div className={`${styles.section.container}`}>
-        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="max-w-3xl">
-          <motion.span variants={itemVariants} className="text-[#9FE870] text-lg font-medium mb-4 block">
+    <section className="py-12 sm:py-16 md:py-24">
+      <div className={`${styles.section.container} px-4 sm:px-6 md:px-8`}>
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="mx-auto md:mx-0 md:max-w-3xl"
+        >
+          <motion.span
+            variants={itemVariants}
+            className="text-[#9FE870] text-base sm:text-lg font-medium mb-2 sm:mb-4 block"
+          >
             CONTACT US
           </motion.span>
 
-          <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl font-bold text-[#0A1400] mb-12">
+          <motion.h1
+            variants={itemVariants}
+            className="text-3xl sm:text-5xl md:text-7xl font-bold text-[#0A1400] mb-8 sm:mb-12"
+          >
             We're here to help
           </motion.h1>
 
-          <motion.form variants={containerVariants} className="space-y-6">
+          <motion.form variants={containerVariants} className="space-y-4 sm:space-y-6">
             <motion.div variants={itemVariants}>
-              <label className="text-gray-600 mb-2 block">Name</label>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <label className="text-gray-600 mb-2 block text-sm sm:text-base">Name</label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <input
                     type="text"
                     placeholder="First name"
-                    className="w-full px-4 py-2 rounded-lg border border-black focus:outline-none focus:ring-2 focus:ring-[#9FE870] focus:border-transparent transition-all"
+                    className="w-full px-3 sm:px-4 py-2 rounded-lg border border-black focus:outline-none focus:ring-2 focus:ring-[#9FE870] focus:border-transparent transition-all text-sm sm:text-base"
                   />
                 </div>
                 <div className="space-y-2">
                   <input
                     type="text"
                     placeholder="Last name"
-                    className="w-full px-4 py-2 rounded-lg border border-black focus:outline-none focus:ring-2 focus:ring-[#9FE870] focus:border-transparent transition-all"
+                    className="w-full px-3 sm:px-4 py-2 rounded-lg border border-black focus:outline-none focus:ring-2 focus:ring-[#9FE870] focus:border-transparent transition-all text-sm sm:text-base"
                   />
                 </div>
               </div>
             </motion.div>
 
             <motion.div variants={itemVariants} className="space-y-2">
-              <label className="text-gray-600 mb-2 block">Email</label>
+              <label className="text-gray-600 mb-2 block text-sm sm:text-base">Email</label>
               <input
                 type="email"
                 placeholder="Email"
-                className="w-full px-4 py-2 rounded-lg border border-black focus:outline-none focus:ring-2 focus:ring-[#9FE870] focus:border-transparent transition-all"
+                className="w-full px-3 sm:px-4 py-2 rounded-lg border border-black focus:outline-none focus:ring-2 focus:ring-[#9FE870] focus:border-transparent transition-all text-sm sm:text-base"
               />
             </motion.div>
 
             <motion.div variants={itemVariants} className="space-y-2">
-              <label className="text-gray-600 mb-2 block">Comment</label>
+              <label className="text-gray-600 mb-2 block text-sm sm:text-base">Comment</label>
               <textarea
                 placeholder="Write your message here"
-                rows={8}
-                className="w-full px-4 py-2 rounded-lg border border-black focus:outline-none focus:ring-2 focus:ring-[#9FE870] focus:border-transparent transition-all resize-none"
+                rows={6}
+                className="w-full px-3 sm:px-4 py-2 rounded-lg border border-black focus:outline-none focus:ring-2 focus:ring-[#9FE870] focus:border-transparent transition-all resize-none text-sm sm:text-base"
               />
             </motion.div>
 
             <motion.div variants={itemVariants}>
               <button
                 type="submit"
-                className="px-8 py-2 bg-[#0A1400] text-white rounded-lg hover:bg-[#0A1400]/90 transition-colors"
+                className="w-full sm:w-auto px-6 sm:px-8 py-2 sm:py-3 bg-[#0A1400] text-white rounded-lg hover:bg-[#0A1400]/90 transition-colors text-sm sm:text-base"
               >
                 Submit
               </button>

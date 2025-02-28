@@ -14,6 +14,7 @@ export const recentBlogs: BlogPostData[] = [
     title: "Tourism and Hospitality Partnership",
     description: "Tourism and Hospitality Partnership Unlocking the Potential of Plateau State's Tourism and...",
     imageUrl: img3,
+    imageUrll: img4,
     slug: "plateau-tourism-potential",
     author: "Tourism Expert",
     readTime: "8 min read",
@@ -86,6 +87,7 @@ export const recentBlogs: BlogPostData[] = [
     title: "Unlocking the Potential of Local Businesses and Vendors",
     description: "Discover how small and medium enterprises are driving Plateau State's economic growth",
     imageUrl: img4,
+    imageUrll: img3,
     slug: "from-peaks-to-plains-adventure",
     author: "Emma Wilson",
     readTime: "8 min read",
@@ -210,6 +212,7 @@ export const recentBlogs: BlogPostData[] = [
     description:
       "Plateau State offers an extraordinary tapestry of cultures, festivals, and cuisines, creating year-round opportunities for celebration.",
     imageUrl: img5,
+    imageUrll: img4,
     slug: "from-peaks-to-plains-travel",
     author: "Michael Brown",
     readTime: "8 min read",
@@ -304,6 +307,7 @@ export const recentBlogs: BlogPostData[] = [
     description:
       "Experience Plateau is transforming the state into Nigeria's creative epicenter through strategic media partnerships and content creation.",
     imageUrl: img6,
+    imageUrll: img1,
     slug: "from-peaks-to-plains-flora-fauna",
     author: "Sarah Johnson",
     readTime: "7 min read",
@@ -388,6 +392,7 @@ export const recentBlogs: BlogPostData[] = [
     title: "Soccer Partnership: Building Community Through Sports",
     description: "Discover how the Blac Lyfe soccer tournament is revolutionizing sports tourism in Plateau State",
     imageUrl: img2,
+    imageUrll: img6,
     slug: "from-peaks-to-plains-flora-enoch",
     author: "David Lee",
     readTime: "8 min read",
@@ -509,6 +514,7 @@ export const recentBlogs: BlogPostData[] = [
     description:
       "Embark on an unforgettable expedition through Plateau State's diverse landscapes, rich cultural heritage, and thrilling adventures.",
     imageUrl: img1,
+    imageUrll: img5,
     slug: "discover-plateau-journey",
     author: "Alex Thompson",
     readTime: "10 min read",

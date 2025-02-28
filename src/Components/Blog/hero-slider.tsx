@@ -32,11 +32,11 @@ export default function HeroSlider() {
   }
 
   return (
-    <section className={`${styles.section.container} mb-16`}>
-      <h1 className="text-[160px] font-semibold text-[#1A2E02] mb-6">Blog</h1>
+    <section className={`${styles.section.container} mb-8 md:mb-16`}>
+      <h1 className="text-5xl sm:text-7xl md:text-[160px] font-semibold text-[#1A2E02] mb-4 md:mb-6">Blog</h1>
 
-      <div className="relative pb-16">
-        <div className="relative h-[600px] w-full rounded-[2rem] overflow-hidden">
+      <div className="relative pb-12 md:pb-16">
+        <div className="relative h-[400px] sm:h-[500px] md:h-[600px] w-full rounded-2xl md:rounded-[2rem] overflow-hidden">
           {/* Slides */}
           <div
             className="absolute inset-0 transition-transform duration-500 ease-in-out"
@@ -55,15 +55,15 @@ export default function HeroSlider() {
                 </div>
 
                 {/* Content */}
-                <div className="absolute inset-0 flex flex-col justify-between p-12">
+                <div className="absolute inset-0 flex flex-col justify-between p-6 sm:p-8 md:p-12">
                   <div>
                     {slide.featured && (
-                      <span className="inline-flex px-12 py-2 rounded-full bg-[#97E12B] text-sm font-medium">
+                      <span className="inline-flex px-4 sm:px-8 md:px-12 py-1 sm:py-2 rounded-full bg-[#97E12B] text-xs sm:text-sm font-medium">
                         Featured
                       </span>
                     )}
                   </div>
-                  <h2 className="text-3xl font-medium text-white max-w-3xl">{slide.title}</h2>
+                  <h2 className="text-xl sm:text-2xl md:text-3xl font-medium text-white max-w-3xl">{slide.title}</h2>
                 </div>
               </Link>
             ))}
@@ -71,7 +71,7 @@ export default function HeroSlider() {
         </div>
 
         {/* Navigation Arrows and Dots - Bottom, outside the image */}
-        <div className="absolute -bottom-2 left-0 right-0 flex justify-between items-center px-4">
+        <div className="absolute -bottom-2 left-0 right-0 flex justify-between items-center px-2 sm:px-4">
           <div className="flex-1">{/* This empty div maintains layout balance */}</div>
           <div className="flex gap-2">
             {slides.map((_, index) => (
@@ -85,20 +85,20 @@ export default function HeroSlider() {
               />
             ))}
           </div>
-          <div className="flex gap-3 flex-1 justify-end">
+          <div className="flex gap-2 sm:gap-3 flex-1 justify-end">
             <button
               onClick={prevSlide}
-              className="w-8 h-8 border border-[#5A8E00] rounded-full bg-white flex items-center justify-center hover:bg-[#97E12B] transition-colors"
+              className="w-6 h-6 sm:w-8 sm:h-8 border border-[#5A8E00] rounded-full bg-white flex items-center justify-center hover:bg-[#97E12B] transition-colors"
               aria-label="Previous slide"
             >
-              <ArrowLeft className="w-5 h-5 text-[#5A8E00]" />
+              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 text-[#5A8E00]" />
             </button>
             <button
               onClick={nextSlide}
-              className="w-8 h-8 border border-[#5A8E00]  rounded-full bg-white flex items-center justify-center hover:bg-[#97E12B] transition-colors"
+              className="w-6 h-6 sm:w-8 sm:h-8 border border-[#5A8E00] rounded-full bg-white flex items-center justify-center hover:bg-[#97E12B] transition-colors"
               aria-label="Next slide"
             >
-              <ArrowRight className="w-5 h-5 text-[#5A8E00]" />
+              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-[#5A8E00]" />
             </button>
           </div>
         </div>

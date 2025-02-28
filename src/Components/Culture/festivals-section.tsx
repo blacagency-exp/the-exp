@@ -56,43 +56,45 @@ const itemVariants = {
 
 export function FestivalsSection() {
   return (
-    <section className="py-24 bg-[#0A1400]">
-      <div className={`${styles.section.container}`}>
+    <section className="py-12 sm:py-16 md:py-24 bg-[#0A1400]">
+      <div className={`${styles.section.container} px-4 sm:px-6 md:px-8`}>
         <motion.h2
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-3xl md:text-4xl font-bold text-white mb-16 text-center"
+          className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-8 sm:mb-12 md:mb-16 text-center"
         >
           Festivals & Events
         </motion.h2>
 
-        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-24">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="space-y-12 sm:space-y-16 md:space-y-24"
+        >
           {festivals.map((festival) => (
             <motion.div
               key={festival.id}
               variants={itemVariants}
-              className={`flex flex-col ${
-                festival.imagePosition === "left" ? "md:flex-row" : "md:flex-row-reverse"
-              } items-center gap-8 md:gap-16`}
+              className={`flex flex-col md:flex-row gap-6 sm:gap-8 md:gap-16 ${
+                festival.imagePosition === "right" ? "md:flex-row-reverse" : ""
+              }`}
             >
               <div className="w-full md:w-1/2">
                 <div className="relative w-full" style={{ paddingBottom: "60%" }}>
-                  <div
-                    className="absolute  overflow-hidden"
-                    
-                  >
+                  <div className="absolute inset-0 overflow-hidden rounded-lg sm:rounded-xl md:rounded-2xl">
                     <img
                       src={festival.image || "/placeholder.svg"}
                       alt={festival.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover md:p-8"
                     />
                   </div>
                 </div>
               </div>
-              <div className="flex-1 space-y-4">
-                <h3 className="text-[#9FE870] text-2xl font-semibold">{festival.name}</h3>
-                <p className="text-white/80 leading-relaxed">{festival.description}</p>
+              <div className="w-full md:w-1/2 space-y-3 sm:space-y-4 md:p-12">
+                <h3 className="text-[#97E12B] text-xl sm:text-2xl font-semibold">{festival.name}</h3>
+                <p className="text-white/80 text-sm sm:text-base leading-relaxed">{festival.description}</p>
               </div>
             </motion.div>
           ))}

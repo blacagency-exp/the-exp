@@ -21,6 +21,7 @@ export interface BlogPostData {
   title: string
   description: string
   imageUrl: string
+  imageUrll: string
   slug: string
   author: string
   

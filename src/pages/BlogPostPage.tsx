@@ -30,7 +30,7 @@ export function BlogPostPage() {
     author: blog.author || "Unknown Author",
     readTime: blog.readTime || "Unknown read time",
     mainImage: blog.imageUrl,
-    secondaryImage: blog.imageUrl,
+    secondaryImage: blog.imageUrll,
     sections: blog.content || [],
     authorArticles: authorArticles,
   }

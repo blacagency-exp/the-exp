@@ -54,13 +54,13 @@ export function ContactSection() {
       >
         <div className={`${styles.section.container} group-hover:bg-white transition-colors duration-300`}>
           <motion.div
-            className="py-12 md:py-16 px-6 md:px-24 h-full flex flex-col"
+            className="py-8 sm:py-12 md:py-16 px-4 sm:px-6 md:px-12 lg:px-24 h-full flex flex-col"
             variants={containerVariants}
             initial="hidden"
             animate={isInView ? "visible" : "hidden"}
           >
             <div className="flex-1">
-              <motion.div className="relative w-12 md:w-14 h-12 md:h-14 mb-4" variants={itemVariants}>
+              <motion.div className="relative w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 mb-4" variants={itemVariants}>
                 <img
                   src={headphone || "/placeholder.svg"}
                   alt="Headphone icon"
@@ -73,24 +73,24 @@ export function ContactSection() {
                 />
               </motion.div>
               <motion.h2
-                className="text-3xl md:text-4xl text-black mb-4 font-semibold group-hover:text-[#5A8E00] transition-colors duration-300"
+                className="text-2xl sm:text-3xl md:text-4xl text-black mb-4 font-semibold group-hover:text-[#5A8E00] transition-colors duration-300"
                 variants={itemVariants}
               >
                 Call or email for assistance
               </motion.h2>
               <motion.p
-                className="text-black/80 text-sm md:text-md max-w-md font-normal group-hover:text-[#5A8E00] transition-colors duration-300"
+                className="text-black/80 text-sm sm:text-base md:text-md max-w-md font-normal group-hover:text-[#5A8E00] transition-colors duration-300"
                 variants={itemVariants}
               >
                 Give us a call or send us an email to get a response to your questions right away!
               </motion.p>
             </div>
             <motion.span
-              className="inline-flex font-semibold items-center text-black group-hover:text-[#5A8E00] transition-colors duration-300 text-lg md:text-xl mt-8 md:mt-40"
+              className="inline-flex font-semibold items-center text-black group-hover:text-[#5A8E00] transition-colors duration-300 text-base sm:text-lg md:text-xl mt-6 sm:mt-8 md:mt-12 lg:mt-40"
               variants={itemVariants}
             >
               Support@Experienceplateau.com
-              <ArrowRight className="ml-2 w-5 md:w-6 h-5 md:h-6" aria-hidden="true" />
+              <ArrowRight className="ml-2 w-4 sm:w-5 md:w-6 h-4 sm:h-5 md:h-6" aria-hidden="true" />
             </motion.span>
           </motion.div>
         </div>
@@ -108,13 +108,16 @@ export function ContactSection() {
       >
         <div className={`${styles.section.container} group-hover:bg-white transition-colors duration-300`}>
           <motion.div
-            className="py-12 md:py-16 px-6 md:px-24 h-full flex flex-col"
+            className="py-8 sm:py-12 md:py-16 px-4 sm:px-6 md:px-12 lg:px-24 h-full flex flex-col"
             variants={containerVariants}
             initial="hidden"
             animate={isInView ? "visible" : "hidden"}
           >
             <div className="flex-1">
-              <motion.div className="relative w-10 md:w-12 h-10 md:h-12 mb-4 md:mb-6" variants={itemVariants}>
+              <motion.div
+                className="relative w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 mb-4 sm:mb-6"
+                variants={itemVariants}
+              >
                 <img
                   src={question || "/placeholder.svg"}
                   alt="Question mark icon"
@@ -127,13 +130,13 @@ export function ContactSection() {
                 />
               </motion.div>
               <motion.h2
-                className="text-3xl md:text-4xl text-white mb-4 font-semibold group-hover:text-black transition-colors duration-300"
+                className="text-2xl sm:text-3xl md:text-4xl text-white mb-4 font-semibold group-hover:text-black transition-colors duration-300"
                 variants={itemVariants}
               >
                 Fill out our form or drop a feedback
               </motion.h2>
               <motion.p
-                className="text-white/80 text-sm md:text-md max-w-md font-normal group-hover:text-black transition-colors duration-300"
+                className="text-white/80 text-sm sm:text-base md:text-md max-w-md font-normal group-hover:text-black transition-colors duration-300"
                 variants={itemVariants}
               >
                 Do you want to send us a suggestion or complain about any of our services? Please send us your input to
@@ -141,11 +144,11 @@ export function ContactSection() {
               </motion.p>
             </div>
             <motion.span
-              className="inline-flex font-semibold items-center text-white group-hover:text-black transition-colors duration-300 text-lg md:text-xl mt-8 md:mt-24"
+              className="inline-flex font-semibold items-center text-white group-hover:text-black transition-colors duration-300 text-base sm:text-lg md:text-xl mt-6 sm:mt-8 md:mt-12 lg:mt-24"
               variants={itemVariants}
             >
               Fill out the form
-              <ArrowRight className="ml-2 w-5 md:w-6 h-5 md:h-6" aria-hidden="true" />
+              <ArrowRight className="ml-2 w-4 sm:w-5 md:w-6 h-4 sm:h-5 md:h-6" aria-hidden="true" />
             </motion.span>
           </motion.div>
         </div>

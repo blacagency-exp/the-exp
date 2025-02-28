@@ -4,7 +4,7 @@ import { useState } from "react"
 import { motion } from "framer-motion"
 import { styles } from "../../constants/styles"
 import type { BlogSection, TextContent, ListContent } from "../../types/blog"
-import img1 from '../../assets/author_img.png'
+import img1 from "../../assets/author_img.png"
 import { SubscribeForm } from "../SubscribeForm"
 import { LearnMoreModal } from "../LearnMoreModal"
 
@@ -43,15 +43,15 @@ const itemVariants = {
 
 const RichContent = ({ content }: { content: TextContent | ListContent | string }) => {
   if (typeof content === "string") {
-    return <p className="text-gray-600 leading-relaxed font-light text-sm mb-4">{content}</p>
+    return <p className="text-gray-600 leading-relaxed font-light text-sm sm:text-base mb-4">{content}</p>
   }
 
   if ("items" in content) {
     const ListTag = content.type === "number" ? "ol" : "ul"
     return (
-      <ListTag className={`ml-6 mb-4 ${content.type === "number" ? "list-decimal" : "list-disc"}`}>
+      <ListTag className={`ml-4 sm:ml-6 mb-4 ${content.type === "number" ? "list-decimal" : "list-disc"}`}>
         {content.items.map((item, index) => (
-          <li key={index} className="text-gray-600 leading-relaxed font-light text-sm mb-2">
+          <li key={index} className="text-gray-600 leading-relaxed font-light text-sm sm:text-base mb-2">
             {item}
           </li>
         ))}
@@ -60,10 +60,10 @@ const RichContent = ({ content }: { content: TextContent | ListContent | string 
   }
 
   if (content.type === "emphasis") {
-    return <p className="text-gray-800 font-medium text-sm mb-4 italic">{content.text}</p>
+    return <p className="text-gray-800 font-medium text-sm sm:text-base mb-4 italic">{content.text}</p>
   }
 
-  return <p className="text-gray-600 leading-relaxed font-light text-sm mb-4">{content.text}</p>
+  return <p className="text-gray-600 leading-relaxed font-light text-sm sm:text-base mb-4">{content.text}</p>
 }
 
 export function BlogPost({
@@ -76,51 +76,51 @@ export function BlogPost({
   secondaryImage,
   sections = [],
   authorArticles,
-}: BlogPostProps) 
-
-
-
-{
-
+}: BlogPostProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
-
- 
 
   const handleLearnMore = () => {
     setIsModalOpen(true)
   }
+
   return (
-    <section className="py-24">
+    <section className="py-12 sm:py-16 md:py-24">
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className={`${styles.section.container}`}
+        className={`${styles.section.container} px-4 sm:px-6 md:px-8`}
       >
         <div className="max-w-4xl mx-auto">
           {/* Categories */}
-          <motion.div variants={itemVariants} className="flex gap-2 mb-6">
+          <motion.div variants={itemVariants} className="flex flex-wrap gap-2 mb-4 sm:mb-6">
             {categories.map((category) => (
-              <span key={category} className="px-6 py-2 text-xs font-medium rounded-lg bg-[#ECFFD0] text-[#82CF00]">
+              <span
+                key={category}
+                className="px-3 sm:px-6 py-1 sm:py-2 text-xs font-medium rounded-lg bg-[#ECFFD0] text-[#82CF00]"
+              >
                 {category}
               </span>
             ))}
           </motion.div>
 
           {/* Title */}
-          <motion.h1 variants={itemVariants} className="text-4xl md:text-5xl font-semibold text-black mb-6">
+          <motion.h1
+            variants={itemVariants}
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold text-black mb-4 sm:mb-6"
+          >
             {title}
           </motion.h1>
 
           {/* Meta information */}
           <motion.div
             variants={itemVariants}
-            className="flex items-center px-4 py-2 gap-4 text-sm rounded-lg text-gray-600 mb-16 border-2 border-[#97E12B] w-[350px]"
+            className="flex flex-wrap items-center px-3 sm:px-4 py-2 gap-2 sm:gap-4 text-xs sm:text-sm rounded-lg text-gray-600 mb-8 sm:mb-16 border-2 border-[#97E12B] w-full sm:w-96"
           >
             <span>{date}</span>
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full overflow-hidden">
-                <img src={img1} alt={author} className="w-full h-full object-cover" />
+              <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full overflow-hidden">
+                <img src={img1 || "/placeholder.svg"} alt={author} className="w-full h-full object-cover" />
               </div>
               <span>{author}</span>
             </div>
@@ -128,34 +128,37 @@ export function BlogPost({
           </motion.div>
         </div>
 
-        {/* Featured Image */}
-        <motion.div variants={itemVariants} className="relative w-full aspect-[16/9] rounded-xl overflow-hidden mb-12">
+        {/* Main Image */}
+        <motion.div
+          variants={itemVariants}
+          className="relative w-full aspect-[16/9] rounded-xl overflow-hidden mb-8 sm:mb-12"
+        >
           <img
             src={mainImage || "/placeholder.svg"}
-            alt="Featured image"
-            className="w-full h-[600px] object-cover rounded-xl"
+            alt="Main image"
+            className="w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] object-cover rounded-xl"
           />
         </motion.div>
 
         <div className="max-w-4xl mx-auto">
           {/* Content */}
-          <div className="space-y-12">
+          <div className="space-y-8 sm:space-y-12">
             {sections.map((section, index) => (
               <motion.div key={index} variants={itemVariants}>
-                <h2 className="text-3xl font-medium mb-6">{section.title}</h2>
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-medium mb-4 sm:mb-6">{section.title}</h2>
                 {Array.isArray(section.content) ? (
                   section.content.map((content, contentIndex) => <RichContent key={contentIndex} content={content} />)
                 ) : (
                   <RichContent content={section.content} />
                 )}
                 {index === 1 && secondaryImage && (
-                  <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden my-8">
+                  <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden my-6 sm:my-8">
                     <img
                       src={secondaryImage || "/placeholder.svg"}
                       alt="Secondary image"
-                      className="w-full h-[500px] object-cover rounded-xl"
+                      className="w-full h-[300px] sm:h-[400px] md:h-[500px] object-cover rounded-xl"
                     />
-                    <p className="text-sm text-gray-500 mt-2">Image Caption</p>
+                    <p className="text-xs sm:text-sm text-gray-500 mt-2">Image Caption</p>
                   </div>
                 )}
               </motion.div>
@@ -168,23 +171,26 @@ export function BlogPost({
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="mt-16 grid md:grid-cols-2 gap-16"
+            className="mt-12 sm:mt-16 grid md:grid-cols-2 gap-8 sm:gap-16"
           >
             {/* Other Articles */}
-            <motion.div variants={itemVariants} className="p-6 rounded-lg border-[#97E12B] border-2">
-              <div className="flex items-center gap-6 mb-4">
-                <h3 className="text-lg font-semibold">Other Articles by</h3>
+            <motion.div variants={itemVariants} className="p-4 sm:p-6 rounded-lg border-[#97E12B] border-2">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 mb-4">
+                <h3 className="text-base sm:text-lg font-semibold">Other Articles by</h3>
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full overflow-hidden">
-                    <img src={img1} alt={author} className="w-full h-full object-cover" />
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full overflow-hidden">
+                    <img src={img1 || "/placeholder.svg"} alt={author} className="w-full h-full object-cover" />
                   </div>
                   <span className="text-[#9FE870]">{author}</span>
                 </div>
               </div>
-              <ul className="space-y-3">
+              <ul className="space-y-2 sm:space-y-3">
                 {authorArticles.map((article, index) => (
                   <li key={index}>
-                    <a href="#" className="text-black hover:text-[#9FE870] border-b border-gray-300">
+                    <a
+                      href="#"
+                      className="text-black hover:text-[#9FE870] border-b border-gray-300 text-sm sm:text-base"
+                    >
                       {article}
                     </a>
                   </li>
@@ -193,12 +199,7 @@ export function BlogPost({
             </motion.div>
 
             {/* Stay Updated */}
-             {/* Stay Updated */}
-             <SubscribeForm onLearnMore={handleLearnMore} />
-
-
-
-
+            <SubscribeForm onLearnMore={handleLearnMore} />
           </motion.div>
         </div>
       </motion.div>

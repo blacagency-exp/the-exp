@@ -34,7 +34,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ selectedPackage }) => 
         basePrice = 100 // 50,000 Naira
         break
       case "Explorer":
-        basePrice = 75 *1600 // 75,000 Naira
+        basePrice = 75 * 1600 // 75,000 Naira
         break
       case "Adventurer":
         basePrice = 100 * 1600 // 100,000 Naira
@@ -63,19 +63,21 @@ export const BookingForm: React.FC<BookingFormProps> = ({ selectedPackage }) => 
   }, [firstName, lastName, email, phoneNumber, packageType, specificRequests])
 
   return (
-    <section className="bg-[#141E03] py-24">
+    <section className="bg-[#141E03] py-12 md:py-24">
       <div className="container mx-auto px-4 max-w-7xl">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <div className="space-y-6 -mt-56">
-            <h2 className="text-[7.5rem] leading-none font-semibold text-[#97E12B]">Book a Trip</h2>
-            <p className="text-[#FDFFFB] text-md max-w-xl font-light leading-relaxed">
+        <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
+          <div className="space-y-6 mt-8 lg:-mt-56">
+            <h2 className="text-4xl md:text-6xl lg:text-[7.5rem] leading-none font-semibold text-[#97E12B]">
+              Book a Trip
+            </h2>
+            <p className="text-[#FDFFFB] text-sm md:text-md max-w-xl font-light leading-relaxed">
               Experience the beauty and culture of Plateau State with our carefully curated travel packages.
             </p>
           </div>
 
-          <div className="bg-white rounded-[2rem] p-16 shadow-xl mb-32">
-            <form className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
+          <div className="bg-white rounded-2xl md:rounded-[2rem] p-6 md:p-12 lg:p-16 shadow-xl mb-8 md:mb-16 lg:mb-32">
+            <form className="space-y-4 md:space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="block text-sm font-normal text-[#666666]">First Name</label>
                   <input
@@ -100,7 +102,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ selectedPackage }) => 
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="block text-sm font-normal text-[#666666]">Email</label>
                   <input
@@ -142,7 +144,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ selectedPackage }) => 
 
               <div className="space-y-2">
                 <label className="block text-sm font-normal text-[#666666]">Traveler Details</label>
-                <div className="flex gap-6">
+                <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
                   <label className="flex items-center gap-2">
                     <input
                       type="radio"
@@ -198,20 +200,18 @@ export const BookingForm: React.FC<BookingFormProps> = ({ selectedPackage }) => 
 
               <div className="text-xl font-semibold">Total Amount: ₦{totalAmount.toLocaleString()}</div>
 
-            
-                <PaystackButton
-                  amount={totalAmount}
-                  email={email}
-                  firstName={firstName}
-                  lastName={lastName}
-                  phoneNumber={phoneNumber}
-                  packageType={packageType}
-                  travelerType={travelerType}
-                  groupSize={travelerType === "group" ? groupSize : undefined}
-                  specificRequests={specificRequests}
-                  disabled={!formComplete}
-                />
-              
+              <PaystackButton
+                amount={totalAmount}
+                email={email}
+                firstName={firstName}
+                lastName={lastName}
+                phoneNumber={phoneNumber}
+                packageType={packageType}
+                travelerType={travelerType}
+                groupSize={travelerType === "group" ? groupSize : undefined}
+                specificRequests={specificRequests}
+                disabled={!formComplete}
+              />
             </form>
           </div>
         </div>

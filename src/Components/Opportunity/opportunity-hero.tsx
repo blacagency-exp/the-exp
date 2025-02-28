@@ -48,9 +48,9 @@ export function OpportunitiesHero() {
   return (
     <>
       {/* Title Section */}
-      <section className="relative pb-32">
+      <section className="relative pb-16 md:pb-32">
         <div className={styles.section.container}>
-          <h1 className="text-[120px] text-center font-semibold leading-none mb-16 mt-24">
+          <h1 className="text-5xl md:text-7xl lg:text-[120px] text-center font-semibold leading-none mb-8 md:mb-16 mt-12 md:mt-24">
             Meet
             <br />
             Opportunities
@@ -58,32 +58,38 @@ export function OpportunitiesHero() {
         </div>
 
         {/* Stats Card - Positioned to overlap */}
-        <div className={`${styles.section.container} relative z-10`}>
-          <div className="bg-[#5A8E00] rounded-[2rem] p-12 max-w-[999px] mx-auto">
-            <div className="grid grid-cols-3 gap-8">
-              <div className="space-y-1">
-                <div className="text-4xl font-bold text-white text-center">4 Million</div>
-                <div className="text-white/90 text-center">Population</div>
+        <div className={`${styles.section.container} relative z-10 px-4 md:px-0`}>
+          <div className="bg-[#5A8E00] rounded-[2rem] p-8 md:p-12 max-w-[999px] mx-auto">
+            <div className="flex flex-col md:grid md:grid-cols-3 gap-8 md:gap-8">
+              <div className="space-y-2 md:space-y-1">
+                <div className="text-white/90 text-center text-lg md:text-base order-1 md:order-2">Population</div>
+                <div className="text-4xl md:text-4xl font-bold text-white text-center order-2 md:order-1">
+                  4 Million
+                </div>
               </div>
-              <div className="space-y-1">
-                <div className="text-4xl font-bold text-white text-center">English, Hausa</div>
-                <div className="text-white/90 text-center">Official Language(s)</div>
+              <div className="space-y-2 md:space-y-1">
+                <div className="text-white/90 text-center text-lg md:text-base order-1 md:order-2">Languages</div>
+                <div className="text-4xl md:text-4xl font-bold text-white text-center order-2 md:order-1">
+                  English, Hausa
+                </div>
               </div>
-              <div className="space-y-1">
-                <div className="text-4xl font-bold text-white text-center">70%</div>
-                <div className="text-white/90 text-center">Literacy Rate</div>
+              <div className="space-y-2 md:space-y-1">
+                <div className="text-white/90 text-center text-lg md:text-base order-1 md:order-2">Literacy Rate</div>
+                <div className="text-4xl md:text-4xl font-bold text-white text-center order-2 md:order-1">70%</div>
               </div>
-              <div className="space-y-1">
-                <div className="text-4xl font-bold text-white text-center">54 Years</div>
-                <div className="text-white/90 text-center">Life Expectancy</div>
+              <div className="space-y-2 md:space-y-1">
+                <div className="text-white/90 text-center text-lg md:text-base order-1 md:order-2">Life Expectancy</div>
+                <div className="text-4xl md:text-4xl font-bold text-white text-center order-2 md:order-1">54 Years</div>
               </div>
-              <div className="space-y-1">
-                <div className="text-4xl font-bold text-white text-center">78%</div>
-                <div className="text-white/90 text-center">Employment Rate</div>
+              <div className="space-y-2 md:space-y-1">
+                <div className="text-white/90 text-center text-lg md:text-base order-1 md:order-2">Employment Rate</div>
+                <div className="text-4xl md:text-4xl font-bold text-white text-center order-2 md:order-1">78%</div>
               </div>
-              <div className="space-y-1">
-                <div className="text-4xl font-bold text-white text-center">8 Billion USD</div>
-                <div className="text-white/90 text-center">GDP</div>
+              <div className="space-y-2 md:space-y-1">
+                <div className="text-white/90 text-center text-lg md:text-base order-1 md:order-2">GDP</div>
+                <div className="text-4xl md:text-4xl font-bold text-white text-center order-2 md:order-1">
+                  8 Billion USD
+                </div>
               </div>
             </div>
           </div>
@@ -91,36 +97,44 @@ export function OpportunitiesHero() {
       </section>
 
       {/* Investment Section - Full width background */}
-      <section className="bg-[#141E03] -mt-64 pt-24 pb-24 relative">
-        <div className={styles.section.container}>
-          <div className="grid grid-cols-2 gap-12 mt-48">
+      <section className="bg-[#141E03] -mt-32 md:-mt-64 pt-12 md:pt-24 pb-12 md:pb-24 relative">
+        <div className={`${styles.section.container} px-4 md:px-0`}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 mt-24 md:mt-48">
             <div className="space-y-4">
-              <div className="space-y-1 mb-16">
-                <h2 className="text-4xl font-bold text-white">Why Invest in Plateau State?</h2>
+              <div className="space-y-1 mb-8 md:mb-16">
+                <h2 className="text-3xl md:text-4xl font-bold text-white">Why Invest in Plateau State?</h2>
                 <p className="text-[#97E12B]">Dive into unforgettable experiences</p>
               </div>
               <img
                 src={investmentOptions[activeIndex].image || "/placeholder.svg"}
                 alt={`Plateau State - ${investmentOptions[activeIndex].title}`}
-                className="w-[570px] aspect-[4/3] object-cover rounded-2xl"
+                className="w-full md:w-[570px] aspect-[4/3] object-cover rounded-2xl"
               />
-              <p className="text-md text-white/70 max-w-[570px]">{investmentOptions[activeIndex].description}</p>
+              <p className="text-sm md:text-md text-white/70 max-w-[570px]">
+                {investmentOptions[activeIndex].description}
+              </p>
             </div>
 
             <div className="space-y-6">
-              <p className="text-white/50 text-sm text-right mb-16 mt-12">Is there more places you want to see?</p>
+              <p className="text-white/50 text-sm text-right mb-8 md:mb-16 mt-6 md:mt-12">
+                Is there more places you want to see?
+              </p>
 
-              <div className="space-y-6">
+              <div className="space-y-4 md:space-y-6">
                 {investmentOptions.map((option, index) => (
                   <button
                     key={index}
                     className={`w-full ${
                       index === activeIndex ? "bg-white/90 text-black" : "bg-[#5A8E00] text-white"
-                    } font-bold py-8 px-6 rounded-full flex items-center gap-4 hover:bg-white hover:text-black transition-colors text-left`}
+                    } font-bold py-4 md:py-8 px-4 md:px-6 rounded-full flex items-center gap-2 md:gap-4 hover:bg-white hover:text-black transition-colors text-left`}
                     onMouseEnter={() => setActiveIndex(index)}
                   >
-                    {index === activeIndex ? <ArrowLeft className="h-6 w-6" /> : <ArrowRight className="h-6 w-6" />}
-                    <span className="text-lg">{option.title}</span>
+                    {index === activeIndex ? (
+                      <ArrowLeft className="h-4 w-4 md:h-6 md:w-6" />
+                    ) : (
+                      <ArrowRight className="h-4 w-4 md:h-6 md:w-6" />
+                    )}
+                    <span className="text-base md:text-lg">{option.title}</span>
                   </button>
                 ))}
               </div>
