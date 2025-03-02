@@ -16,6 +16,7 @@ interface PaystackButtonProps {
   travelerType: string
   groupSize?: number
   specificRequests: string
+  selectedGuideId: number | null // Add this line
   disabled: boolean
 }
 
@@ -59,6 +60,7 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
   travelerType,
   groupSize,
   specificRequests,
+  selectedGuideId,
   disabled,
 }) => {
   const [isScriptLoaded, setIsScriptLoaded] = useState(false)
@@ -91,6 +93,7 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
         traveler_type: travelerType,
         group_size: groupSize,
         specific_requests: specificRequests,
+        guide_id: selectedGuideId,
         custom_fields: [
           {
             display_name: "Full Name",
@@ -111,6 +114,11 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
             display_name: "Traveler Type",
             variable_name: "traveler_type",
             value: travelerType,
+          },
+          {
+            display_name: "Guide ID",
+            variable_name: "guide_id",
+            value: selectedGuideId ? selectedGuideId.toString() : "None",
           },
         ],
       }

@@ -3,6 +3,7 @@
 import type React from "react"
 import { useEffect, useState } from "react"
 import { PaystackButton } from "./PaystackButton"
+import { GuideSelector } from "./GuideSelector" // New component we'll create
 
 interface BookingFormProps {
   selectedPackage?: string
@@ -19,6 +20,8 @@ export const BookingForm: React.FC<BookingFormProps> = ({ selectedPackage }) => 
   const [totalAmount, setTotalAmount] = useState(0)
   const [formComplete, setFormComplete] = useState(false)
   const [specificRequests, setSpecificRequests] = useState("N/A")
+
+  const [selectedGuideId, setSelectedGuideId] = useState<number | null>(null)
 
   useEffect(() => {
     if (selectedPackage) {
@@ -58,9 +61,10 @@ export const BookingForm: React.FC<BookingFormProps> = ({ selectedPackage }) => 
         email !== "" &&
         phoneNumber !== "" &&
         packageType !== "" &&
-        specificRequests !== "",
+        specificRequests !== "" &&
+        selectedGuideId !== null 
     )
-  }, [firstName, lastName, email, phoneNumber, packageType, specificRequests])
+  }, [firstName, lastName, email, phoneNumber, packageType, specificRequests, selectedGuideId])
 
   return (
     <section className="bg-[#141E03] py-12 md:py-24">
@@ -198,6 +202,12 @@ export const BookingForm: React.FC<BookingFormProps> = ({ selectedPackage }) => 
                 ></textarea>
               </div>
 
+               {/* Add new Guide Selection component */}
+               <div className="space-y-2">
+                <label className="block text-sm font-normal text-[#666666]">Select Your Guide</label>
+                <GuideSelector onSelectGuide={(guideId) => setSelectedGuideId(guideId)} />
+              </div>
+
               <div className="text-xl font-semibold">Total Amount: ₦{totalAmount.toLocaleString()}</div>
 
               <PaystackButton
@@ -210,6 +220,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ selectedPackage }) => 
                 travelerType={travelerType}
                 groupSize={travelerType === "group" ? groupSize : undefined}
                 specificRequests={specificRequests}
+                selectedGuideId={selectedGuideId}
                 disabled={!formComplete}
               />
             </form>
