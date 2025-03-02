@@ -3,6 +3,23 @@ import { Star } from "lucide-react"
 import axios from "axios"
 import { API_URL } from "../../config/api"
 
+// Import the images directly
+import img1 from "../../assets/dommun.png"
+import img2 from "../../assets/jid.png"
+import img3 from "../../assets/yakubu.png"
+import img4 from "../../assets/uche.png"
+import img5 from "../../assets/tor.png"
+
+
+// Create an image mapping object
+const imageMap: Record<string, string> = {
+    "/assets/dommun.png": img1,
+    "/assets/jid.png": img2,
+    "/assets/yakubu.png": img3,
+    "/assets/uche.png": img4,
+    "/assets/tor.png": img5,
+  }
+
 interface Guide {
   id: number
   name: string
@@ -88,7 +105,10 @@ export const GuideSelector: React.FC<GuideSelectorProps> = ({ onSelectGuide }) =
     const fetchGuides = async () => {
       try {
         const response = await axios.get(`${API_URL}/api/guides`)
-        setGuides(response.data)
+        const processedGuides = response.data.map((guide: Guide) => ({
+            ...guide,
+        }))
+        setGuides(processedGuides)
         setLoading(false)
       } catch {
         setError("Failed to load guides. Please try again.")
@@ -126,7 +146,11 @@ export const GuideSelector: React.FC<GuideSelectorProps> = ({ onSelectGuide }) =
             `}
           >
             <div className="aspect-[3/3] overflow-hidden">
-              <img src={guide.image} alt={guide.name} className="w-full h-full object-cover" />
+            <img 
+                src={imageMap[guide.image] || "/placeholder.svg"} 
+                alt={guide.name} 
+                className="w-full h-full object-cover" 
+              />
             </div>
             <div className="p-4">
               <h3 className="font-medium">{guide.name}</h3>
