@@ -9,6 +9,7 @@ import img2 from "../../assets/jid.png"
 import img3 from "../../assets/yakubu.png"
 import img4 from "../../assets/uche.png"
 import img5 from "../../assets/tor.png"
+import img6 from "../../assets/grace.jpg"
 
 
 // Create an image mapping object
@@ -18,6 +19,7 @@ const imageMap: Record<string, string> = {
     "/assets/yakubu.png": img3,
     "/assets/uche.png": img4,
     "/assets/tor.png": img5,
+    "/assets/grace.jpg": img6,
   }
 
 interface Guide {

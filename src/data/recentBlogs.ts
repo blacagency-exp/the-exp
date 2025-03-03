@@ -5,6 +5,12 @@ import img3 from "../assets/rock.jpg"
 import img4 from "../assets/women_p.jpg"
 import img5 from "../assets/lastone.jpg"
 import img6 from "../assets/peoplem.png"
+import img7 from "../assets/tourism and hospitality.jpg"
+import img8 from "../assets/local business.jpg"
+import img9 from "../assets/Soccer partnership.png"
+import img10 from "../assets/cultural event sponsorship.jpg"
+import img11 from "../assets/Discover Plateau First Image.jpg"
+import img12 from "../assets/Discover Plateau Second Image.jpg"
 
 
 export const recentBlogs: BlogPostData[] = [
@@ -14,7 +20,7 @@ export const recentBlogs: BlogPostData[] = [
     title: "Tourism and Hospitality Partnership",
     description: "Tourism and Hospitality Partnership Unlocking the Potential of Plateau State's Tourism and...",
     imageUrl: img3,
-    imageUrll: img4,
+    imageUrll: img7,
     slug: "plateau-tourism-potential",
     author: "Tourism Expert",
     readTime: "8 min read",
@@ -87,7 +93,7 @@ export const recentBlogs: BlogPostData[] = [
     title: "Unlocking the Potential of Local Businesses and Vendors",
     description: "Discover how small and medium enterprises are driving Plateau State's economic growth",
     imageUrl: img4,
-    imageUrll: img3,
+    imageUrll: img8,
     slug: "from-peaks-to-plains-adventure",
     author: "Emma Wilson",
     readTime: "8 min read",
@@ -212,7 +218,7 @@ export const recentBlogs: BlogPostData[] = [
     description:
       "Plateau State offers an extraordinary tapestry of cultures, festivals, and cuisines, creating year-round opportunities for celebration.",
     imageUrl: img5,
-    imageUrll: img4,
+    imageUrll: img10,
     slug: "from-peaks-to-plains-travel",
     author: "Michael Brown",
     readTime: "8 min read",
@@ -392,7 +398,7 @@ export const recentBlogs: BlogPostData[] = [
     title: "Soccer Partnership: Building Community Through Sports",
     description: "Discover how the Blac Lyfe soccer tournament is revolutionizing sports tourism in Plateau State",
     imageUrl: img2,
-    imageUrll: img6,
+    imageUrll: img9,
     slug: "from-peaks-to-plains-flora-enoch",
     author: "David Lee",
     readTime: "8 min read",
@@ -513,8 +519,8 @@ export const recentBlogs: BlogPostData[] = [
     title: "Discover Plateau: A Journey Through Nature, Culture, and Adventure",
     description:
       "Embark on an unforgettable expedition through Plateau State's diverse landscapes, rich cultural heritage, and thrilling adventures.",
-    imageUrl: img1,
-    imageUrll: img5,
+    imageUrl: img11,
+    imageUrll: img12,
     slug: "discover-plateau-journey",
     author: "Alex Thompson",
     readTime: "10 min read",
