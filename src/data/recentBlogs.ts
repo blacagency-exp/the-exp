@@ -10,7 +10,7 @@ import img8 from "../assets/local business.jpg"
 import img9 from "../assets/Soccer partnership.png"
 import img10 from "../assets/cultural event sponsorship.jpg"
 import img11 from "../assets/Discover Plateau First Image.jpg"
-import img12 from "../assets/Discover Plateau Second Image.jpg"
+import img12 from "../assets/Discover plateau second image.jpg"
 
 
 export const recentBlogs: BlogPostData[] = [
