@@ -9,7 +9,6 @@ import img7 from "../assets/tourism and hospitality.jpg"
 import img8 from "../assets/local business.jpg"
 import img9 from "../assets/Soccer partnership.png"
 import img10 from "../assets/cultural event sponsorship.jpg"
-import img11 from "../assets/Discover Plateau First Image.jpg"
 import img12 from "../assets/Discover plateau second image.jpg"
 
 
@@ -519,7 +518,7 @@ export const recentBlogs: BlogPostData[] = [
     title: "Discover Plateau: A Journey Through Nature, Culture, and Adventure",
     description:
       "Embark on an unforgettable expedition through Plateau State's diverse landscapes, rich cultural heritage, and thrilling adventures.",
-    imageUrl: img11,
+    imageUrl: img1,
     imageUrll: img12,
     slug: "discover-plateau-journey",
     author: "Alex Thompson",
