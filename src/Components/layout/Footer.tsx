@@ -63,20 +63,20 @@ export function Footer() {
             </div>
             <motion.div variants={linkVariants} whileHover="hover">
               <Link
-                to="/investment"
+                to="/opp"
                 className="block text-3xl md:text-5xl  hover:text-white/90 font-normal"
               >
                 Investments
               </Link>
             </motion.div>
             <motion.div variants={linkVariants} whileHover="hover">
-              <Link to="/blogs" className="block text-3xl md:text-5xl  hover:text-white/90 font-normal">
+              <Link to="/blog" className="block text-3xl md:text-5xl  hover:text-white/90 font-normal">
                 Blogs
               </Link>
             </motion.div>
             <motion.div variants={linkVariants} whileHover="hover">
               <Link
-                to="/travel-bookings"
+                to="/travel-booking"
                 className="block text-3xl md:text-5xl  hover:text-white/90 font-normal"
               >
                 Travel Bookings

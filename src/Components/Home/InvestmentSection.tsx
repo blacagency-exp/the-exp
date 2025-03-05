@@ -2,6 +2,7 @@
 
 import { useRef } from "react"
 import { ArrowRight } from "lucide-react"
+import { Link } from "react-router-dom"
 import { motion, useInView } from "framer-motion"
 import { styles } from "../../constants/styles"
 import img1 from "../../assets/enoch.jpg"
@@ -11,6 +12,7 @@ interface InvestmentCard {
   image?: string
   buttonText: string
   isFeature?: boolean
+  slug: string
 }
 
 const investmentCards: InvestmentCard[] = [
@@ -19,22 +21,27 @@ const investmentCards: InvestmentCard[] = [
     image: img1,
     buttonText: "View more",
     isFeature: true,
+    slug: "from-peaks-to-plains-flora-enoch",
   },
   {
     title: "Tourism and Hospitality Partners",
     buttonText: "Read More",
+    slug: "plateau-tourism-potential",
   },
   {
     title: "Cultural and Event Sponsorships",
     buttonText: "Read more",
+    slug: "from-peaks-to-plains-travel",
   },
   {
     title: "Local Businesses and Vendors",
     buttonText: "Read More",
+    slug: "from-peaks-to-plains-adventure",
   },
   {
     title: "Media and Content Collaboration",
     buttonText: "Read More",
+    slug: "from-peaks-to-plains-flora-fauna",
   },
 ]
 
@@ -91,6 +98,7 @@ export function InvestmentSection() {
               </motion.p>
             </div>
           </div>
+          <Link to="/blog/from-peaks-to-plains-flora-enoch">
           <motion.button
             variants={itemVariants}
             className="flex font-medium items-center gap-2 px-6 lg:px-8 py-2 bg-[#E7FBD0] text-[#5A8E00] rounded-full hover:bg-[#E7FBD0]/80 transition-colors w-fit lg:w-auto"
@@ -100,6 +108,7 @@ export function InvestmentSection() {
             View more
             <ArrowRight className="w-4 h-4" />
           </motion.button>
+          </Link>
         </motion.div>
 
         <motion.div
@@ -117,6 +126,7 @@ export function InvestmentSection() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent">
               <div className="absolute bottom-0 left-0 p-4 lg:p-8">
                 <h4 className="text-white text-2xl lg:text-3xl font-semibold mb-4">{investmentCards[0].title}</h4>
+                <Link to={`/blog/${investmentCards[0].slug}`}>
                 <motion.button
                   className="bg-white text-[#5A8E00] px-6 lg:px-24 py-2 lg:py-3 rounded-full flex items-center gap-2 hover:bg-white/90 transition-colors text-sm lg:text-base"
                   whileHover={{ scale: 1.05 }}
@@ -125,6 +135,7 @@ export function InvestmentSection() {
                   {investmentCards[0].buttonText}
                   <ArrowRight className="w-4 h-4" />
                 </motion.button>
+                </Link>
               </div>
             </div>
           </motion.div>
@@ -138,6 +149,7 @@ export function InvestmentSection() {
                 className="bg-[#D9D9D9] rounded-3xl p-6 lg:p-12 flex flex-col items-center justify-center text-center"
               >
                 <h4 className="text-lg lg:text-[21px] text-[#1A2E0D] mb-4 font-bold">{card.title}</h4>
+                <Link to={`/blog/${card.slug}`}>
                 <motion.button
                   className="bg-white text-[#5A8E00] px-4 lg:px-6 py-2 lg:py-3 rounded-full flex items-center gap-2 hover:bg-white/90 transition-colors text-xs lg:text-sm"
                   whileHover={{ scale: 1.05 }}
@@ -146,6 +158,7 @@ export function InvestmentSection() {
                   {card.buttonText}
                   <ArrowRight className="w-3 h-3" />
                 </motion.button>
+                </Link>
               </motion.div>
             ))}
           </div>

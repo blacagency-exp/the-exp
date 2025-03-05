@@ -40,6 +40,8 @@ export function ContactSection() {
     },
   }
 
+ 
+
   return (
     <section ref={sectionRef} className="w-full flex flex-col md:flex-row overflow-hidden">
       {/* Left Side - Full width green background */}
@@ -98,7 +100,7 @@ export function ContactSection() {
 
       {/* Right Side - Full width dark green background */}
       <motion.a
-        href="#"
+        href="/contact"
         className="w-full md:w-1/2 bg-[#141E03] cursor-pointer group"
         initial={{ opacity: 0 }}
         animate={isInView ? { opacity: 1 } : { opacity: 0 }}
