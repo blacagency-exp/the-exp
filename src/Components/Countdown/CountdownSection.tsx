@@ -22,7 +22,7 @@ export function CountdownSection() {
     seconds: 0,
   })
   const [isCountdownOver, setIsCountdownOver] = useState(false)
-  const targetDate = new Date("2025-03-01").getTime()
+  const targetDate = new Date("2025-04-04").getTime()
 
   useEffect(() => {
     const calculateTimeLeft = () => {

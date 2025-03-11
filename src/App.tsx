@@ -11,6 +11,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { BlogPostPage } from "./pages/BlogPostPage"
 import { ContactPage } from "./pages/ContactPage"
 import { ScrollToTop } from "./Components/ScrollToTop"
+import { CountDownPage } from "./pages/CountDownPage"
 function App() {
 
 
@@ -18,7 +19,7 @@ function App() {
     <Router>
       <ScrollToTop />
     <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<CountDownPage />} />
         <Route path="/virtual-tour" element={<VirtualTourPage />} />
         <Route path="/travel-booking" element={<TravelBookingPage />} />
         <Route path="/blog" element={<BlogPage />} />
