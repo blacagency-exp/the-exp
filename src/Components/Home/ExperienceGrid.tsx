@@ -47,25 +47,39 @@ export function ExperienceGrid() {
 
   const MobileContent = () => {
     const images = [img4, img5, img1, img2, img3, img6]
-    
+
     return (
       <div className="md:hidden overflow-hidden relative">
-        <div className="flex animate-scroll">
+        <div
+          className="flex pointer-events-none"
+          style={{
+            animation: "scroll 40s linear infinite",
+          }}
+        >
           {/* First set of images */}
           {images.map((img, index) => (
-            <div key={`first-${index}`} className="flex-none w-[280px] h-[200px] mx-2 relative rounded-3xl overflow-hidden">
+            <div
+              key={`first-${index}`}
+              className="flex-none w-[280px] h-[200px] mx-2 relative rounded-3xl overflow-hidden"
+            >
               <img src={img || "/placeholder.svg"} alt={`Image ${index + 1}`} className="w-full h-full object-cover" />
             </div>
           ))}
           {/* Duplicate set of images for seamless loop */}
           {images.map((img, index) => (
-            <div key={`second-${index}`} className="flex-none w-[280px] h-[200px] mx-2 relative rounded-3xl overflow-hidden">
+            <div
+              key={`second-${index}`}
+              className="flex-none w-[280px] h-[200px] mx-2 relative rounded-3xl overflow-hidden"
+            >
               <img src={img || "/placeholder.svg"} alt={`Image ${index + 1}`} className="w-full h-full object-cover" />
             </div>
           ))}
           {/* Third set of images for extra smoothness */}
           {images.map((img, index) => (
-            <div key={`third-${index}`} className="flex-none w-[280px] h-[200px] mx-2 relative rounded-3xl overflow-hidden">
+            <div
+              key={`third-${index}`}
+              className="flex-none w-[280px] h-[200px] mx-2 relative rounded-3xl overflow-hidden"
+            >
               <img src={img || "/placeholder.svg"} alt={`Image ${index + 1}`} className="w-full h-full object-cover" />
             </div>
           ))}
@@ -90,7 +104,7 @@ export function ExperienceGrid() {
       <div className="relative w-full">
         {/* Desktop Marquee */}
         <div className="hidden md:block overflow-hidden">
-          <Marquee className="[--duration:40s]" >
+          <Marquee className="[--duration:40s]">
             <GridContent />
             <GridContent />
           </Marquee>
@@ -101,3 +115,4 @@ export function ExperienceGrid() {
     </div>
   )
 }
+

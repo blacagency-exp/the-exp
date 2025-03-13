@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { styles } from "@/constants/styles"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import img1 from "../../assets/bg_count.jpg"
@@ -44,6 +44,39 @@ const investmentOptions = [
 
 export function OpportunitiesHero() {
   const [activeIndex, setActiveIndex] = useState(0)
+  const [allImagesLoaded, setAllImagesLoaded] = useState(false)
+
+  // Helper function to get image src from imported image
+  const getImageSrc = (img: { src?: string } | string) => {
+    if (typeof img === "string") return img
+    if (img && typeof img === "object" && "src" in img) return img.src
+    return "/placeholder.svg"
+  }
+
+  // Preload all images when component mounts
+  useEffect(() => {
+    let loadedCount = 0
+    const totalImages = investmentOptions.length
+
+    const preloadImages = () => {
+      investmentOptions.forEach((option) => {
+        const img = new Image()
+        img.src = getImageSrc(option.image) || "/placeholder.svg"
+
+        const handleLoad = () => {
+          loadedCount++
+          if (loadedCount === totalImages) {
+            setAllImagesLoaded(true)
+          }
+        }
+
+        img.onload = handleLoad
+        img.onerror = handleLoad // Count errors as loaded to avoid infinite loading state
+      })
+    }
+
+    preloadImages()
+  }, [])
 
   return (
     <>
@@ -105,11 +138,29 @@ export function OpportunitiesHero() {
                 <h2 className="text-3xl md:text-4xl font-bold text-white">Why Invest in Plateau State?</h2>
                 <p className="text-[#97E12B]">Dive into unforgettable experiences</p>
               </div>
-              <img
-                src={investmentOptions[activeIndex].image || "/placeholder.svg"}
-                alt={`Plateau State - ${investmentOptions[activeIndex].title}`}
-                className="w-full md:w-[570px] aspect-[4/3] object-cover rounded-2xl"
-              />
+
+              <div className="relative w-full md:w-[570px] aspect-[4/3] rounded-2xl overflow-hidden bg-gray-200">
+                {/* Loading skeleton */}
+                {!allImagesLoaded && <div className="absolute inset-0 bg-gray-300 animate-pulse"></div>}
+
+                {/* All images are rendered but only the active one is visible */}
+                {investmentOptions.map((option, index) => (
+                  <div
+                    key={index}
+                    className={`absolute inset-0 transition-opacity duration-300 ${
+                      index === activeIndex ? "opacity-100" : "opacity-0"
+                    }`}
+                  >
+                    <img
+                      src={getImageSrc(option.image) || "/placeholder.svg"}
+                      alt={`Plateau State - ${option.title}`}
+                      className="w-full h-full object-cover"
+                      loading={index === 0 ? "eager" : "lazy"}
+                    />
+                  </div>
+                ))}
+              </div>
+
               <p className="text-sm md:text-md text-white/70 max-w-[570px]">
                 {investmentOptions[activeIndex].description}
               </p>

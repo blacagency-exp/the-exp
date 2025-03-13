@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import { API_URL } from "../../config/api"
 import { useNavigate } from "react-router-dom"
+import { PaymentSuccessModal } from "./payment-success-modal"
 
 interface PaystackButtonProps {
   amount: number
@@ -66,6 +67,8 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
   const [isScriptLoaded, setIsScriptLoaded] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const navigate = useNavigate()
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [paymentReference, setPaymentReference] = useState<string | undefined>()
 
   useEffect(() => {
     const script = document.createElement("script")
@@ -183,8 +186,8 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
       const { data } = response
 
       if (data.status === "success" || data.status === "completed") {
-        alert("Payment successful!")
-        navigate("/tour")
+        setPaymentReference(reference)
+        setShowSuccessModal(true)
       } else if (data.status === "pending") {
         setError("Payment is still processing. Please check back later.")
       } else {
@@ -200,6 +203,11 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
     }
   }
 
+  const handleModalClose = () => {
+    setShowSuccessModal(false)
+    navigate("/tour")
+  }
+
   return (
     <div>
       <button
@@ -211,6 +219,13 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
         Book Now
       </button>
       {error && <p className="text-red-500 mt-2">{error}</p>}
+
+      <PaymentSuccessModal
+        isOpen={showSuccessModal}
+        onClose={handleModalClose}
+        reference={paymentReference}
+        amount={amount * 100}
+      />
     </div>
   )
 }
