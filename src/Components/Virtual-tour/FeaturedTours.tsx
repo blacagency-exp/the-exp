@@ -1,23 +1,46 @@
-import { useState } from "react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import { styles } from "../../constants/styles"
-import shere from "../../assets/shereHills.png"
+import { useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { styles } from "../../constants/styles";
+import shere from "../../assets/shereHills.png";
+import { useNavigate } from "react-router-dom";
+import hotspotIcon from "../../assets/hotspot-icon.png";
 
+
+
+interface Hotspot {
+  id: string;
+  position: { x: number; y: number }; // Position in percentages (e.g., { x: 50, y: 50 })
+  targetTourId: number; // ID of the target tour to navigate to
+  icon?: string;
+}
+// Define the TourCard interface
 interface TourCard {
-  id: number
-  title: string
-  description: string
-  image: string
-  tags: string[]
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  tags: string[];
+  videoUrl: string;
+  hotspots?: Hotspot[]; // Add videoUrl to the TourCard interface
 }
 
-const tourData: TourCard[] = [
+// Export tourData so it can be used in other files
+export const tourData: TourCard[] = [
   {
     id: 1,
     title: "Shere Hills",
     description: "Take a virtual tour through the stunning Shere Hills, where you'll explore the rugged terrain",
     image: shere,
     tags: ["Virtual tour", "Rock Climbing", "Sailing"],
+    videoUrl: "https://www.youtube.com/embed/_XoQ31Y6iAE", // Local video URL
+    hotspots: [
+      {
+        id: "hotspot-1",
+        position: { x: 50, y: 50 }, // Position in percentages
+        targetTourId: 2, // Navigate to Assop Falls (ID: 2) when clicked
+        icon: hotspotIcon
+      },
+    ],
   },
   {
     id: 2,
@@ -25,49 +48,37 @@ const tourData: TourCard[] = [
     description: "Experience the magnificent Assop Falls, a natural wonder with cascading waters",
     image: shere,
     tags: ["Virtual tour", "Hiking", "Photography"],
+    videoUrl: "https://www.youtube.com/embed/U2makrXtxoI", // YouTube video URL
+    hotspots: [
+      {
+        id: "hotspot-2",
+        position: { x: 30, y: 70 }, // Position in percentages
+        targetTourId: 1, // Navigate to Shere Hills (ID: 1) when clicked
+        icon: hotspotIcon
+      },
+    ],
   },
-  {
-    id: 3,
-    title: "Jos Wildlife Park",
-    description: "Discover the diverse wildlife and natural habitats of Jos Wildlife Park",
-    image: shere,
-    tags: ["Virtual tour", "Wildlife", "Nature"],
-  },
-  {
-    id: 4,
-    title: "Riyom Rock",
-    description: "Explore the iconic Riyom Rock formation and its surrounding landscapes",
-    image: shere,
-    tags: ["Virtual tour", "Rock Climbing", "Hiking"],
-  },
-  {
-    id: 5,
-    title: "Kerang Highlands",
-    description: "Visit the beautiful Kerang Highlands and experience its unique climate",
-    image: shere,
-    tags: ["Virtual tour", "Hiking", "Camping"],
-  },
-  {
-    id: 6,
-    title: "Pandam Game Reserve",
-    description: "Take a journey through the Pandam Game Reserve and its ecosystem",
-    image: shere,
-    tags: ["Virtual tour", "Wildlife", "Safari"],
-  },
-]
+  // Add more tours here
+];
 
 export function FeaturedTours() {
-  const [currentPage, setCurrentPage] = useState(1)
-  const toursPerPage = 2
-  const totalPages = Math.ceil(tourData.length / toursPerPage)
+  const [currentPage, setCurrentPage] = useState(1);
+  const toursPerPage = 2;
+  const totalPages = Math.ceil(tourData.length / toursPerPage);
+  const navigate = useNavigate();
 
   // Calculate tours to show on current page
-  const indexOfLastTour = currentPage * toursPerPage
-  const indexOfFirstTour = indexOfLastTour - toursPerPage
-  const currentTours = tourData.slice(indexOfFirstTour, indexOfLastTour)
+  const indexOfLastTour = currentPage * toursPerPage;
+  const indexOfFirstTour = indexOfLastTour - toursPerPage;
+  const currentTours = tourData.slice(indexOfFirstTour, indexOfLastTour);
 
   // Generate page numbers
-  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1)
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+
+  const handleTourClick = (tourId: number) => {
+    // Navigate to the individual tour page
+    navigate(`/virtual-tour/${tourId}`);
+  };
 
   return (
     <section className="w-full py-24">
@@ -78,7 +89,11 @@ export function FeaturedTours() {
         </p>
         <div className="grid grid-cols-2 gap-16">
           {currentTours.map((tour) => (
-            <div key={tour.id} className="space-y-4">
+            <div
+              key={tour.id}
+              className="space-y-4 cursor-pointer transition-transform hover:scale-[1.02]"
+              onClick={() => handleTourClick(tour.id)}
+            >
               <div className="overflow-hidden rounded-[2rem]">
                 <img
                   src={tour.image || "/placeholder.svg"}
@@ -101,7 +116,6 @@ export function FeaturedTours() {
           ))}
         </div>
 
-        
         {/* Pagination */}
         <div className="flex justify-center items-center gap-2 mt-16 border border-white rounded-xl bg-white shadow-lg px-6 py-4 max-w-md mx-auto">
           <button
@@ -133,6 +147,5 @@ export function FeaturedTours() {
         </div>
       </div>
     </section>
-  )
+  );
 }
-

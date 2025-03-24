@@ -12,6 +12,8 @@ import { BlogPostPage } from "./pages/BlogPostPage"
 import { ContactPage } from "./pages/ContactPage"
 import { ScrollToTop } from "./Components/ScrollToTop"
 import { CountDownPage } from "./pages/CountDownPage"
+import SingleVirtualTourPage from "./pages/SingleVirtualTourPage";
+
 function App() {
 
 
@@ -21,6 +23,7 @@ function App() {
     <Routes>
         <Route path="/" element={<CountDownPage />} />
         <Route path="/virtual-tour" element={<VirtualTourPage />} />
+        <Route path="/virtual-tour/:tourId" element={<SingleVirtualTourPage />} />
         <Route path="/travel-booking" element={<TravelBookingPage />} />
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/opp" element={<OpportunityPage />} />

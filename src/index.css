@@ -48,3 +48,10 @@ html {
     animation: none;
   }
 }
+
+.react-tooltip {
+  z-index: 100;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+}
