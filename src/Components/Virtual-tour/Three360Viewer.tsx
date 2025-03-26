@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
+import { tourData } from "./FeaturedTours"; // Import tourData to access tour titles
 import img from "../../assets/hotspot-icon.png"
 
 interface Hotspot {
@@ -9,7 +10,6 @@ interface Hotspot {
   position: { x: number; y: number };
   targetTourId: number;
   icon?: string;
-  tooltip?: string;
 }
 
 interface Three360ViewerProps {
@@ -119,44 +119,67 @@ const Three360Viewer: React.FC<Three360ViewerProps> = ({ videoUrl, hotspots = []
         </motion.div>
       </AnimatePresence>
 
-      {/* Hotspots with Tooltips */}
-      {hotspots.map((hotspot) => (
-        <React.Fragment key={hotspot.id}>
-          <motion.div
-            data-tooltip-id={`hotspot-${hotspot.id}`}
-            data-tooltip-content={hotspot.tooltip || `Go to ${hotspot.targetTourId}`}
-            style={{
-              position: "absolute",
-              left: `${hotspot.position.x}%`,
-              top: `${hotspot.position.y}%`,
-              width: "32px",
-              height: "32px",
-              borderRadius: "50%",
-              cursor: "pointer",
-              zIndex: 10,
-              transform: "translate(-50%, -50%)",
-            }}
-            whileHover={{ scale: 1.2 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={() => onHotspotClick(hotspot.targetTourId)}
-          >
-            {hotspot.icon ? (
-              <img 
-                src={img}
-                alt="Hotspot" 
-                style={{ width: "100%", height: "100%", objectFit: "contain" }}
-              />
-            ) : (
-              <div style={{ 
-                width: "100%", 
-                height: "100%", 
-                backgroundColor: "rgba(255, 0, 0, 0.5)" 
-              }} />
-            )}
-          </motion.div>
-          <Tooltip id={`hotspot-${hotspot.id}`} place="top" />
-        </React.Fragment>
-      ))}
+      {/* Hotspots with Enhanced Tooltips */}
+      {hotspots.map((hotspot) => {
+        const targetTour = tourData.find(t => t.id === hotspot.targetTourId);
+        return (
+          <React.Fragment key={hotspot.id}>
+            <motion.div
+              data-tooltip-id={`hotspot-${hotspot.id}`}
+              data-tooltip-content={`Go to ${targetTour?.title}`}
+              style={{
+                position: "absolute",
+                left: `${hotspot.position.x}%`,
+                top: `${hotspot.position.y}%`,
+                width: "32px",
+                height: "32px",
+                borderRadius: "50%",
+                cursor: "pointer",
+                zIndex: 10,
+                transform: "translate(-50%, -50%)",
+              }}
+              whileHover={{ scale: 1.3 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => onHotspotClick(hotspot.targetTourId)}
+            >
+              {hotspot.icon ? (
+                <img 
+                  src={img} 
+                  alt={`Go to ${targetTour?.title}`}
+                  style={{ 
+                    width: "100%", 
+                    height: "100%", 
+                    objectFit: "contain",
+                    borderRadius: "50%",
+                    border: "2px solid white",
+                    boxShadow: "0 0 10px rgba(0,0,0,0.5)"
+                  }}
+                />
+              ) : (
+                <div style={{ 
+                  width: "100%", 
+                  height: "100%", 
+                  backgroundColor: "rgba(90, 142, 0, 0.8)",
+                  borderRadius: "50%",
+                  border: "2px solid white"
+                }} />
+              )}
+            </motion.div>
+            <Tooltip 
+              id={`hotspot-${hotspot.id}`} 
+              place="top"
+              style={{ 
+                zIndex: 100, 
+                fontSize: "14px", 
+                padding: "8px 12px",
+                backgroundColor: "#5A8E00",
+                color: "white",
+                borderRadius: "4px"
+              }}
+            />
+          </React.Fragment>
+        );
+      })}
     </div>
   );
 };

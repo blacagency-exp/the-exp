@@ -29,41 +29,60 @@ export const tourData: TourCard[] = [
   {
     id: 1,
     title: "Shere Hills",
-    description: "Take a virtual tour through the stunning Shere Hills, where you'll explore the rugged terrain",
+    description: "Explore the stunning Shere Hills with its rugged terrain",
     image: shere,
     tags: ["Virtual tour", "Rock Climbing", "Sailing"],
-    videoUrl: "https://www.youtube.com/embed/_XoQ31Y6iAE", // Local video URL
+    videoUrl: "https://www.youtube.com/embed/_XoQ31Y6iAE",
     hotspots: [
-      {
-        id: "hotspot-1",
-        position: { x: 50, y: 50 }, // Position in percentages
-        targetTourId: 2, // Navigate to Assop Falls (ID: 2) when clicked
-        icon: hotspotIcon
-      },
+      { id: "to-assop", position: { x: 30, y: 70 }, targetTourId: 2, icon: hotspotIcon },
+      { id: "to-rayfield", position: { x: 70, y: 70 }, targetTourId: 3, icon: hotspotIcon },
+      { id: "to-wildlife", position: { x: 50, y: 70 }, targetTourId: 4, icon: hotspotIcon }
     ],
   },
   {
     id: 2,
     title: "Assop Falls",
-    description: "Experience the magnificent Assop Falls, a natural wonder with cascading waters",
+    description: "Experience the magnificent Assop Falls",
     image: shere,
     tags: ["Virtual tour", "Hiking", "Photography"],
-    videoUrl: "https://www.youtube.com/embed/U2makrXtxoI", // YouTube video URL
+    videoUrl: "https://www.youtube.com/embed/U2makrXtxoI",
     hotspots: [
-      {
-        id: "hotspot-2",
-        position: { x: 30, y: 70 }, // Position in percentages
-        targetTourId: 1, // Navigate to Shere Hills (ID: 1) when clicked
-        icon: hotspotIcon
-      },
+      { id: "to-shere", position: { x: 20, y: 80 }, targetTourId: 1, icon: hotspotIcon },
+      { id: "to-rayfield", position: { x: 80, y: 20 }, targetTourId: 3, icon: hotspotIcon },
+      { id: "to-wildlife", position: { x: 60, y: 40 }, targetTourId: 4, icon: hotspotIcon }
     ],
   },
-  // Add more tours here
+  {
+    id: 3,
+    title: "Rayfield Resort",
+    description: "Relax at the beautiful Rayfield Resort",
+    image: shere,
+    tags: ["Virtual tour", "Luxury", "Resort"],
+    videoUrl: "https://www.youtube.com/embed/2zBDneZUgJM",
+    hotspots: [
+      { id: "to-shere", position: { x: 25, y: 75 }, targetTourId: 1, icon: hotspotIcon },
+      { id: "to-assop", position: { x: 75, y: 25 }, targetTourId: 2, icon: hotspotIcon },
+      { id: "to-wildlife", position: { x: 50, y: 50 }, targetTourId: 4, icon: hotspotIcon }
+    ],
+  },
+  {
+    id: 4,
+    title: "Wildlife Park",
+    description: "Discover the diverse wildlife of Plateau State",
+    image: shere,
+    tags: ["Virtual tour", "Animals", "Nature"],
+    videoUrl: "https://www.youtube.com/embed/WVw2d42GLK8",
+    hotspots: [
+      { id: "to-shere", position: { x: 40, y: 60 }, targetTourId: 1, icon: hotspotIcon },
+      { id: "to-assop", position: { x: 60, y: 40 }, targetTourId: 2, icon: hotspotIcon },
+      { id: "to-rayfield", position: { x: 40, y: 20 }, targetTourId: 3, icon: hotspotIcon }
+    ],
+  }
 ];
 
 export function FeaturedTours() {
   const [currentPage, setCurrentPage] = useState(1);
-  const toursPerPage = 2;
+  const toursPerPage = 4;
   const totalPages = Math.ceil(tourData.length / toursPerPage);
   const navigate = useNavigate();
 
