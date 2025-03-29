@@ -154,11 +154,41 @@ export function PopularLandmarks() {
     setShowInfoCard(false)
   }
 
+  // Add this after your other useEffect hooks
+  useEffect(() => {
+    const handleResize = () => {
+      // Adjust zoom level based on screen width
+      if (window.innerWidth < 640) {
+        // mobile
+        if (selectedLandmark) {
+          setMapZoom(15) // Slightly less zoom on mobile for selected landmarks
+        } else {
+          setMapZoom(9) // Less zoom for overview on mobile
+        }
+      } else {
+        if (selectedLandmark) {
+          setMapZoom(16) // Full zoom on desktop for selected landmarks
+        } else {
+          setMapZoom(10) // Normal zoom for overview on desktop
+        }
+      }
+    }
+
+    // Set initial zoom based on screen size
+    handleResize()
+
+    // Add event listener
+    window.addEventListener("resize", handleResize)
+
+    // Clean up
+    return () => window.removeEventListener("resize", handleResize)
+  }, [selectedLandmark])
+
   return (
-    <section className="w-full py-24">
+    <section className="w-full py-12 sm:py-16 md:py-24">
       <div className={styles.section.container}>
         <motion.h2
-          className="text-[4rem] leading-[1] font-bold text-black mb-4"
+          className="text-[2.5rem] sm:text-[3rem] md:text-[4rem] leading-[1.1] sm:leading-[1] font-bold text-black mb-4"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -235,7 +265,7 @@ export function PopularLandmarks() {
         </motion.div>
 
         <motion.div
-          className="relative rounded-[2rem] overflow-hidden h-[500px] z-0"
+          className="relative rounded-[2rem] overflow-hidden h-[350px] sm:h-[400px] md:h-[500px] z-0"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -270,10 +300,10 @@ export function PopularLandmarks() {
           >
             <ChangeView center={mapCenter} zoom={mapZoom} />
 
-            {/* Modern map style with Stadia Maps */}
+            {/* Changed to OpenStreetMap which doesn't require authentication */}
             <TileLayer
-              attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>'
-              url="https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
             {/* Add zoom controls in a better position */}
@@ -295,26 +325,26 @@ export function PopularLandmarks() {
           <AnimatePresence>
             {selectedLandmark && showInfoCard && (
               <motion.div
-                className="absolute bottom-4 left-0 right-0 mx-auto w-full max-w-md px-4"
+                className="absolute bottom-4 left-0 right-0 mx-auto w-full max-w-[90%] sm:max-w-md px-2 sm:px-4"
                 initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: 100, opacity: 0 }}
                 transition={{ type: "spring", damping: 25, stiffness: 300 }}
               >
-                <div className="bg-white rounded-xl p-4 shadow-lg relative">
+                <div className="bg-white rounded-xl p-3 sm:p-4 shadow-lg relative">
                   <button
                     className="absolute top-2 right-2 p-1 rounded-full hover:bg-gray-100 transition-colors"
                     onClick={() => setShowInfoCard(false)}
                   >
                     <X className="w-5 h-5 text-gray-500" />
                   </button>
-                  <div className="flex items-start gap-3">
-                    <div className="bg-[#5A8E00] text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 mt-1">
-                      <Info className="w-5 h-5" />
+                  <div className="flex items-start gap-2 sm:gap-3">
+                    <div className="bg-[#5A8E00] text-white rounded-full w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center flex-shrink-0 mt-1">
+                      <Info className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold text-black mb-2">{selectedLandmark.name}</h3>
-                      <p className="text-gray-600">{selectedLandmark.description}</p>
+                      <h3 className="text-lg sm:text-xl font-bold text-black mb-1 sm:mb-2">{selectedLandmark.name}</h3>
+                      <p className="text-sm sm:text-base text-gray-600">{selectedLandmark.description}</p>
                     </div>
                   </div>
                 </div>
@@ -323,13 +353,13 @@ export function PopularLandmarks() {
           </AnimatePresence>
 
           {/* Map controls overlay */}
-          <div className="absolute top-4 left-4 z-[400]">
+          <div className="absolute top-3 sm:top-4 left-3 sm:left-4 z-[400]">
             <button
-              className="bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-md hover:bg-gray-50 transition-colors"
+              className="bg-white rounded-full w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center shadow-md hover:bg-gray-50 transition-colors"
               onClick={handleResetView}
               title="Reset view"
             >
-              <MapPin className="w-5 h-5 text-[#5A8E00]" />
+              <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-[#5A8E00]" />
             </button>
           </div>
         </motion.div>
