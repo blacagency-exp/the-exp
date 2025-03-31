@@ -3,11 +3,12 @@
 import { motion } from "framer-motion"
 import { ArrowDown } from "lucide-react"
 import { styles } from "../../constants/styles"
-import { useRef, useEffect } from "react"
+import { useRef, useEffect, useState } from "react"
 import vid from "../../assets/realvid.mp4"
 
 export function HeroUpdate() {
   const videoRef = useRef<HTMLVideoElement>(null)
+  const [isVideoLoading, setIsVideoLoading] = useState(true)
 
   const buttonVariants = {
     initial: { y: 50, opacity: 0 },
@@ -28,15 +29,38 @@ export function HeroUpdate() {
         })
       }
 
-      video.addEventListener("loadedmetadata", playVideo)
-      video.addEventListener("canplay", playVideo)
+      const handleCanPlay = () => {
+        setIsVideoLoading(false)
+        playVideo()
+      }
+
+      // Track loading progress
+      const handleProgress = () => {
+        if (video.readyState >= 3) {
+          // HAVE_FUTURE_DATA or higher
+          setIsVideoLoading(false)
+        }
+      }
+
+      video.addEventListener("loadedmetadata", handleProgress)
+      video.addEventListener("canplay", handleCanPlay)
+      video.addEventListener("progress", handleProgress)
+
+      // Preload the video
+      if (video.preload !== "auto") {
+        video.preload = "auto"
+      }
 
       // Attempt to play immediately in case the video is already loaded
-      playVideo()
+      if (video.readyState >= 3) {
+        setIsVideoLoading(false)
+        playVideo()
+      }
 
       return () => {
-        video.removeEventListener("loadedmetadata", playVideo)
-        video.removeEventListener("canplay", playVideo)
+        video.removeEventListener("loadedmetadata", handleProgress)
+        video.removeEventListener("canplay", handleCanPlay)
+        video.removeEventListener("progress", handleProgress)
       }
     }
   }, [])
@@ -74,9 +98,22 @@ export function HeroUpdate() {
 
   return (
     <section className="relative w-full h-screen">
-      {/* Video Background */}
-      <div className="absolute inset-0 w-full h-full">
-        <video ref={videoRef} className="w-full h-full object-cover" autoPlay loop muted playsInline preload="auto">
+      {/* Video Background with Loading State */}
+      <div className="absolute inset-0 w-full h-full bg-black">
+        {isVideoLoading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black z-10">
+            <div className="w-16 h-16 border-4 border-t-[#4D7C0F] border-opacity-50 rounded-full animate-spin"></div>
+          </div>
+        )}
+        <video
+          ref={videoRef}
+          className={`w-full h-full object-cover transition-opacity duration-500 ${isVideoLoading ? "opacity-0" : "opacity-100"}`}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+        >
           <source src={vid} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
@@ -94,7 +131,10 @@ export function HeroUpdate() {
             animate="animate"
             custom={typeof window !== "undefined" && window.innerWidth < 1024}
           >
-            <button  onClick={scrollToNextSection} className="bg-[#4D7C0F] font-medium hover:bg-[#3F6A0A] text-white px-8 lg:px-16 py-3 rounded-full text-base lg:text-lg flex items-center justify-center transition-colors">
+            <button
+              onClick={scrollToNextSection}
+              className="bg-[#4D7C0F] font-medium hover:bg-[#3F6A0A] text-white px-8 lg:px-16 py-3 rounded-full text-base lg:text-lg flex items-center justify-center transition-colors"
+            >
               Start your journey
               <ArrowDown className="ml-2 h-5 w-5" />
             </button>

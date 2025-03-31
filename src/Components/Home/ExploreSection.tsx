@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect, useRef } from "react"
 import { ArrowDown, ArrowRight } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { styles } from "../../constants/styles"
@@ -61,10 +61,81 @@ const places: Place[] = [
 
 export function ExploreSection() {
   const [activePlace, setActivePlace] = useState(places[0])
+  const [loadedImages, setLoadedImages] = useState<Record<number, boolean>>({})
+  // Removed unused isInitialLoad state
+  const imageContainerRef = useRef<HTMLDivElement>(null)
 
   const changePlace = useCallback((place: Place) => {
     setActivePlace(place)
   }, [])
+
+  // Enhanced preloading strategy
+  useEffect(() => {
+    // First, prioritize loading the active image
+    const loadActiveImage = () => {
+      const img = new Image()
+      img.src = activePlace.image
+      img.onload = () => {
+        setLoadedImages((prev) => ({ ...prev, [activePlace.id]: true }))
+
+        // After the active image is loaded, preload the rest in the background
+        setTimeout(() => {
+          preloadRemainingImages()
+        }, 100)
+      }
+      img.onerror = () => {
+        setLoadedImages((prev) => ({ ...prev, [activePlace.id]: true }))
+        setTimeout(() => {
+          preloadRemainingImages()
+        }, 100)
+      }
+    }
+
+    // Then load the rest of the images
+    const preloadRemainingImages = () => {
+      places.forEach((place) => {
+        // Skip the active image as it's already loaded
+        if (place.id === activePlace.id) return
+
+        const img = new Image()
+        img.src = place.image
+        img.onload = () => {
+          setLoadedImages((prev) => ({ ...prev, [place.id]: true }))
+        }
+        img.onerror = () => {
+          setLoadedImages((prev) => ({ ...prev, [place.id]: true }))
+        }
+      })
+    }
+
+    loadActiveImage()
+
+    // Removed unused timer logic
+  }, [activePlace.id, activePlace.image])
+
+  // Preload the next image when hovering
+  const handleMouseEnter = (place: Place) => {
+    // Change the active place immediately for a responsive feel
+    changePlace(place)
+
+    // If the image isn't loaded yet, prioritize loading it
+    if (!loadedImages[place.id]) {
+      const img = new Image()
+      img.src = place.image
+      img.onload = () => {
+        setLoadedImages((prev) => ({ ...prev, [place.id]: true }))
+      }
+    }
+  }
+
+  // Apply a blur-up effect for images
+  const getImageStyle = (id: number) => {
+    return {
+      filter: loadedImages[id] ? "none" : "blur(10px)",
+      transition: "filter 0.3s ease-out, opacity 0.5s ease-out",
+      willChange: "opacity, transform",
+    }
+  }
 
   return (
     <section className="w-full bg-[#141E03] text-white py-12 lg:py-24">
@@ -85,17 +156,36 @@ export function ExploreSection() {
         </div>
 
         <div className="lg:grid lg:grid-cols-2 lg:gap-24">
-          <div className="hidden lg:block relative rounded-[2rem] overflow-hidden aspect-[4/4]">
+          <div
+            ref={imageContainerRef}
+            className="hidden lg:block relative rounded-[2rem] overflow-hidden aspect-[4/4] bg-[#0A0F01]"
+          >
+            {/* Enhanced loading skeleton */}
+            {!loadedImages[activePlace.id] && (
+              <div className="absolute inset-0 flex items-center justify-center bg-[#1A2A04] animate-pulse z-10">
+                <div className="w-12 h-12 border-4 border-t-[#97E12B] border-opacity-50 rounded-full animate-spin"></div>
+              </div>
+            )}
+
             <AnimatePresence mode="wait">
               <motion.img
                 key={activePlace.id}
                 src={activePlace.image || "/placeholder.svg"}
                 alt={activePlace.name}
-                className="w-full h-full object-cover"
+                className={`w-full h-full object-cover transition-opacity duration-500 ${
+                  loadedImages[activePlace.id] ? "opacity-100" : "opacity-0"
+                }`}
                 initial={{ opacity: 0, scale: 1.1 }}
-                animate={{ opacity: 1, scale: 1 }}
+                animate={{
+                  opacity: loadedImages[activePlace.id] ? 1 : 0,
+                  scale: 1,
+                }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.5 }}
+                style={getImageStyle(activePlace.id)}
+                onLoad={() => {
+                  setLoadedImages((prev) => ({ ...prev, [activePlace.id]: true }))
+                }}
               />
             </AnimatePresence>
           </div>
@@ -112,7 +202,8 @@ export function ExploreSection() {
                     }`}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onMouseEnter={() => changePlace(place)}
+                  onMouseEnter={() => handleMouseEnter(place)}
+                  onMouseLeave={() => {}}
                   onTouchStart={() => changePlace(place)}
                 >
                   <div className="p-4 lg:p-8">
@@ -143,17 +234,33 @@ export function ExploreSection() {
                 </motion.div>
                 {activePlace.id === place.id && (
                   <div className="lg:hidden space-y-4">
-                    <div className="relative rounded-2xl overflow-hidden aspect-[4/3]">
+                    <div className="relative rounded-2xl overflow-hidden aspect-[4/3] bg-[#0A0F01]">
+                      {/* Enhanced mobile loading skeleton */}
+                      {!loadedImages[activePlace.id] && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-[#1A2A04] animate-pulse z-10">
+                          <div className="w-8 h-8 border-3 border-t-[#97E12B] border-opacity-50 rounded-full animate-spin"></div>
+                        </div>
+                      )}
+
                       <AnimatePresence mode="wait">
                         <motion.img
                           key={activePlace.id}
                           src={activePlace.image || "/placeholder.svg"}
                           alt={activePlace.name}
-                          className="w-full h-full object-cover"
+                          className={`w-full h-full object-cover transition-opacity duration-500 ${
+                            loadedImages[activePlace.id] ? "opacity-100" : "opacity-0"
+                          }`}
                           initial={{ opacity: 0, scale: 1.1 }}
-                          animate={{ opacity: 1, scale: 1 }}
+                          animate={{
+                            opacity: loadedImages[activePlace.id] ? 1 : 0,
+                            scale: 1,
+                          }}
                           exit={{ opacity: 0, scale: 0.9 }}
                           transition={{ duration: 0.5 }}
+                          style={getImageStyle(activePlace.id)}
+                          onLoad={() => {
+                            setLoadedImages((prev) => ({ ...prev, [activePlace.id]: true }))
+                          }}
                         />
                       </AnimatePresence>
                     </div>

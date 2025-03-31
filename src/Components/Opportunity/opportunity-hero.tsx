@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { styles } from "@/constants/styles"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import img1 from "../../assets/bg_count.jpg"
@@ -44,7 +44,9 @@ const investmentOptions = [
 
 export function OpportunitiesHero() {
   const [activeIndex, setActiveIndex] = useState(0)
-  const [allImagesLoaded, setAllImagesLoaded] = useState(false)
+  const [loadedImages, setLoadedImages] = useState<Record<number, boolean>>({})
+  // Removed unused isInitialLoad state
+  const imageContainerRef = useRef<HTMLDivElement>(null)
 
   // Helper function to get image src from imported image
   const getImageSrc = (img: { src?: string } | string) => {
@@ -53,30 +55,72 @@ export function OpportunitiesHero() {
     return "/placeholder.svg"
   }
 
-  // Preload all images when component mounts
+  // Preload images with priority
   useEffect(() => {
-    let loadedCount = 0
-    const totalImages = investmentOptions.length
+    // First, prioritize loading the currently active image
+    const loadActiveImage = () => {
+      const img = new Image()
+      img.src = getImageSrc(investmentOptions[activeIndex].image) || "/placeholder.svg"
+      img.onload = () => {
+        setLoadedImages((prev) => ({ ...prev, [activeIndex]: true }))
 
-    const preloadImages = () => {
-      investmentOptions.forEach((option) => {
+        // After the active image is loaded, preload the rest in the background
+        setTimeout(() => {
+          preloadRemainingImages()
+        }, 100)
+      }
+      img.onerror = () => {
+        setLoadedImages((prev) => ({ ...prev, [activeIndex]: true }))
+        setTimeout(() => {
+          preloadRemainingImages()
+        }, 100)
+      }
+    }
+
+    // Then load the rest of the images
+    const preloadRemainingImages = () => {
+      investmentOptions.forEach((option, index) => {
+        // Skip the active image as it's already loaded
+        if (index === activeIndex) return
+
         const img = new Image()
         img.src = getImageSrc(option.image) || "/placeholder.svg"
-
-        const handleLoad = () => {
-          loadedCount++
-          if (loadedCount === totalImages) {
-            setAllImagesLoaded(true)
-          }
+        img.onload = () => {
+          setLoadedImages((prev) => ({ ...prev, [index]: true }))
         }
-
-        img.onload = handleLoad
-        img.onerror = handleLoad // Count errors as loaded to avoid infinite loading state
+        img.onerror = () => {
+          setLoadedImages((prev) => ({ ...prev, [index]: true }))
+        }
       })
     }
 
-    preloadImages()
-  }, [])
+    loadActiveImage()
+
+    // Removed unused timer logic for isInitialLoad
+  }, [activeIndex])
+
+  // Preload the next image when hovering
+  const handleMouseEnter = (index: number) => {
+    // Change the active index immediately for a responsive feel
+    setActiveIndex(index)
+
+    // If the image isn't loaded yet, prioritize loading it
+    if (!loadedImages[index]) {
+      const img = new Image()
+      img.src = getImageSrc(investmentOptions[index].image) || "/placeholder.svg"
+      img.onload = () => {
+        setLoadedImages((prev) => ({ ...prev, [index]: true }))
+      }
+    }
+  }
+
+  // Apply a blur-up effect for images
+  const getImageStyle = (index: number) => {
+    return {
+      filter: loadedImages[index] ? "none" : "blur(10px)",
+      transition: "filter 0.3s ease-out, opacity 0.5s ease-out",
+    }
+  }
 
   return (
     <>
@@ -139,22 +183,36 @@ export function OpportunitiesHero() {
                 <p className="text-[#97E12B]">Dive into unforgettable experiences</p>
               </div>
 
-              <div className="relative w-full md:w-[570px] aspect-[4/3] rounded-2xl overflow-hidden bg-gray-200">
-                {/* Loading skeleton */}
-                {!allImagesLoaded && <div className="absolute inset-0 bg-gray-300 animate-pulse"></div>}
+              <div
+                ref={imageContainerRef}
+                className="relative w-full md:w-[570px] aspect-[4/3] rounded-2xl overflow-hidden bg-[#0A0F01]"
+              >
+                {/* Enhanced loading skeleton */}
+                {!loadedImages[activeIndex] && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-[#1A2A04] animate-pulse z-10">
+                    <div className="w-12 h-12 border-4 border-t-[#97E12B] border-opacity-50 rounded-full animate-spin"></div>
+                  </div>
+                )}
 
-                {/* All images are rendered but only the active one is visible */}
+                {/* Optimized image rendering */}
                 {investmentOptions.map((option, index) => (
                   <div
                     key={index}
-                    className={`absolute inset-0 transition-opacity duration-300 ${
-                      index === activeIndex ? "opacity-100" : "opacity-0"
+                    className={`absolute inset-0 transition-opacity duration-500 ${
+                      index === activeIndex ? "opacity-100 z-[1]" : "opacity-0 z-0"
                     }`}
+                    style={{
+                      willChange: "opacity",
+                    }}
                   >
                     <img
                       src={getImageSrc(option.image) || "/placeholder.svg"}
                       alt={`Plateau State - ${option.title}`}
                       className="w-full h-full object-cover"
+                      style={getImageStyle(index)}
+                      onLoad={() => {
+                        setLoadedImages((prev) => ({ ...prev, [index]: true }))
+                      }}
                       loading={index === 0 ? "eager" : "lazy"}
                     />
                   </div>
@@ -178,7 +236,7 @@ export function OpportunitiesHero() {
                     className={`w-full ${
                       index === activeIndex ? "bg-white/90 text-black" : "bg-[#5A8E00] text-white"
                     } font-bold py-4 md:py-8 px-4 md:px-6 rounded-full flex items-center gap-2 md:gap-4 hover:bg-white hover:text-black transition-colors text-left`}
-                    onMouseEnter={() => setActiveIndex(index)}
+                    onMouseEnter={() => handleMouseEnter(index)}
                   >
                     {index === activeIndex ? (
                       <ArrowLeft className="h-4 w-4 md:h-6 md:w-6" />
