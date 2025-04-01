@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import { styles } from "../../constants/styles"
@@ -22,6 +22,49 @@ const slides: Slide[] = recentBlogs.slice(0, 3).map((blog, index) => ({
 
 export default function HeroSlider() {
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [loadedImages, setLoadedImages] = useState<Record<number, boolean>>({})
+  const [isInitialLoading, setIsInitialLoading] = useState(true)
+
+  // Preload all slider images when component mounts
+  useEffect(() => {
+    const preloadImages = async () => {
+      try {
+        // Create an array of promises for loading all images
+        const imagePromises = slides.map((slide, index) => {
+          return new Promise<void>((resolve) => {
+            const img = new Image()
+            img.src = slide.image
+
+            img.onload = () => {
+              setLoadedImages((prev) => ({ ...prev, [index]: true }))
+              resolve()
+            }
+
+            img.onerror = () => {
+              // Even if there's an error, we want to resolve the promise
+              // to avoid blocking the loading state
+              setLoadedImages((prev) => ({ ...prev, [index]: true }))
+              resolve()
+            }
+          })
+        })
+
+        // Wait for the first image to load before showing the slider
+        await imagePromises[0]
+        setIsInitialLoading(false)
+
+        // Continue loading the rest of the images in the background
+        Promise.all(imagePromises).then(() => {
+          console.log("All slider images loaded")
+        })
+      } catch (error) {
+        console.error("Error preloading images:", error)
+        setIsInitialLoading(false)
+      }
+    }
+
+    preloadImages()
+  }, [])
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1))
@@ -31,15 +74,28 @@ export default function HeroSlider() {
     setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1))
   }
 
+  // Generate a low-quality placeholder color based on the slide index
+  const getPlaceholderColor = (index: number) => {
+    const colors = ["#1A2E02", "#2A3E12", "#3A4E22"]
+    return colors[index % colors.length]
+  }
+
   return (
     <section className={`${styles.section.container} mb-8 md:mb-16`}>
       <h1 className="text-5xl sm:text-7xl md:text-[160px] font-semibold text-[#1A2E02] mb-4 md:mb-6">Blog</h1>
 
       <div className="relative pb-12 md:pb-16">
-        <div className="relative h-[400px] sm:h-[500px] md:h-[600px] w-full rounded-2xl md:rounded-[2rem] overflow-hidden">
+        <div className="relative h-[400px] sm:h-[500px] md:h-[600px] w-full rounded-2xl md:rounded-[2rem] overflow-hidden bg-[#1A2E02]">
+          {/* Loading Skeleton */}
+          {isInitialLoading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-[#1A2E02] z-10">
+              <div className="w-12 h-12 border-4 border-t-[#97E12B] border-opacity-50 rounded-full animate-spin"></div>
+            </div>
+          )}
+
           {/* Slides */}
           <div
-            className="absolute inset-0 transition-transform duration-500 ease-in-out"
+            className={`absolute inset-0 transition-transform duration-500 ease-in-out ${isInitialLoading ? "opacity-0" : "opacity-100"}`}
             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
           >
             {slides.map((slide, index) => (
@@ -49,13 +105,24 @@ export default function HeroSlider() {
                 className="absolute inset-0 w-full h-full block"
                 style={{ left: `${index * 100}%` }}
               >
-                {/* Image and Gradient Overlay */}
-                <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${slide.image})` }}>
+                {/* Placeholder Color */}
+                <div className="absolute inset-0" style={{ backgroundColor: getPlaceholderColor(index) }} />
+
+                {/* Image with Loading State */}
+                <div
+                  className={`absolute inset-0 bg-cover bg-center transition-opacity duration-500 ${
+                    loadedImages[index] ? "opacity-100" : "opacity-0"
+                  }`}
+                  style={{
+                    backgroundImage: `url(${slide.image})`,
+                    filter: loadedImages[index] ? "none" : "blur(10px)",
+                  }}
+                >
                   <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/50" />
                 </div>
 
                 {/* Content */}
-                <div className="absolute inset-0 flex flex-col justify-between p-6 sm:p-8 md:p-12">
+                <div className="absolute inset-0 flex flex-col justify-between p-6 sm:p-8 md:p-12 z-10">
                   <div>
                     {slide.featured && (
                       <span className="inline-flex px-4 sm:px-8 md:px-12 py-1 sm:py-2 rounded-full bg-[#97E12B] text-xs sm:text-sm font-medium">
@@ -71,7 +138,9 @@ export default function HeroSlider() {
         </div>
 
         {/* Navigation Arrows and Dots - Bottom, outside the image */}
-        <div className="absolute -bottom-2 left-0 right-0 flex justify-between items-center px-2 sm:px-4">
+        <div
+          className={`absolute -bottom-2 left-0 right-0 flex justify-between items-center px-2 sm:px-4 transition-opacity duration-300 ${isInitialLoading ? "opacity-50 pointer-events-none" : "opacity-100"}`}
+        >
           <div className="flex-1">{/* This empty div maintains layout balance */}</div>
           <div className="flex gap-2">
             {slides.map((_, index) => (
@@ -82,6 +151,7 @@ export default function HeroSlider() {
                   currentSlide === index ? "bg-[#5A8E00]" : "bg-[#5A8E00]/50"
                 }`}
                 aria-label={`Go to slide ${index + 1}`}
+                disabled={isInitialLoading}
               />
             ))}
           </div>
@@ -90,6 +160,7 @@ export default function HeroSlider() {
               onClick={prevSlide}
               className="w-6 h-6 sm:w-8 sm:h-8 border border-[#5A8E00] rounded-full bg-white flex items-center justify-center hover:bg-[#97E12B] transition-colors"
               aria-label="Previous slide"
+              disabled={isInitialLoading}
             >
               <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 text-[#5A8E00]" />
             </button>
@@ -97,6 +168,7 @@ export default function HeroSlider() {
               onClick={nextSlide}
               className="w-6 h-6 sm:w-8 sm:h-8 border border-[#5A8E00] rounded-full bg-white flex items-center justify-center hover:bg-[#97E12B] transition-colors"
               aria-label="Next slide"
+              disabled={isInitialLoading}
             >
               <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-[#5A8E00]" />
             </button>
