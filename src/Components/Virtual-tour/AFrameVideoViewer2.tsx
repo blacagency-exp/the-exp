@@ -44,9 +44,9 @@ interface NetworkInformation {
 
 // Extend Navigator interface to include connection properties
 interface NavigatorWithConnection extends Navigator {
-  connection?: NetworkInformation
-  mozConnection?: NetworkInformation
-  webkitConnection?: NetworkInformation
+  connection?: Omit<NetworkInformation, 'saveData'> & { saveData: boolean }
+  mozConnection?: Omit<NetworkInformation, 'saveData'> & { saveData: boolean }
+  webkitConnection?: Omit<NetworkInformation, 'saveData'> & { saveData: boolean }
 }
 
 // Update the SimpleVideoViewerProps to include quality settings
@@ -142,7 +142,7 @@ const SimpleVideoViewer: React.FC<SimpleVideoViewerProps> = ({
       const nav = navigator as NavigatorWithConnection
       const connection = nav.connection || nav.mozConnection || nav.webkitConnection
       if (connection) {
-        connection.onchange = null
+        connection.onchange = undefined
       }
 
       if (bufferCheckIntervalRef.current) {
@@ -550,22 +550,6 @@ const SimpleVideoViewer: React.FC<SimpleVideoViewerProps> = ({
     }
   }, [videoUrl, isMuted, hotspots, onHotspotClick, autoPlay, needsUserInteraction, onUserInteraction, selectedQuality])
 
-  // Convert 2D position (percentage) to 3D position on a sphere
-  const convertPositionToSphere = (position: { x: number; y: number }) => {
-    // Convert from percentage (0-100) to angles
-    const angleX = (position.x / 100) * 360 - 180
-    const angleY = 90 - (position.y / 100) * 180
-
-    // Convert spherical coordinates to cartesian
-    const phi = (90 - angleY) * (Math.PI / 180)
-    const theta = angleX * (Math.PI / 180)
-
-    const x = -9.5 * Math.sin(phi) * Math.cos(theta)
-    const y = 9.5 * Math.cos(phi)
-    const z = 9.5 * Math.sin(phi) * Math.sin(theta)
-
-    return { x, y, z }
-  }
 
   // Function to start video playback with proper error handling
   const startVideoPlayback = () => {

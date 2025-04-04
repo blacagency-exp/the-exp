@@ -7,12 +7,23 @@ import hotspotIcon from "../../assets/hotspot-icon.png"
 import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
 
+// Define a Scene interface for videos within a tour
+interface Scene {
+  id: number
+  videoKey: string // S3 key for the video
+  hotspots?: Hotspot[]
+}
+
+// Update the Hotspot interface to include timing information
 interface Hotspot {
   id: string
   position: { x: number; y: number } // Position in percentages (e.g., { x: 50, y: 50 })
-  targetTourId: number // ID of the target tour to navigate to
+  targetSceneId: number // ID of the target scene to navigate to
   icon?: string
+  startTime?: number // Time in seconds when the hotspot should appear
+  endTime?: number // Time in seconds when the hotspot should disappear (optional)
 }
+
 // Define the TourCard interface
 interface TourCard {
   id: number
@@ -20,11 +31,10 @@ interface TourCard {
   description: string
   image: string
   tags: string[]
-  videoUrl: string
-  hotspots?: Hotspot[] // Add videoUrl to the TourCard interface
+  scenes: Scene[] // Each tour has multiple scenes/videos
 }
 
-// Export tourData so it can be used in other files
+// Update the tourData to include scenes for the first tour
 export const tourData: TourCard[] = [
   {
     id: 1,
@@ -32,11 +42,35 @@ export const tourData: TourCard[] = [
     description: "Explore the stunning Shere Hills with its rugged terrain",
     image: shere,
     tags: ["Virtual tour", "Rock Climbing", "Sailing"],
-    videoUrl: "https://www.youtube.com/embed/_XoQ31Y6iAE",
-    hotspots: [
-      { id: "to-assop", position: { x: 30, y: 70 }, targetTourId: 2, icon: hotspotIcon },
-      { id: "to-rayfield", position: { x: 70, y: 70 }, targetTourId: 3, icon: hotspotIcon },
-      { id: "to-wildlife", position: { x: 50, y: 70 }, targetTourId: 4, icon: hotspotIcon },
+    scenes: [
+      {
+        id: 1,
+        videoKey: "tours/1/main.mp4",
+        hotspots: [
+          {
+            id: "to-scene-2",
+            position: { x: 42, y: 58 },
+            targetSceneId: 2,
+            icon: hotspotIcon,
+            startTime: 17, // Appears after 5 seconds
+            // Disappears after 30 seconds (optional)
+          },
+        ],
+      },
+      {
+        id: 2,
+        videoKey: "tours/2/main.mp4",
+        hotspots: [
+          {
+            id: "back-to-scene-1",
+            position: { x: 70, y: 70 },
+            targetSceneId: 1,
+            icon: hotspotIcon,
+            startTime: 17, // Appears after 3 seconds
+             // Disappears after 30 seconds
+          },
+        ],
+      },
     ],
   },
   {
@@ -45,11 +79,12 @@ export const tourData: TourCard[] = [
     description: "Experience the magnificent Assop Falls",
     image: shere,
     tags: ["Virtual tour", "Hiking", "Photography"],
-    videoUrl: "https://www.youtube.com/embed/U2makrXtxoI",
-    hotspots: [
-      { id: "to-shere", position: { x: 20, y: 80 }, targetTourId: 1, icon: hotspotIcon },
-      { id: "to-rayfield", position: { x: 80, y: 20 }, targetTourId: 3, icon: hotspotIcon },
-      { id: "to-wildlife", position: { x: 60, y: 40 }, targetTourId: 4, icon: hotspotIcon },
+    scenes: [
+      {
+        id: 1,
+        videoKey: "tours/3/main.mp4",
+        hotspots: [],
+      },
     ],
   },
   {
@@ -58,11 +93,12 @@ export const tourData: TourCard[] = [
     description: "Relax at the beautiful Rayfield Resort",
     image: shere,
     tags: ["Virtual tour", "Luxury", "Resort"],
-    videoUrl: "https://www.youtube.com/embed/2zBDneZUgJM",
-    hotspots: [
-      { id: "to-shere", position: { x: 25, y: 75 }, targetTourId: 1, icon: hotspotIcon },
-      { id: "to-assop", position: { x: 75, y: 25 }, targetTourId: 2, icon: hotspotIcon },
-      { id: "to-wildlife", position: { x: 50, y: 50 }, targetTourId: 4, icon: hotspotIcon },
+    scenes: [
+      {
+        id: 1,
+        videoKey: "tours/4/main.mp4",
+        hotspots: [],
+      },
     ],
   },
   {
@@ -71,11 +107,12 @@ export const tourData: TourCard[] = [
     description: "Discover the diverse wildlife of Plateau State",
     image: shere,
     tags: ["Virtual tour", "Animals", "Nature"],
-    videoUrl: "https://www.youtube.com/embed/WVw2d42GLK8",
-    hotspots: [
-      { id: "to-shere", position: { x: 40, y: 60 }, targetTourId: 1, icon: hotspotIcon },
-      { id: "to-assop", position: { x: 60, y: 40 }, targetTourId: 2, icon: hotspotIcon },
-      { id: "to-rayfield", position: { x: 40, y: 20 }, targetTourId: 3, icon: hotspotIcon },
+    scenes: [
+      {
+        id: 1,
+        videoKey: "tours/5/main.mp4",
+        hotspots: [],
+      },
     ],
   },
 ]
