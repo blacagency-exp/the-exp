@@ -73,48 +73,8 @@ export const tourData: TourCard[] = [
       },
     ],
   },
-  {
-    id: 2,
-    title: "Assop Falls",
-    description: "Experience the magnificent Assop Falls",
-    image: shere,
-    tags: ["Virtual tour", "Hiking", "Photography"],
-    scenes: [
-      {
-        id: 1,
-        videoKey: "tours/3/main.mp4",
-        hotspots: [],
-      },
-    ],
-  },
-  {
-    id: 3,
-    title: "Rayfield Resort",
-    description: "Relax at the beautiful Rayfield Resort",
-    image: shere,
-    tags: ["Virtual tour", "Luxury", "Resort"],
-    scenes: [
-      {
-        id: 1,
-        videoKey: "tours/4/main.mp4",
-        hotspots: [],
-      },
-    ],
-  },
-  {
-    id: 4,
-    title: "Wildlife Park",
-    description: "Discover the diverse wildlife of Plateau State",
-    image: shere,
-    tags: ["Virtual tour", "Animals", "Nature"],
-    scenes: [
-      {
-        id: 1,
-        videoKey: "tours/5/main.mp4",
-        hotspots: [],
-      },
-    ],
-  },
+ 
+
 ]
 
 export function FeaturedTours() {
