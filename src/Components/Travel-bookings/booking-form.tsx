@@ -34,13 +34,13 @@ export const BookingForm: React.FC<BookingFormProps> = ({ selectedPackage }) => 
     let basePrice = 0
     switch (packageType) {
       case "Discoverer":
-        basePrice = 100 // 50,000 Naira
+        basePrice = 50* 1500 // 50,000 Naira
         break
       case "Explorer":
-        basePrice = 75 * 1600 // 75,000 Naira
+        basePrice = 75 * 1500 // 75,000 Naira
         break
       case "Adventurer":
-        basePrice = 100 * 1600 // 100,000 Naira
+        basePrice = 100 * 1500 // 100,000 Naira
         break
       default:
         basePrice = 0
