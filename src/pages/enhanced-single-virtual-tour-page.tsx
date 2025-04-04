@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState, useEffect, useCallback, useRef } from "react"
-import { useParams, useNavigate } from "react-router-dom"
+import { useParams, useNavigate, useSearchParams } from "react-router-dom"
 import { tourData } from "../Components/Virtual-tour/FeaturedTours"
 import { getSignedVideoUrl, testS3Connection } from "../aws-s3-service"
 import { LoadingSpinner } from "../Components/Virtual-tour/LoadingSpinner"
@@ -57,16 +57,23 @@ const enhancedTourData: EnhancedTourData[] = tourData as unknown as EnhancedTour
 
 const EnhancedSingleVirtualTourPage: React.FC = () => {
   const { tourId } = useParams<{ tourId: string }>()
+  const [searchParams] = useSearchParams()
+  const sceneParam = searchParams.get("scene")
   const navigate = useNavigate()
 
-  // Initialize state from localStorage or params
+  // Initialize state from URL params, searchParams, or localStorage
   const [currentTourId] = useState<number>(() => {
-    const saved = localStorage.getItem("currentTour")
-    return saved ? Number.parseInt(saved) : Number.parseInt(tourId || "1")
+    return Number.parseInt(tourId || "1")
   })
 
-  // Add state for current scene within the tour
-  const [currentSceneId, setCurrentSceneId] = useState<number>(1)
+  // Add state for current scene within the tour, prioritizing URL query param
+  const [currentSceneId, setCurrentSceneId] = useState<number>(() => {
+    if (sceneParam) {
+      return Number.parseInt(sceneParam)
+    }
+    const saved = localStorage.getItem("currentScene")
+    return saved ? Number.parseInt(saved) : 1
+  })
 
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [transitioningToScene, setTransitioningToScene] = useState<number | null>(null)
@@ -85,13 +92,17 @@ const EnhancedSingleVirtualTourPage: React.FC = () => {
   // Ref to track if the component has mounted
   const isMounted = useRef(false)
 
-  // Persist state to localStorage
+  // Update URL when scene changes
   useEffect(() => {
+    // Update URL without page reload, preserving the scene parameter
+    const newSearchParams = new URLSearchParams(searchParams)
+    newSearchParams.set("scene", currentSceneId.toString())
+    navigate(`/virtual-tour/${currentTourId}?${newSearchParams.toString()}`, { replace: true })
+
+    // Also persist to localStorage
     localStorage.setItem("currentTour", currentTourId.toString())
     localStorage.setItem("currentScene", currentSceneId.toString())
-    // Update URL without page reload
-    navigate(`/virtual-tour/${currentTourId}`, { replace: true })
-  }, [currentTourId, currentSceneId, navigate])
+  }, [currentTourId, currentSceneId, navigate, searchParams])
 
   // Get the current tour
   const currentTour = enhancedTourData.find((tour) => tour.id === currentTourId)
@@ -101,6 +112,7 @@ const EnhancedSingleVirtualTourPage: React.FC = () => {
 
   console.log("Enhanced Tour Page - Current Tour:", currentTour?.title)
   console.log("Enhanced Tour Page - Current Scene:", currentSceneId)
+  console.log("Enhanced Tour Page - Scene from URL:", sceneParam)
   console.log("Enhanced Tour Page - VideoKey:", currentScene?.videoKey)
 
   // Test S3 connection on mount
@@ -192,40 +204,35 @@ const EnhancedSingleVirtualTourPage: React.FC = () => {
     )
   }
 
-  // Add more debugging for hotspot clicks
+  // Define handleHotspotClick outside of useCallback
+  const handleHotspotClick = (targetSceneId: number) => {
+    console.log("Hotspot clicked in parent component, navigating to scene:", targetSceneId)
 
-  // Update the handleHotspotClick function
-  const handleHotspotClick = useCallback(
-    (targetSceneId: number) => {
-      console.log("Hotspot clicked in parent component, navigating to scene:", targetSceneId)
+    // Check if the target scene exists
+    const targetScene = currentTour?.scenes.find((scene) => scene.id === targetSceneId)
+    if (!targetScene) {
+      console.error(`Target scene ${targetSceneId} not found!`)
+      return
+    }
 
-      // Check if the target scene exists
-      const targetScene = currentTour?.scenes.find((scene) => scene.id === targetSceneId)
-      if (!targetScene) {
-        console.error(`Target scene ${targetSceneId} not found!`)
-        return
-      }
+    setTransitioningToScene(targetSceneId)
 
-      setTransitioningToScene(targetSceneId)
+    // Add a slight delay before changing scenes for better UX
+    setTimeout(() => {
+      setCurrentSceneId(targetSceneId)
+      setTransitioningToScene(null)
 
-      // Add a slight delay before changing scenes for better UX
-      setTimeout(() => {
-        setCurrentSceneId(targetSceneId)
-        setTransitioningToScene(null)
-      }, 300)
-    },
-    [currentTour, currentSceneId],
-  )
-
+      // Update URL with new scene ID
+      const newSearchParams = new URLSearchParams(searchParams)
+      newSearchParams.set("scene", targetSceneId.toString())
+      navigate(`/virtual-tour/${currentTourId}?${newSearchParams.toString()}`, { replace: true })
+    }, 300)
+  }
 
   // Handle user interaction notification
   const handleUserInteractionNotification = useCallback(() => {
     setHasUserInteracted(true)
   }, [])
-
-  // Ensure this hook is always called
-
-  // Ensure this hook is always called
 
   // Preload the next scene's video to reduce buffering when navigating
   const preloadNextScene = useCallback(() => {
@@ -279,7 +286,7 @@ const EnhancedSingleVirtualTourPage: React.FC = () => {
       const timer = setTimeout(() => {
         preloadNextScene()
       }, 5000) // Wait 5 seconds after current video loads
-  
+
       return () => clearTimeout(timer)
     }
   }, [isLoading, videoUrl, preloadNextScene])
@@ -290,7 +297,7 @@ const EnhancedSingleVirtualTourPage: React.FC = () => {
     isMounted.current = true
 
     // Define a function to handle preloading
-    const handlePreload = () => {
+    const handlePreload = useCallback(() => {
       if (!isLoading && videoUrl) {
         // Add a slight delay to prioritize current video playback
         const timer = setTimeout(() => {
@@ -299,7 +306,7 @@ const EnhancedSingleVirtualTourPage: React.FC = () => {
 
         return () => clearTimeout(timer)
       }
-    }
+    }, [isLoading, videoUrl, preloadNextScene])
 
     // Call the preload handler
     handlePreload()
@@ -316,6 +323,7 @@ const EnhancedSingleVirtualTourPage: React.FC = () => {
       <div className="absolute top-20 left-5 z-50 bg-black bg-opacity-70 p-2 text-white text-xs">
         <p>Tour ID: {currentTourId}</p>
         <p>Scene ID: {currentSceneId}</p>
+        <p>Scene from URL: {sceneParam || "None"}</p>
         <p>Video Key: {currentScene?.videoKey || "None"}</p>
         <p>Has Video URL: {videoUrl ? "Yes" : "No"}</p>
         <p>Quality: {selectedQuality}</p>
@@ -371,6 +379,11 @@ const EnhancedSingleVirtualTourPage: React.FC = () => {
       >
         Back
       </button>
+
+      {/* Scene indicator */}
+      <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 z-20 px-4 py-2 bg-black bg-opacity-70 text-white rounded-full">
+        Scene {currentSceneId} of {currentTour.scenes.length}
+      </div>
 
       {/* Loading overlay */}
       {isLoading && (

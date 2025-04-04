@@ -67,14 +67,54 @@ export const tourData: TourCard[] = [
             targetSceneId: 1,
             icon: hotspotIcon,
             startTime: 17, // Appears after 3 seconds
-             // Disappears after 30 seconds
+            // Disappears after 30 seconds
           },
         ],
       },
     ],
   },
- 
-
+  {
+    id: 2,
+    title: "Assop Falls",
+    description: "Experience the magnificent Assop Falls",
+    image: shere,
+    tags: ["Virtual tour", "Hiking", "Photography"],
+    scenes: [
+      {
+        id: 1,
+        videoKey: "tours/3/main.mp4",
+        hotspots: [],
+      },
+    ],
+  },
+  {
+    id: 3,
+    title: "Rayfield Resort",
+    description: "Relax at the beautiful Rayfield Resort",
+    image: shere,
+    tags: ["Virtual tour", "Luxury", "Resort"],
+    scenes: [
+      {
+        id: 1,
+        videoKey: "tours/4/main.mp4",
+        hotspots: [],
+      },
+    ],
+  },
+  {
+    id: 4,
+    title: "Wildlife Park",
+    description: "Discover the diverse wildlife of Plateau State",
+    image: shere,
+    tags: ["Virtual tour", "Animals", "Nature"],
+    scenes: [
+      {
+        id: 1,
+        videoKey: "tours/5/main.mp4",
+        hotspots: [],
+      },
+    ],
+  },
 ]
 
 export function FeaturedTours() {
@@ -82,6 +122,12 @@ export function FeaturedTours() {
   const navigate = useNavigate()
   const sectionRef = useRef(null)
   const isInView = useInView(sectionRef, { once: true, amount: 0.3 })
+
+  // Function to navigate to the tour with the first scene specified
+  const handleTourClick = () => {
+    // Navigate to the tour with sceneId=1 explicitly specified
+    navigate(`/virtual-tour/${featuredTour.id}?scene=1`)
+  }
 
   // Animation variants
   const containerVariants = {
@@ -189,7 +235,7 @@ export function FeaturedTours() {
         <motion.div className="w-full md:max-w-2xl" variants={cardVariants}>
           <motion.div
             className="space-y-4 cursor-pointer transition-transform hover:scale-[1.02]"
-            onClick={() => navigate(`/virtual-tour/${featuredTour.id}`)}
+            onClick={handleTourClick}
             whileHover={{
               scale: 1.02,
               transition: { duration: 0.3 },
