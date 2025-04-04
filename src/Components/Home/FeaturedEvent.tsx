@@ -4,7 +4,7 @@ import { useRef } from "react"
 import { ArrowRight } from "lucide-react"
 import { motion, useInView } from "framer-motion"
 import { styles } from "../../constants/styles"
-import featuredEventImage from "../../assets/event.jpg"
+import featuredEventImage from "../../assets/newposter.png"
 
 export function FeaturedEvent() {
   const sectionRef = useRef(null)
