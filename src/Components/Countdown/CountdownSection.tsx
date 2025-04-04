@@ -22,7 +22,15 @@ export function CountdownSection() {
     seconds: 0,
   })
   const [isCountdownOver, setIsCountdownOver] = useState(false)
-  const targetDate = new Date("2025-04-04").getTime()
+
+  // Set target to 5pm today
+  const getTargetDate = () => {
+    const today = new Date()
+    today.setHours(17, 0, 0, 0) // Set to 5:00:00 PM
+    return today.getTime()
+  }
+
+  const targetDate = getTargetDate()
 
   useEffect(() => {
     const calculateTimeLeft = () => {

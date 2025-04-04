@@ -1,4 +1,3 @@
-
 import { BlogPage } from "./pages/BlogPage"
 import { HomePage } from "./pages/HomePage"
 import { HotelPage } from "./pages/HotelPage"
@@ -12,18 +11,18 @@ import { BlogPostPage } from "./pages/BlogPostPage"
 import { ContactPage } from "./pages/ContactPage"
 import { ScrollToTop } from "./Components/ScrollToTop"
 import { CountDownPage } from "./pages/CountDownPage"
-import SingleVirtualTourPage from "./pages/SingleVirtualTourPage";
 
 function App() {
-
-
   return (
     <Router>
       <ScrollToTop />
-    <Routes>
+      <Routes>
         <Route path="/" element={<CountDownPage />} />
+
+        {/* Virtual Tour Routes - Add the :tourId parameter route */}
         <Route path="/virtual-tour" element={<VirtualTourPage />} />
-        <Route path="/virtual-tour/:tourId" element={<SingleVirtualTourPage />} />
+        <Route path="/virtual-tour/:tourId" element={<VirtualTourPage />} />
+
         <Route path="/travel-booking" element={<TravelBookingPage />} />
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/opp" element={<OpportunityPage />} />
@@ -35,8 +34,9 @@ function App() {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/count" element={<HomePage />} />
       </Routes>
-  </Router>
+    </Router>
   )
 }
 
 export default App
+
