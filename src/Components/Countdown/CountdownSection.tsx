@@ -6,6 +6,7 @@ import { styles } from "../../constants/styles"
 import React from "react"
 import img1 from "../../assets/bg_count.jpg"
 import newlogo from "../../assets/logo_white.png"
+import { useNavigate } from "react-router-dom"
 
 interface TimeLeft {
   days: number
@@ -22,6 +23,8 @@ export function CountdownSection() {
     seconds: 0,
   })
   const [isCountdownOver, setIsCountdownOver] = useState(false)
+  const [showTransition, setShowTransition] = useState(false)
+  const navigate = useNavigate()
 
   // Set target to 5pm today
   const getTargetDate = () => {
@@ -46,6 +49,16 @@ export function CountdownSection() {
         })
       } else {
         setIsCountdownOver(true)
+
+        // Start transition animation after countdown ends
+        setTimeout(() => {
+          setShowTransition(true)
+
+          // Navigate to homepage after animation completes
+          setTimeout(() => {
+            navigate("/count")
+          }, 3000) // Wait for 3 seconds after transition starts
+        }, 1500) // Wait for 1.5 seconds after countdown ends
       }
     }
 
@@ -53,7 +66,7 @@ export function CountdownSection() {
     const timer = setInterval(calculateTimeLeft, 1000)
 
     return () => clearInterval(timer)
-  }, [targetDate])
+  }, [targetDate, navigate])
 
   const numberVariants = {
     hidden: { y: 20, opacity: 0 },
@@ -82,6 +95,15 @@ export function CountdownSection() {
     },
   }
 
+  // Celebration particles
+  const particles = Array.from({ length: 50 }).map((_, i) => ({
+    id: i,
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    size: Math.random() * 10 + 5,
+    color: i % 3 === 0 ? "#5A8E00" : i % 3 === 1 ? "#FFD700" : "#FFFFFF",
+  }))
+
   return (
     <section className="w-full relative overflow-hidden">
       <div
@@ -91,6 +113,78 @@ export function CountdownSection() {
           filter: "brightness(0.5)",
         }}
       />
+
+      {/* Transition overlay */}
+      <AnimatePresence>
+        {showTransition && (
+          <motion.div
+            className="absolute inset-0 z-50 flex items-center justify-center bg-[#141E03]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+          >
+            <motion.div
+              className="relative w-full h-full"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 1.5, ease: "easeOut" }}
+            >
+              <motion.div
+                className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center z-30"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+              >
+                <motion.img
+                  src={newlogo || "/placeholder.svg"}
+                  alt="Logo"
+                  className="w-64 md:w-80 h-auto object-contain"
+                  initial={{ scale: 0.5, opacity: 0 }}
+                  animate={{ scale: [0.5, 1.2, 1], opacity: 1 }}
+                  transition={{
+                    duration: 1.8,
+                    times: [0, 0.6, 1],
+                    ease: "easeOut",
+                  }}
+                />
+              </motion.div>
+
+              {/* Animated particles */}
+              {particles.map((particle) => (
+                <motion.div
+                  key={particle.id}
+                  className="absolute rounded-full"
+                  style={{
+                    backgroundColor: particle.color,
+                    width: particle.size,
+                    height: particle.size,
+                    left: `${particle.x}%`,
+                    top: `${particle.y}%`,
+                  }}
+                  initial={{
+                    scale: 0,
+                    x: 0,
+                    y: 0,
+                    opacity: 0,
+                  }}
+                  animate={{
+                    scale: [0, 1, 0.8],
+                    x: [0, (Math.random() - 0.5) * 200],
+                    y: [0, (Math.random() - 0.5) * 200],
+                    opacity: [0, 1, 0],
+                  }}
+                  transition={{
+                    duration: 2 + Math.random(),
+                    ease: "easeOut",
+                    times: [0, 0.4, 1],
+                  }}
+                />
+              ))}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="w-full min-h-screen flex flex-col items-center justify-center py-10 sm:py-20 px-4 relative z-10">
         <img
@@ -164,15 +258,34 @@ export function CountdownSection() {
               )}
             </AnimatePresence>
 
-            {isCountdownOver && (
-              <motion.p
-                className="text-xl sm:text-2xl text-white mt-6"
+            {isCountdownOver && !showTransition && (
+              <motion.div
+                className="text-center"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 }}
+                transition={{ delay: 0.3 }}
               >
-                The Plateau Experience has begun!
-              </motion.p>
+                <motion.p
+                  className="text-xl sm:text-3xl text-white mb-4"
+                  initial={{ scale: 0.8 }}
+                  animate={{ scale: [0.8, 1.2, 1] }}
+                  transition={{
+                    duration: 1.2,
+                    times: [0, 0.6, 1],
+                    ease: "easeOut",
+                  }}
+                >
+                  The Plateau Experience has begun!
+                </motion.p>
+                <motion.p
+                  className="text-base sm:text-xl text-white/80"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.8 }}
+                >
+                  Redirecting to the experience...
+                </motion.p>
+              </motion.div>
             )}
           </div>
         </div>

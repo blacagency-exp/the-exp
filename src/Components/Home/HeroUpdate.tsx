@@ -9,6 +9,7 @@ import vid from "../../assets/realvid.mp4"
 export function HeroUpdate() {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [isVideoLoading, setIsVideoLoading] = useState(true)
+  const [isVideoReady, setIsVideoReady] = useState(false)
 
   const buttonVariants = {
     initial: { y: 50, opacity: 0 },
@@ -16,7 +17,7 @@ export function HeroUpdate() {
       y: isMobile ? 0 : -40,
       x: isMobile ? 0 : -160,
       opacity: 1,
-      transition: { duration: 0.8, delay: 1.2 },
+      transition: { duration: 0.8, delay: 0.5 }, // Reduced delay since we're now waiting for video
     }),
   }
 
@@ -32,6 +33,11 @@ export function HeroUpdate() {
       const handleCanPlay = () => {
         setIsVideoLoading(false)
         playVideo()
+
+        // Add a small delay before showing the button to ensure smooth transition
+        setTimeout(() => {
+          setIsVideoReady(true)
+        }, 500)
       }
 
       // Track loading progress
@@ -39,6 +45,11 @@ export function HeroUpdate() {
         if (video.readyState >= 3) {
           // HAVE_FUTURE_DATA or higher
           setIsVideoLoading(false)
+
+          // Add a small delay before showing the button to ensure smooth transition
+          setTimeout(() => {
+            setIsVideoReady(true)
+          }, 500)
         }
       }
 
@@ -55,6 +66,11 @@ export function HeroUpdate() {
       if (video.readyState >= 3) {
         setIsVideoLoading(false)
         playVideo()
+
+        // Add a small delay before showing the button to ensure smooth transition
+        setTimeout(() => {
+          setIsVideoReady(true)
+        }, 500)
       }
 
       return () => {
@@ -123,22 +139,24 @@ export function HeroUpdate() {
       {/* Content */}
       <div className={`${styles.section.container} relative z-10 h-full pt-24`}>
         <div className="flex flex-col justify-center h-full lg:block lg:pt-32 -mt-16 lg:mt-0">
-          {/* Start Journey Button */}
-          <motion.div
-            className="lg:absolute relative mt-[490px] lg:mt-0 lg:bottom-12 lg:left-1/2 lg:transform lg:-translate-x-[160px] flex justify-center lg:block"
-            variants={buttonVariants}
-            initial="initial"
-            animate="animate"
-            custom={typeof window !== "undefined" && window.innerWidth < 1024}
-          >
-            <button
-              onClick={scrollToNextSection}
-              className="bg-[#4D7C0F] font-medium hover:bg-[#3F6A0A] text-white px-8 lg:px-16 py-3 rounded-full text-base lg:text-lg flex items-center justify-center transition-colors"
+          {/* Start Journey Button - Only animate after video is ready */}
+          {isVideoReady && (
+            <motion.div
+              className="lg:absolute relative mt-[490px] lg:mt-0 lg:bottom-12 lg:left-1/2 lg:transform lg:-translate-x-[160px] flex justify-center lg:block"
+              variants={buttonVariants}
+              initial="initial"
+              animate="animate"
+              custom={typeof window !== "undefined" && window.innerWidth < 1024}
             >
-              Start your journey
-              <ArrowDown className="ml-2 h-5 w-5" />
-            </button>
-          </motion.div>
+              <button
+                onClick={scrollToNextSection}
+                className="bg-[#4D7C0F] font-medium hover:bg-[#3F6A0A] text-white px-8 lg:px-16 py-3 rounded-full text-base lg:text-lg flex items-center justify-center transition-colors"
+              >
+                Start your journey
+                <ArrowDown className="ml-2 h-5 w-5" />
+              </button>
+            </motion.div>
+          )}
         </div>
       </div>
     </section>

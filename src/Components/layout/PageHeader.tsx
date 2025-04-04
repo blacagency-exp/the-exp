@@ -59,7 +59,7 @@ const mobileMenuVariants = {
 }
 
 const navLinks = [
-  { to: "/", label: "Home" },
+  { to: "/count", label: "Home" },
   { to: "/opp", label: "Investments" },
   { to: "/blog", label: "Blogs" },
   { to: "/travel-booking", label: "Travel Booking" },
