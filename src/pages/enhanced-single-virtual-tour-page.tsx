@@ -204,7 +204,7 @@ const EnhancedSingleVirtualTourPage: React.FC = () => {
     )
   }
 
-  // Define handleHotspotClick outside of useCallback
+  // Handle hotspot clicks to navigate between scenes
   const handleHotspotClick = (targetSceneId: number) => {
     console.log("Hotspot clicked in parent component, navigating to scene:", targetSceneId)
 
@@ -275,45 +275,21 @@ const EnhancedSingleVirtualTourPage: React.FC = () => {
       .catch((err) => console.error("Error preloading next scene:", err))
   }, [currentTourId, currentSceneId, currentTour, currentScene])
 
+  // Set up preloading when the component mounts and when video loads
   useEffect(() => {
-    // Only proceed if the component has mounted
+    // Set isMounted to true after the first render
     if (!isMounted.current) {
-      return
+      isMounted.current = true
     }
 
-    // Add a slight delay to prioritize current video playback
-    if (!isLoading && videoUrl) {
+    // Only preload if we have a loaded video and we're not currently loading
+    if (isMounted.current && !isLoading && videoUrl) {
+      // Add a slight delay to prioritize current video playback
       const timer = setTimeout(() => {
         preloadNextScene()
       }, 5000) // Wait 5 seconds after current video loads
 
       return () => clearTimeout(timer)
-    }
-  }, [isLoading, videoUrl, preloadNextScene])
-
-  // Add this useEffect to trigger preloading when the current scene changes
-  useEffect(() => {
-    // Set isMounted to true after the first render
-    isMounted.current = true
-
-    // Define a function to handle preloading
-    const handlePreload = useCallback(() => {
-      if (!isLoading && videoUrl) {
-        // Add a slight delay to prioritize current video playback
-        const timer = setTimeout(() => {
-          preloadNextScene()
-        }, 5000) // Wait 5 seconds after current video loads
-
-        return () => clearTimeout(timer)
-      }
-    }, [isLoading, videoUrl, preloadNextScene])
-
-    // Call the preload handler
-    handlePreload()
-
-    // Cleanup function
-    return () => {
-      // Nothing to clean up here
     }
   }, [isLoading, videoUrl, preloadNextScene])
 
