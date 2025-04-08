@@ -38,7 +38,7 @@ const tourData = [
         hotspots: [
           {
             id: "to-scene-3",
-            position: { x: 60, y: 50 }, // Position in percentages
+            position: { x: 42, y: 58 }, // Position in percentages
             targetSceneId: 3,
             title: "Rock Formation",
             description: "Discover this unique rock formation created by millions of years of erosion.",
@@ -55,7 +55,7 @@ const tourData = [
         hotspots: [
           {
             id: "to-scene-4",
-            position: { x: 70, y: 40 }, // Position in percentages
+            position: { x: 42, y: 58 }, // Position in percentages
             targetSceneId: 4,
             title: "Hiking Trail",
             description: "Follow this trail to explore the dense forest area with diverse plant species.",
@@ -72,7 +72,7 @@ const tourData = [
         hotspots: [
           {
             id: "to-scene-5",
-            position: { x: 50, y: 60 }, // Position in percentages
+            position: { x: 42, y: 58 }, // Position in percentages
             targetSceneId: 5,
             title: "Waterfall",
             description: "Experience the majestic waterfall cascading down the rocky cliff.",
@@ -89,7 +89,7 @@ const tourData = [
         hotspots: [
           {
             id: "back-to-scene-1",
-            position: { x: 30, y: 70 }, // Position in percentages
+            position: { x: 42, y: 58 }, // Position in percentages
             targetSceneId: 1,
             title: "Return to Start",
             description: "Head back to the beginning of the tour to explore other areas.",
@@ -148,7 +148,7 @@ export default function EnhancedSingleVirtualTourPage() {
   const [videoId, setVideoId] = useState<string>("")
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [transitionProgress, setTransitionProgress] = useState(0)
-  const [lastTimeUpdate, setLastTimeUpdate] = useState(0)
+  const [_lastTimeUpdate, setLastTimeUpdate] = useState(0)
 
   // New interactive states
   const [showEndPrompt, setShowEndPrompt] = useState(false)
@@ -200,7 +200,7 @@ export default function EnhancedSingleVirtualTourPage() {
           return false
         })
       }
-    } catch (_) {
+    } catch {
       console.log("Cannot access iframe content due to same-origin policy")
     }
 
