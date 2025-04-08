@@ -5,7 +5,7 @@ import { HeroSection } from "../Components/Virtual-tour/HeroSection"
 import { FeaturedTours } from "@/Components/Virtual-tour/FeaturedTours"
 import { PopularLandmarks } from "@/Components/Virtual-tour/PopularLandmarks"
 import { Routes, Route, useParams, useLocation } from "react-router-dom"
-import EnhancedSingleVirtualTourPage from "./enhanced-single-virtual-tour-page" // Only use this component
+import EnhancedSingleVirtualTourPage from "./enhanced-page" // Only use this component
 
 export function VirtualTourPage() {
   const params = useParams()
