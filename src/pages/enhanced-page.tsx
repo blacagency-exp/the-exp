@@ -200,68 +200,72 @@ export default function EnhancedSingleVirtualTourPage() {
           return false
         })
       }
-    } catch (e) {
+    } catch (_) {
       console.log("Cannot access iframe content due to same-origin policy")
     }
 
-    // Add overlay divs to block controls and right-clicks
+    // Create a full-page overlay to capture all right-clicks
     const playerContainer = document.getElementById("youtube-player-container")
     if (playerContainer) {
-      // Top control blocker
-      const topBlocker = document.createElement("div")
-      topBlocker.className = "yt-control-blocker"
-      topBlocker.style.position = "absolute"
-      topBlocker.style.top = "0"
-      topBlocker.style.left = "0"
-      topBlocker.style.right = "0"
-      topBlocker.style.height = "40px"
-      topBlocker.style.zIndex = "2147483647"
-      topBlocker.style.background = "transparent"
-      topBlocker.addEventListener("contextmenu", (e) => e.preventDefault())
-      playerContainer.appendChild(topBlocker)
+      // Remove any existing overlays first
+      const existingOverlays = playerContainer.querySelectorAll(".right-click-blocker")
+      existingOverlays.forEach((overlay) => overlay.remove())
 
-      // Bottom control blocker
-      const bottomBlocker = document.createElement("div")
-      bottomBlocker.className = "yt-bottom-control-blocker"
-      bottomBlocker.style.position = "absolute"
-      bottomBlocker.style.bottom = "0"
-      bottomBlocker.style.left = "0"
-      bottomBlocker.style.right = "0"
-      bottomBlocker.style.height = "40px"
-      bottomBlocker.style.zIndex = "2147483647"
-      bottomBlocker.style.background = "transparent"
-      bottomBlocker.addEventListener("contextmenu", (e) => e.preventDefault())
-      playerContainer.appendChild(bottomBlocker)
+      // Create a new overlay
+      const overlay = document.createElement("div")
+      overlay.className = "right-click-blocker"
+      overlay.style.position = "absolute"
+      overlay.style.top = "0"
+      overlay.style.left = "0"
+      overlay.style.width = "100%"
+      overlay.style.height = "100%"
+      overlay.style.zIndex = "100"
+      overlay.style.background = "transparent"
 
-      // Full overlay to prevent right-click
-      const fullOverlay = document.createElement("div")
-      fullOverlay.className = "full-player-overlay"
-      fullOverlay.style.position = "absolute"
-      fullOverlay.style.top = "0"
-      fullOverlay.style.left = "0"
-      fullOverlay.style.width = "100%"
-      fullOverlay.style.height = "100%"
-      fullOverlay.style.zIndex = "10"
-      fullOverlay.style.background = "transparent"
-      fullOverlay.style.pointerEvents = "none" // Allow clicks to pass through
+      // This is critical - we need to allow pointer events for the overlay
+      overlay.style.pointerEvents = "all"
 
-      // Add event listener to prevent right-click
-      fullOverlay.addEventListener("contextmenu", (e) => {
+      // Prevent right-click
+      overlay.addEventListener("contextmenu", (e) => {
         e.preventDefault()
+        e.stopPropagation()
         return false
       })
 
-      playerContainer.appendChild(fullOverlay)
+      // Allow click events to pass through for play/pause
+      overlay.addEventListener("click", () => {
+        if (playerRef.current && typeof playerRef.current.getPlayerState === "function") {
+          try {
+            const state = playerRef.current.getPlayerState()
+            if (state === 1) {
+              // Playing
+              playerRef.current.pauseVideo()
+              setIsPlaying(false)
+            } else {
+              playerRef.current.playVideo()
+              setIsPlaying(true)
+            }
+          } catch {
+            console.error("Error toggling play state")
+          }
+        }
+      })
+
+      playerContainer.appendChild(overlay)
     }
 
-    // Add global right-click prevention
-    document.addEventListener("contextmenu", (e) => {
-      const target = e.target as HTMLElement
-      if (target.closest("#youtube-player-container")) {
-        e.preventDefault()
-        return false
-      }
-    })
+    // Add global right-click prevention for the entire document
+    document.addEventListener(
+      "contextmenu",
+      (e) => {
+        if (e.target && (e.target as HTMLElement).closest("#youtube-player-container")) {
+          e.preventDefault()
+          e.stopPropagation()
+          return false
+        }
+      },
+      true,
+    )
   }
 
   // Find the current tour and scene
@@ -544,7 +548,7 @@ export default function EnhancedSingleVirtualTourPage() {
         youtubeAPILoadingRef.current = false
       }
 
-      tag.onerror = (e) => {
+      tag.onerror = () => {
         youtubeAPILoadingRef.current = false
         setError("Failed to load YouTube player. Please refresh the page.")
       }
@@ -632,11 +636,11 @@ export default function EnhancedSingleVirtualTourPage() {
               if (iframe) {
                 // Add event listener to the iframe if possible
                 try {
-                  iframe.contentWindow?.document.addEventListener("contextmenu", (e) => {
+                  (iframe as HTMLIFrameElement).contentWindow?.document.addEventListener("contextmenu", (e) => {
                     e.preventDefault()
                     return false
                   })
-                } catch (err) {
+                } catch {
                   // CORS might prevent this, so we'll use other methods
                 }
 
@@ -675,12 +679,12 @@ export default function EnhancedSingleVirtualTourPage() {
 
             // Call this function after player initialization
             setTimeout(addRightClickProtection, 1000)
-          } catch (err) {
+          } catch {
             // Use fallback method
             loadVideoWithFallbackMethod()
           }
         }, 200)
-      } catch (err) {
+      } catch {
         // Use fallback method
         loadVideoWithFallbackMethod()
       }
@@ -766,7 +770,7 @@ export default function EnhancedSingleVirtualTourPage() {
         if (iframe) {
           // Add event listener to the iframe if possible
           try {
-            iframe.contentWindow?.document.addEventListener("contextmenu", (e) => {
+            (iframe as HTMLIFrameElement).contentWindow?.document.addEventListener("contextmenu", (e) => {
               e.preventDefault()
               return false
             })
@@ -1074,22 +1078,18 @@ export default function EnhancedSingleVirtualTourPage() {
 
   // Add this after the useEffect that handles fullscreen change events
   useEffect(() => {
-    if (playerReady) {
-      // Apply protection immediately
-      setTimeout(() => {
-        applyYouTubeProtection()
-      }, 500)
+    // Apply protection immediately
+    applyYouTubeProtection()
 
-      // And then periodically to ensure it stays applied
-      const protectionInterval = setInterval(() => {
-        applyYouTubeProtection()
-      }, 5000)
+    // Set up an interval to continuously apply protection
+    const protectionInterval = setInterval(() => {
+      applyYouTubeProtection()
+    }, 1000) // Check every second
 
-      return () => {
-        clearInterval(protectionInterval)
-      }
+    return () => {
+      clearInterval(protectionInterval)
     }
-  }, [playerReady])
+  }, [])
 
   // Handle back button click
   const handleBackClick = () => {
@@ -1121,6 +1121,9 @@ export default function EnhancedSingleVirtualTourPage() {
 
     setIsMuted(!isMuted)
   }
+
+  // Add this function after the handleToggleMute function
+  // Removed unused function checkIfPlayerIsStuck
 
   // Handle hotspot click
   const handleHotspotClick = (targetSceneId: number) => {
@@ -1220,6 +1223,22 @@ export default function EnhancedSingleVirtualTourPage() {
         }}
       >
         <div id="youtube-player" className="w-full h-full"></div>
+
+        <div
+          className="absolute inset-0 z-15"
+          style={{ pointerEvents: "all" }}
+          onContextMenu={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            return false
+          }}
+          onClick={() => {
+            // Allow click to toggle play/pause but prevent right-click
+            if (!isTransitioning && playerRef.current) {
+              handlePlayPause()
+            }
+          }}
+        ></div>
 
         {/* Transparent overlay to prevent right-click and other interactions */}
         <div
@@ -1373,7 +1392,7 @@ export default function EnhancedSingleVirtualTourPage() {
         <div className="fixed inset-0 bg-black/80 z-50 flex flex-col items-center justify-center">
           <div className="text-white text-xl font-medium mb-8">Transitioning to next scene...</div>
           <div className="w-64 h-3 bg-[#1A2E0D] rounded-full overflow-hidden">
-            <div className="h-full bg-[#97E12B] rounded-full animate-progress"></div>
+            <div className="h-full bg-[#97E12B] rounded-full" style={{ width: `${transitionProgress}%` }}></div>
           </div>
         </div>
       )}
@@ -1396,7 +1415,7 @@ export default function EnhancedSingleVirtualTourPage() {
 // Add this to your global.d.ts file or declare it here
 declare global {
   interface Window {
-    YT: any
+    YT: typeof YT;
     onYouTubeIframeAPIReady: () => void
   }
 }

@@ -2,13 +2,13 @@
 
 // Add this to your EnhancedSingleVirtualTourPage.tsx file at the beginning of the component
 import { tourData } from "@/Components/Virtual-tour/featured-tours2"
-import { useParams, useSearchParams, useNavigate } from "react-router-dom"
+import { useParams, useSearchParams } from "react-router-dom"
 import { useState } from "react"
 
 export default function EnhancedSingleVirtualTourPage() {
   const { tourId } = useParams<{ tourId: string }>()
   const [searchParams] = useSearchParams()
-  const navigate = useNavigate()
+  // Removed unused navigate variable
   const sceneId = Number.parseInt(searchParams.get("scene") || "1")
 
   // Add these console logs to debug the data flow
@@ -28,6 +28,9 @@ export default function EnhancedSingleVirtualTourPage() {
     console.log("Scene youtubeId:", foundScene.youtubeId)
     return foundScene
   })
+
+  // Example usage of currentScene to avoid unused variable error
+  console.log("Using currentScene:", currentScene)
 
   // Rest of your component...
 }

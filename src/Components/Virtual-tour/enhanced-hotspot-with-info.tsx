@@ -14,7 +14,7 @@ interface HotspotProps {
   onClick: (targetSceneId: number) => void
 }
 
-export function EnhancedHotspot({ id, position, targetSceneId, title, description, icon, onClick }: HotspotProps) {
+export function EnhancedHotspot({ position, targetSceneId, title, description, onClick }: HotspotProps) {
   const [isHovered, setIsHovered] = useState(false)
 
   return (

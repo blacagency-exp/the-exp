@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react"
 import { Play, Pause, Volume2, VolumeX } from "lucide-react"
 
 interface EnhancedPlayerProtectionProps {
-  playerRef: React.MutableRefObject<any>
+  playerRef: React.MutableRefObject<HTMLVideoElement | null>
   isPlaying: boolean
   onPlayPause: () => void
 }
@@ -132,9 +132,9 @@ export function EnhancedPlayerProtection({ playerRef, isPlaying, onPlayPause }: 
   const toggleMute = () => {
     if (playerRef.current) {
       if (isMuted) {
-        playerRef.current.unMute()
+        playerRef.current.muted = false
       } else {
-        playerRef.current.mute()
+        playerRef.current.muted = true
       }
       setIsMuted(!isMuted)
     }
@@ -157,8 +157,7 @@ export function EnhancedPlayerProtection({ playerRef, isPlaying, onPlayPause }: 
     if (!isDragging) return
 
     // Calculate movement delta
-    const deltaX = e.clientX - lastMousePosition.current.x
-    const deltaY = e.clientY - lastMousePosition.current.y
+   
 
     // Update last position
     lastMousePosition.current = { x: e.clientX, y: e.clientY }
@@ -191,7 +190,7 @@ export function EnhancedPlayerProtection({ playerRef, isPlaying, onPlayPause }: 
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
-        onClick={(e) => {
+        onClick={() => {
           // Only trigger play/pause on click if we're not dragging
           if (!isDragging) {
             onPlayPause()
