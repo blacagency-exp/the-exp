@@ -5,7 +5,7 @@ export const tourData: Tour[] = [
   {
     id: 1,
     title: "Rayfield Resort",
-    description: "Explore the stunning Shere Hills with its rugged terrain",
+    description: "Explore the stunning Rayfield Resort with its rugged terrain",
     scenes: [
       {
         id: 1,
