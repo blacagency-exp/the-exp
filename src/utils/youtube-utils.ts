@@ -157,6 +157,7 @@ export function loadVideoWithFallbackMethod(
   videoId: string,
   setIsLoading: (loading: boolean) => void,
   setIsPlaying: (playing: boolean) => void,
+  isPlaying: boolean,
 ) {
   if (!videoId || !playerContainerRef.current) return
 
@@ -197,7 +198,7 @@ export function loadVideoWithFallbackMethod(
 
   // Allow click events to pass through for play/pause
   overlay.addEventListener("click", () => {
-    setIsPlaying((prev: boolean) => !prev)
+    setIsPlaying(!isPlaying) 
   })
 
   playerContainerRef.current.appendChild(overlay)
@@ -219,7 +220,6 @@ export function forceQualityViaIframe(
   quality: string,
   currentTime: number,
   isPlaying: boolean,
-  isMuted: boolean,
   onReady: () => void,
 ) {
   if (!playerContainerRef.current || !videoId) return
