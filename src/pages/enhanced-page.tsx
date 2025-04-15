@@ -11,7 +11,7 @@ import HotspotMarker from "../Components/HotspotMarker"
 import PlayerControls from "../Components/PlayerControls"
 import TransitionOverlay from "../Components/TransitionOverlay"
 import SceneDescription from "../Components/SceneDescription"
-import DebugInfo from "../Components/DebugInfo"
+// import DebugInfo from "../Components/DebugInfo"
 
 // Import hooks and utilities
 import { useYouTubePlayer } from "../hooks/useYouTubePlayer"
@@ -371,7 +371,7 @@ export default function EnhancedSingleVirtualTourPage() {
       <SceneDescription scene={currentScene} sceneId={sceneId} />
 
       {/* Debug info */}
-      <DebugInfo playerTime={playerTime} currentScene={currentScene} hotspots={hotspots} />
+      {/* <DebugInfo playerTime={playerTime} currentScene={currentScene} hotspots={hotspots} /> */}
     </div>
   )
 }

@@ -39,7 +39,7 @@ export const tourData: TourCard[] = [
   {
     id: 1,
     title: "Rayfield Resort",
-    description: "Explore the stunning Shere Hills with its rugged terrain",
+    description: "Explore the stunning Rayfield Resort with its rugged terrain",
     image: shere,
     tags: ["Virtual tour", "Jet Ski", "Scenic Environment"],
     scenes: [
