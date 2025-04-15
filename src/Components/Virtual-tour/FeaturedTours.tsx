@@ -38,10 +38,10 @@ interface TourCard {
 export const tourData: TourCard[] = [
   {
     id: 1,
-    title: "Shere Hills",
+    title: "Rayfield Resort",
     description: "Explore the stunning Shere Hills with its rugged terrain",
     image: shere,
-    tags: ["Virtual tour", "Rock Climbing", "Sailing"],
+    tags: ["Virtual tour", "Jet Ski", "Scenic Environment"],
     scenes: [
       {
         id: 1,
