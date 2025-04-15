@@ -145,12 +145,12 @@ export function useYouTubePlayer(
             setTimeout(() => applyYouTubeProtection(playerRef), 1000)
           } catch {
             // Use fallback method
-            loadVideoWithFallbackMethod(playerContainerRef, videoId, setIsLoading, setIsPlaying)
+            loadVideoWithFallbackMethod(playerContainerRef, videoId, setIsLoading, setIsPlaying, isPlaying)
           }
         }, 200)
       } catch {
         // Use fallback method
-        loadVideoWithFallbackMethod(playerContainerRef, videoId, setIsLoading, setIsPlaying)
+        loadVideoWithFallbackMethod(playerContainerRef, videoId, setIsLoading, setIsPlaying, isPlaying)
       }
     }
 
@@ -305,7 +305,7 @@ export function useYouTubePlayer(
       setIsLoading(false)
 
       // Use fallback method
-      loadVideoWithFallbackMethod(playerContainerRef, videoId, setIsLoading, setIsPlaying)
+      loadVideoWithFallbackMethod(playerContainerRef, videoId, setIsLoading, setIsPlaying, isPlaying)
     }
 
     // Start initialization
@@ -314,7 +314,7 @@ export function useYouTubePlayer(
     // Set a timeout to use fallback method if player doesn't initialize
     const fallbackTimeout = setTimeout(() => {
       if (!playerInitializedRef.current) {
-        loadVideoWithFallbackMethod(playerContainerRef, videoId, setIsLoading, setIsPlaying)
+        loadVideoWithFallbackMethod(playerContainerRef, videoId, setIsLoading, setIsPlaying, isPlaying)
       }
     }, 5000)
 
