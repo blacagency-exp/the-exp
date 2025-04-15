@@ -1,5 +1,5 @@
 "use client"
-
+import { useRef } from "react"
 import { BaseLayout } from "../Components/layout/BaseLayout"
 import { HeroSection } from "../Components/Virtual-tour/HeroSection"
 import { FeaturedTours } from "@/Components/Virtual-tour/FeaturedTours"
@@ -11,6 +11,19 @@ export function VirtualTourPage() {
   const params = useParams()
   const location = useLocation()
   const isTourDetail = params.tourId !== undefined
+
+   // Create a ref for the FeaturedTours section
+   const featuredToursRef = useRef<HTMLDivElement>(null)
+
+     // Function to scroll to the FeaturedTours section
+  const scrollToFeaturedTours = () => {
+    if (featuredToursRef.current) {
+      featuredToursRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      })
+    }
+  }
 
   console.log("VirtualTourPage - Current path:", location.pathname)
   console.log("VirtualTourPage - Tour ID param:", params.tourId)
@@ -30,8 +43,10 @@ export function VirtualTourPage() {
           path="/"
           element={
             <>
-              <HeroSection />
-              <FeaturedTours />
+               <HeroSection scrollToFeaturedTours={scrollToFeaturedTours} />
+              <div ref={featuredToursRef}>
+                <FeaturedTours />
+              </div>
               <PopularLandmarks />
             </>
           }

@@ -5,7 +5,7 @@ import { ArrowDown } from "lucide-react"
 import { styles } from "../../constants/styles"
 import img1 from "../../assets/headset.png"
 
-export function HeroSection() {
+export function HeroSection({ scrollToFeaturedTours }: { scrollToFeaturedTours: () => void }) {
   // Text animation variants
   const headingVariants = {
     hidden: { opacity: 0 },
@@ -41,18 +41,6 @@ export function HeroSection() {
       y: 0,
       opacity: 1,
       transition: { duration: 0.8, delay: 0.5 },
-    },
-    hover: {
-      scale: 1.05,
-      transition: { duration: 0.2 },
-    },
-  }
-
-  const arrowVariants = {
-    initial: { y: 0 },
-    hover: {
-      y: [0, 5, 0],
-      transition: { duration: 0.6, repeat: Number.POSITIVE_INFINITY },
     },
   }
 
@@ -115,13 +103,15 @@ export function HeroSection() {
               variants={buttonVariants}
               initial="initial"
               animate="animate"
-              whileHover="hover"
             >
-              <button className="flex flex-row justify-center items-center px-6 py-2 gap-2 w-[280px] h-[42px] bg-[#5A8E00] rounded-[40px] text-white hover:bg-[#4A7D00] transition-colors whitespace-nowrap">
+              <button
+                onClick={scrollToFeaturedTours}
+                className="group flex flex-row justify-center items-center px-6 py-2 gap-2 w-[280px] h-[42px] bg-[#5A8E00] rounded-[40px] text-white hover:bg-[#4A7D00] transition-all duration-300 hover:scale-105 whitespace-nowrap"
+              >
                 Start your Virtual Tour
-                <motion.div variants={arrowVariants}>
+                <span className="inline-block animate-bounce-slow">
                   <ArrowDown className="w-5 h-5" />
-                </motion.div>
+                </span>
               </button>
             </motion.div>
           </div>
@@ -142,21 +132,17 @@ export function HeroSection() {
       </div>
 
       {/* Desktop button with absolute positioning (hidden on mobile, visible on md and up) */}
-      <motion.div
-        className="hidden md:block"
-        variants={buttonVariants}
-        initial="initial"
-        animate="animate"
-        whileHover="hover"
-      >
-        <button className="flex flex-row justify-center items-center px-6 py-2 gap-2 absolute w-[280px] h-[42px] left-[calc(50%-333px/2+26.5px)] top-[550px] bg-[#5A8E00] rounded-[40px] text-white hover:bg-[#4A7D00] transition-colors whitespace-nowrap">
+      <motion.div className="hidden md:block" variants={buttonVariants} initial="initial" animate="animate">
+        <button
+          onClick={scrollToFeaturedTours}
+          className="group flex flex-row justify-center items-center px-6 py-2 gap-2 absolute w-[280px] h-[42px] left-[calc(50%-333px/2+26.5px)] top-[550px] bg-[#5A8E00] rounded-[40px] text-white hover:bg-[#4A7D00] transition-all duration-300 hover:scale-105 whitespace-nowrap"
+        >
           Start your Virtual Tour
-          <motion.div variants={arrowVariants}>
+          <span className="inline-block animate-bounce-slow">
             <ArrowDown className="w-5 h-5" />
-          </motion.div>
+          </span>
         </button>
       </motion.div>
     </section>
   )
 }
-

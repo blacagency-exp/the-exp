@@ -1,434 +1,1391 @@
 // "use client"
 
 // import type React from "react"
-// import { useState, useEffect, useCallback, useRef } from "react"
-// import { useParams, useNavigate, useSearchParams } from "react-router-dom"
-// import { tourData } from "../Components/Virtual-tour/FeaturedTours"
-// import { getSignedVideoUrl, testS3Connection } from "../aws-s3-service"
-// import { LoadingSpinner } from "../Components/Virtual-tour/LoadingSpinner"
-// import SimpleVideoViewer from "../Components/Virtual-tour/AFrameVideoViewer2"
-// import { ErrorBoundary } from "react-error-boundary"
 
-// // Import the HotspotDebugger
-// import HotspotDebugger from "../Components/Virtual-tour/HotspotDebugger"
+// import { useEffect, useRef, useState } from "react"
+// import { useParams, useSearchParams, useNavigate } from "react-router-dom"
+// import { ArrowLeft, Maximize, Minimize, Play, Pause, Volume2, VolumeX, RefreshCw, ChevronRight } from "lucide-react"
 
-// // Update the interface to work with the new scene-based structure
-// interface EnhancedTourData {
-//   id: number
+// // Define the tour data without durations
+// const tourData = [
+//   {
+//     id: 1,
+//     title: "Rayfield Resort",
+//     description: "Explore the stunning Shere Hills with its rugged terrain",
+//     scenes: [
+//       {
+//         id: 1,
+//         youtubeId: "2PLmcXGaqFw", // First video
+//         title: "Gate Entrance Rayfield resort",
+//         description: "The breathtaking entrance to Shere Hills with panoramic views of the valley.",
+//         hotspots: [
+//           {
+//             id: "Rayfield resort Before Reaching the Staircase",
+//             position: { x: 42, y: 58 }, // Position in percentages
+//             targetSceneId: 2,
+//             title: "Rayfield resort Before Reaching the Staircase",
+//             description: "Visit this breathtaking viewpoint overlooking the valley with panoramic views.",
+//             startTime: 26, // Keep user's specified start time
+//           },
+//         ],
+//         nextSceneId: 2, // Auto-transition to scene 2
+//       },
+//       {
+//         id: 2,
+//         youtubeId: "sgKh_UGfU0U", // Second video
+//         title: "Rayfield resort Before Reaching the Staircase",
+//         description: "A stunning viewpoint with panoramic views of the surrounding landscape.",
+//         hotspots: [
+//           {
+//             id: "Rayfield Resort Surrounding Tour",
+//             position: { x: 42, y: 58 }, // Position in percentages
+//             targetSceneId: 3,
+//             title: "Rayfield Resort Surrounding Tour",
+//             description: "Discover this unique rock formation created by millions of years of erosion.",
+//             startTime: 49, // Keep user's specified start time
+//           },
+//         ],
+//         nextSceneId: 3, // Auto-transition to scene 3
+//       },
+//       {
+//         id: 3,
+//         youtubeId: "T2RE6q70_nE", // Third video
+//         title: "Rayfield Resort Surrounding Tour",
+//         description: "Unique rock formations created by millions of years of erosion.",
+//         hotspots: [
+//           {
+//             id: "Walking Round Surroundings",
+//             position: { x: 42, y: 58 }, // Position in percentages
+//             targetSceneId: 4,
+//             title: "Walking Round Surroundings",
+//             description: "Follow this trail to explore the dense forest area with diverse plant species.",
+//             startTime: 110, // Keep user's specified start time
+//           },
+//         ],
+//         nextSceneId: 4, // Auto-transition to scene 4
+//       },
+//       {
+//         id: 4,
+//         youtubeId: "H3-6U7Wrv5g", // Fourth video
+//         title: "Walking Round Surroundings",
+//         description: "A scenic trail through the dense forest with diverse plant species.",
+//         hotspots: [
+//           {
+//             id: "Rayfield Jet Ski",
+//             position: { x: 42, y: 58 }, // Position in percentages
+//             targetSceneId: 5,
+//             title: "Rayfield Jet Ski",
+//             description: "Experience the majestic waterfall cascading down the rocky cliff.",
+//             startTime: 120, // Keep user's specified start time
+//           },
+//         ],
+//         nextSceneId: 5, // Auto-transition to scene 5
+//       },
+//       {
+//         id: 5,
+//         youtubeId: "YYfX9t08U9g", // Fifth video - using your current ID
+//         title: "Rayfield Jet Ski",
+//         description: "A majestic waterfall cascading down the rocky cliff.",
+//         hotspots: [
+//           {
+//             id: "Gate Entrance Rayfield resort",
+//             position: { x: 42, y: 58 }, // Position in percentages
+//             targetSceneId: 1,
+//             title: "Return to Start",
+//             description: "Head back to the beginning of the tour to explore other areas.",
+//             startTime: 180, // Keep user's specified start time
+//           },
+//         ],
+//         nextSceneId: 1, // Loop back to scene 1
+//       },
+//     ],
+//   },
+// ]
+
+// // Helper function to extract YouTube video ID
+// function extractYouTubeId(url: string): string {
+//   if (!url) return ""
+//   if (!/[/.]/.test(url)) return url
+
+//   const youtubeShortRegex = /youtu\.be\/([^/?]+)/
+//   const shortMatch = url.match(youtubeShortRegex)
+//   if (shortMatch && shortMatch[1]) return shortMatch[1]
+
+//   const youtubeRegex = /youtube\.com\/(?:embed\/|watch\?v=)([^/?&]+)/
+//   const match = url.match(youtubeRegex)
+//   if (match && match[1]) return match[1]
+
+//   return url
+// }
+
+// interface HotspotState {
+//   id: string
+//   position: { x: number; y: number }
+//   targetSceneId: number
 //   title: string
 //   description: string
-//   image: string
-//   tags: string[]
-//   scenes: {
-//     id: number
-//     videoKey: string
-//     hotspots?: {
-//       id: string
-//       position: { x: number; y: number }
-//       targetSceneId: number
-//       icon?: string
-//       tooltip?: string
-//       startTime?: number
-//       endTime?: number
-//     }[]
-//   }[]
+//   startTime: number
+//   visible: boolean
 // }
 
-// // Error Fallback component
-// const ErrorFallback = ({ error, resetErrorBoundary }: { error: Error; resetErrorBoundary: () => void }) => {
-//   return (
-//     <div className="flex items-center justify-center h-screen bg-black">
-//       <div className="text-white text-center max-w-md p-6 bg-gray-900 rounded-lg">
-//         <h2 className="text-2xl mb-4">Something went wrong</h2>
-//         <p className="mb-4 text-red-400">{error.message}</p>
-//         <button
-//           className="px-4 py-2 bg-[#97E12B] text-black rounded-md hover:bg-opacity-80 transition-colors"
-//           onClick={resetErrorBoundary}
-//         >
-//           Try again
-//         </button>
-//       </div>
-//     </div>
-//   )
+// // Declare YT here
+// declare global {
+//   interface Window {
+//     YT: any
+//     onYouTubeIframeAPIReady: () => void
+//   }
 // }
 
-// // Convert the tour data to the enhanced format
-// const enhancedTourData: EnhancedTourData[] = tourData as unknown as EnhancedTourData[]
-
-// const EnhancedSingleVirtualTourPage: React.FC = () => {
+// export default function EnhancedSingleVirtualTourPage() {
 //   const { tourId } = useParams<{ tourId: string }>()
 //   const [searchParams] = useSearchParams()
-//   const sceneParam = searchParams.get("scene")
+//   const sceneId = Number.parseInt(searchParams.get("scene") || "1")
 //   const navigate = useNavigate()
 
-//   // Initialize state from URL params, searchParams, or localStorage
-//   const [currentTourId] = useState<number>(() => {
-//     return Number.parseInt(tourId || "1")
-//   })
+//   // State
+//   const [currentTour, setCurrentTour] = useState<any>(null)
+//   const [currentScene, setCurrentScene] = useState<any>(null)
+//   const [hotspots, setHotspots] = useState<HotspotState[]>([])
+//   const [isFullscreen, setIsFullscreen] = useState(false)
+//   const [isLoading, setIsLoading] = useState(true)
+//   const [isPlaying, setIsPlaying] = useState(false)
+//   const [isMuted, setIsMuted] = useState(false)
+//   const [playerTime, setPlayerTime] = useState(0)
+//   const [videoDuration, setVideoDuration] = useState(0)
+//   const [error, setError] = useState<string | null>(null)
+//   const [videoId, setVideoId] = useState<string>("")
+//   const [isTransitioning, setIsTransitioning] = useState(false)
+//   const [transitionProgress, setTransitionProgress] = useState(0)
+//   const [_lastTimeUpdate, setLastTimeUpdate] = useState(0)
 
-//   // Add state for current scene within the tour, prioritizing URL query param
-//   const [currentSceneId, setCurrentSceneId] = useState<number>(() => {
-//     if (sceneParam) {
-//       return Number.parseInt(sceneParam)
+//   // New interactive states
+//   const [showEndPrompt, setShowEndPrompt] = useState(false)
+//   const [endPromptType, setEndPromptType] = useState<"auto" | "manual">("auto")
+//   const [nearEnd, setNearEnd] = useState(false)
+//   const [playerReady, setPlayerReady] = useState(false)
+
+//   // Refs
+//   const containerRef = useRef<HTMLDivElement>(null)
+//   const playerRef = useRef<any>(null)
+//   const playerContainerRef = useRef<HTMLDivElement>(null)
+//   const youtubeApiLoadedRef = useRef(false)
+//   const youtubeAPILoadingRef = useRef(false)
+//   const playerInitializedRef = useRef(false)
+//   const transitionTimeoutRef = useRef<number | null>(null)
+//   const transitionAnimationRef = useRef<number | null>(null)
+//   const lastTimeRef = useRef<number>(0)
+//   const timeUpdateIntervalRef = useRef<number | null>(null)
+//   const autoplayTimeoutRef = useRef<number | null>(null)
+//   const endPromptTimeoutRef = useRef<number | null>(null)
+
+//   const applyYouTubeProtection = () => {
+//     // Find the YouTube iframe
+//     const iframe = document.querySelector("#youtube-player iframe") as HTMLIFrameElement
+//     if (!iframe) return
+
+//     // Try to access the iframe content (may be blocked by CORS)
+//     try {
+//       const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document
+//       if (iframeDoc) {
+//         // Add style to hide controls in the iframe EXCEPT quality settings
+//         const style = document.createElement("style")
+//         style.textContent = `
+//       /* Keep only the settings button visible */
+//       .ytp-chrome-bottom .ytp-chrome-controls .ytp-right-controls .ytp-button:not(.ytp-settings-button),
+//       .ytp-chrome-bottom .ytp-chrome-controls .ytp-left-controls,
+//       .ytp-chrome-top, 
+//       .ytp-gradient-top,
+//       .ytp-gradient-bottom,
+//       .ytp-youtube-button,
+//       .ytp-share-button,
+//       .ytp-watch-later-button,
+//       .ytp-embed-button,
+//       .ytp-playlist-menu-button,
+//       .ytp-overflow-menu-button,
+//       .ytp-copylink-button,
+//       .ytp-contextmenu,
+//       .ytp-fullscreen-button,
+//       .ytp-size-button,
+//       .ytp-volume-panel,
+//       .ytp-time-display,
+//       .ytp-chapter-container,
+//       .ytp-iv-drawer-open,
+//       .ytp-pause-overlay,
+//       .ytp-related-on-show,
+//       .ytp-spinner,
+//       .ytp-bezel,
+//       .ytp-paid-content-overlay,
+//       .ytp-player-content,
+//       .ytp-iv-player-content {
+//         display: none !important;
+//         opacity: 0 !important;
+//         pointer-events: none !important;
+//         visibility: hidden !important;
+//       }
+      
+//       /* Make sure settings button and menu are visible */
+//       .ytp-settings-button, 
+//       .ytp-settings-menu,
+//       .ytp-panel,
+//       .ytp-panel-menu,
+//       .ytp-quality-menu {
+//         display: block !important;
+//         visibility: visible !important;
+//         opacity: 1 !important;
+//         pointer-events: auto !important;
+//       }
+//       `
+//         iframeDoc.head.appendChild(style)
+//       }
+//     } catch {
+//       console.log("Cannot access iframe content due to same-origin policy")
 //     }
-//     const saved = localStorage.getItem("currentScene")
-//     return saved ? Number.parseInt(saved) : 1
-//   })
 
-//   const [isLoading, setIsLoading] = useState<boolean>(true)
-//   const [transitioningToScene, setTransitioningToScene] = useState<number | null>(null)
-//   const [videoUrl, setVideoUrl] = useState<string | null>(null)
-//   const [selectedQuality] = useState<string>("Low")
-//   const [hasError, setHasError] = useState<boolean>(false)
-//   const [forceS3, setForceS3] = useState<boolean>(false)
-//   const [connectionTest, setConnectionTest] = useState<{ success: boolean; message: string } | null>(null)
+//     // Create a modified overlay that allows the settings button to be clicked
+//     const playerContainer = document.getElementById("youtube-player-container")
+//     if (playerContainer) {
+//       // Remove any existing overlays first
+//       const existingOverlays = playerContainer.querySelectorAll(".right-click-blocker")
+//       existingOverlays.forEach((overlay) => overlay.remove())
 
-//   // Add a key to force remount of the video component when changing scenes
-//   const [videoKey, setVideoKey] = useState<number>(0)
+//       // Create a new overlay with a cutout for the settings button
+//       const overlay = document.createElement("div")
+//       overlay.className = "right-click-blocker"
+//       overlay.style.position = "absolute"
+//       overlay.style.top = "0"
+//       overlay.style.left = "0"
+//       overlay.style.width = "100%"
+//       overlay.style.height = "calc(100% - 40px)" // Leave bottom area for controls
+//       overlay.style.zIndex = "100"
+//       overlay.style.background = "transparent"
+//       overlay.style.pointerEvents = "all"
 
-//   // Add state to track if user has interacted with the page
-//   const [hasUserInteracted, setHasUserInteracted] = useState<boolean>(false)
+//       // Prevent right-click
+//       overlay.addEventListener("contextmenu", (e) => {
+//         e.preventDefault()
+//         e.stopPropagation()
+//         return false
+//       })
 
-//   // Ref to track if the component has mounted
-//   const isMounted = useRef(false)
+//       // Allow click events to pass through for play/pause
+//       overlay.addEventListener("click", (e) => {
+//         if (playerRef.current && typeof playerRef.current.getPlayerState === "function") {
+//           try {
+//             const state = playerRef.current.getPlayerState()
+//             if (state === 1) {
+//               // Playing
+//               playerRef.current.pauseVideo()
+//               setIsPlaying(false)
+//             } else {
+//               playerRef.current.playVideo()
+//               setIsPlaying(true)
+//             }
+//           } catch {
+//             console.error("Error toggling play state")
+//           }
+//         }
+//       })
 
-//   // Update URL when scene changes
+//       playerContainer.appendChild(overlay)
+
+//       // Add a visual indicator for the settings button area (for debugging)
+//       const settingsArea = document.createElement("div")
+//       settingsArea.style.position = "absolute"
+//       settingsArea.style.bottom = "0"
+//       settingsArea.style.right = "0"
+//       settingsArea.style.width = "40px"
+//       settingsArea.style.height = "40px"
+//       settingsArea.style.background = "transparent"
+//       settingsArea.style.zIndex = "99"
+//       settingsArea.style.pointerEvents = "none"
+//       playerContainer.appendChild(settingsArea)
+//     }
+//   }
+
+//   // Find the current tour and scene
 //   useEffect(() => {
-//     // Update URL without page reload, preserving the scene parameter
-//     const newSearchParams = new URLSearchParams(searchParams)
-//     newSearchParams.set("scene", currentSceneId.toString())
-//     navigate(`/virtual-tour/${currentTourId}?${newSearchParams.toString()}`, { replace: true })
+//     const parsedTourId = Number.parseInt(tourId || "1")
+//     const foundTour = tourData.find((tour) => tour.id === parsedTourId) || tourData[0]
+//     setCurrentTour(foundTour)
 
-//     // Also persist to localStorage
-//     localStorage.setItem("currentTour", currentTourId.toString())
-//     localStorage.setItem("currentScene", currentSceneId.toString())
-//   }, [currentTourId, currentSceneId, navigate, searchParams])
+//     if (foundTour) {
+//       const foundScene = foundTour.scenes.find((scene) => scene.id === sceneId) || foundTour.scenes[0]
+//       setCurrentScene(foundScene)
 
-//   // Get the current tour
-//   const currentTour = enhancedTourData.find((tour) => tour.id === currentTourId)
+//       // Extract video ID
+//       const extractedId = extractYouTubeId(foundScene.youtubeId)
+//       setVideoId(extractedId)
 
-//   // Get the current scene
-//   const currentScene = currentTour?.scenes.find((scene) => scene.id === currentSceneId) || currentTour?.scenes[0]
+//       // Initialize hotspots as invisible
+//       if (foundScene.hotspots) {
+//         setHotspots(
+//           foundScene.hotspots.map((hotspot) => ({
+//             ...hotspot,
+//             visible: false,
+//           })),
+//         )
+//       }
 
-//   console.log("Enhanced Tour Page - Current Tour:", currentTour?.title)
-//   console.log("Enhanced Tour Page - Current Scene:", currentSceneId)
-//   console.log("Enhanced Tour Page - Scene from URL:", sceneParam)
-//   console.log("Enhanced Tour Page - VideoKey:", currentScene?.videoKey)
+//       // Reset player state
+//       setPlayerTime(0)
+//       lastTimeRef.current = 0
+//       setVideoDuration(0)
+//       setIsTransitioning(false)
+//       setTransitionProgress(0)
+//       setLastTimeUpdate(Date.now())
+//       setShowEndPrompt(false)
+//       setNearEnd(false)
+//     }
+//   }, [tourId, sceneId])
 
-//   // Test S3 connection on mount
+//   // Add a useEffect to detect when the video duration is available and log it
 //   useEffect(() => {
-//     const runConnectionTest = async () => {
-//       try {
-//         const result = await testS3Connection()
-//         setConnectionTest(result)
-//         console.log("S3 Connection Test:", result)
-//       } catch (error) {
-//         console.error("Error testing S3 connection:", error)
-//         setConnectionTest({
-//           success: false,
-//           message: error instanceof Error ? error.message : String(error),
-//         })
+//     if (videoDuration > 0) {
+//       console.log(`Video duration detected: ${videoDuration.toFixed(1)}s for scene ${currentScene?.id}`)
+//     }
+//   }, [videoDuration, currentScene])
+
+//   // Add a useEffect to detect when we're near the end of the video
+//   useEffect(() => {
+//     if (playerTime > 0 && videoDuration > 0) {
+//       const timeRemaining = videoDuration - playerTime
+
+//       // Log when we're getting close to the end
+//       if (timeRemaining < 5) {
+//         console.log(`Getting close to end: ${timeRemaining.toFixed(1)}s remaining`)
 //       }
 //     }
+//   }, [playerTime, videoDuration])
 
-//     runConnectionTest()
+//   // Add CSS styles for YouTube player with controls hidden except quality settings
+//   useEffect(() => {
+//     const styleId = "youtube-player-styles"
+//     if (!document.getElementById(styleId)) {
+//       const style = document.createElement("style")
+//       style.id = styleId
+//       style.innerHTML = `
+//         /* Player container styles */
+//         #youtube-player-container {
+//           position: relative;
+//           width: 100%;
+//           height: 100%;
+//           background-color: #000;
+//         }
+        
+//         #youtube-player {
+//           position: absolute;
+//           top: 0;
+//           left: 0;
+//           width: 100%;
+//           height: 100%;
+//         }
+        
+//         #youtube-player iframe {
+//           position: absolute;
+//           top: 0;
+//           left: 0;
+//           width: 100% !important;
+//           height: 100% !important;
+//         }
+        
+//         /* Hide YouTube controls EXCEPT quality settings */
+//         .ytp-chrome-top,
+//         .ytp-gradient-top,
+//         .ytp-gradient-bottom,
+//         .ytp-youtube-button,
+//         .ytp-share-button,
+//         .ytp-watch-later-button,
+//         .ytp-embed-button,
+//         .ytp-playlist-menu-button,
+//         .ytp-overflow-menu-button,
+//         .ytp-copylink-button,
+//         .ytp-contextmenu,
+//         .ytp-fullscreen-button,
+//         .ytp-size-button,
+//         .ytp-volume-panel,
+//         .ytp-time-display,
+//         .ytp-chapter-container,
+//         .ytp-iv-drawer-open,
+//         .ytp-pause-overlay,
+//         .ytp-related-on-show,
+//         .ytp-spinner,
+//         .ytp-bezel,
+//         .ytp-paid-content-overlay,
+//         .ytp-player-content,
+//         .ytp-iv-player-content {
+//           display: none !important;
+//           opacity: 0 !important;
+//           pointer-events: none !important;
+//           visibility: hidden !important;
+//         }
+        
+//         /* Keep the settings button visible */
+//         .ytp-settings-button, 
+//         .ytp-settings-menu,
+//         .ytp-panel,
+//         .ytp-panel-menu,
+//         .ytp-quality-menu {
+//           display: block !important;
+//           visibility: visible !important;
+//           opacity: 1 !important;
+//           pointer-events: auto !important;
+//           z-index: 2000 !important;
+//         }
 
-//     // Add event listener to track user interaction
-//     const handleUserInteraction = () => {
-//       setHasUserInteracted(true)
-//     }
+//         /* Make sure the YouTube controls bar is visible */
+//         .ytp-chrome-bottom {
+//           display: block !important;
+//           visibility: visible !important;
+//           opacity: 1 !important;
+//           pointer-events: auto !important;
+//         }
 
-//     window.addEventListener("click", handleUserInteraction)
-//     window.addEventListener("touchstart", handleUserInteraction)
+//         /* Hide YouTube context menu and URL copy options */
+//         .ytp-contextmenu, 
+//         .ytp-copy-url-button, 
+//         .ytp-contextmenu-link,
+//         .ytp-copylink-button,
+//         .ytp-contextmenu-menu {
+//           display: none !important;
+//           visibility: hidden !important;
+//           opacity: 0 !important;
+//           pointer-events: none !important;
+//         }
 
-//     return () => {
-//       window.removeEventListener("click", handleUserInteraction)
-//       window.removeEventListener("touchstart", handleUserInteraction)
+//         /* Prevent selection of text */
+//         #youtube-player-container {
+//           user-select: none !important;
+//           -webkit-user-select: none !important;
+//           -moz-user-select: none !important;
+//           -ms-user-select: none !important;
+//         }
+
+//         /* Hide right-click context menu */
+//         #youtube-player-container::-webkit-context-menu,
+//         #youtube-player iframe::-webkit-context-menu {
+//           display: none !important;
+//         }
+        
+//         /* Animation for ping effect */
+//         @keyframes ping {
+//           0% {
+//             transform: scale(1);
+//             opacity: 0.7;
+//           }
+//           70% {
+//             transform: scale(1.5);
+//             opacity: 0;
+//           }
+//           100% {
+//             transform: scale(1);
+//             opacity: 0;
+//           }
+//         }
+        
+//         .animate-ping {
+//           animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+//         }
+        
+//         /* Transition animation */
+//         @keyframes fadeIn {
+//           from { opacity: 0; }
+//           to { opacity: 1; }
+//         }
+        
+//         .animate-fadeIn {
+//           animation: fadeIn 0.5s ease-in-out forwards;
+//         }
+
+//         /* Scale in animation */
+//         @keyframes scaleIn {
+//           from { transform: scale(0.9); opacity: 0; }
+//           to { transform: scale(1); opacity: 1; }
+//         }
+
+//         .animate-scaleIn {
+//           animation: scaleIn 0.5s ease-out forwards;
+//         }
+
+//         /* Slide down animation */
+//         @keyframes slideDown {
+//           from { transform: translateY(-20px); opacity: 0; }
+//           to { transform: translateY(0); opacity: 1; }
+//         }
+
+//         .animate-slideDown {
+//           animation: slideDown 0.5s ease-out forwards;
+//         }
+        
+//         /* Progress animation */
+//         @keyframes progress {
+//           from { width: 0%; }
+//           to { width: 100%; }
+//         }
+        
+//         .animate-progress {
+//           animation: progress 1.5s linear forwards;
+//         }
+        
+//         /* Hotspot fade-in animation */
+//         @keyframes hotspotFadeIn {
+//           from { 
+//             opacity: 0;
+//             transform: translate(-50%, -50%) scale(0.8);
+//           }
+//           to { 
+//             opacity: 1;
+//             transform: translate(-50%, -50%) scale(1);
+//           }
+//         }
+        
+//         .hotspot-fade-in {
+//           animation: hotspotFadeIn 0.5s ease-out forwards;
+//         }
+        
+//         /* Pulse animation for buttons */
+//         @keyframes pulse {
+//           0%, 100% {
+//             transform: scale(1);
+//           }
+//           50% {
+//             transform: scale(1.05);
+//           }
+//         }
+        
+//         .animate-pulse {
+//           animation: pulse 2s ease-in-out infinite;
+//         }
+        
+//         /* Floating animation */
+//         @keyframes float {
+//           0%, 100% {
+//             transform: translateY(0);
+//           }
+//           50% {
+//             transform: translateY(-10px);
+//           }
+//         }
+        
+//         .animate-float {
+//           animation: float 3s ease-in-out infinite;
+//         }
+        
+//         /* Glow animation */
+//         @keyframes glow {
+//           0%, 100% {
+//             box-shadow: 0 0 5px rgba(151, 225, 43, 0.5);
+//           }
+//           50% {
+//             box-shadow: 0 0 20px rgba(151, 225, 43, 0.8);
+//           }
+//         }
+        
+//         .animate-glow {
+//           animation: glow 2s ease-in-out infinite;
+//         }
+//       `
+//       document.head.appendChild(style)
 //     }
 //   }, [])
 
-//   // Fetch video URL when scene changes or quality changes
+//   // Load YouTube API
 //   useEffect(() => {
-//     if (!currentScene) {
-//       console.log("No current scene found")
-//       return
-//     }
+//     if (!youtubeApiLoadedRef.current && !youtubeAPILoadingRef.current) {
+//       youtubeAPILoadingRef.current = true
 
-//     if (!currentScene.videoKey) {
-//       console.log("No videoKey found for current scene")
-//       return
-//     }
+//       const tag = document.createElement("script")
+//       tag.src = "https://www.youtube.com/iframe_api"
 
+//       tag.onload = () => {
+//         youtubeApiLoadedRef.current = true
+//         youtubeAPILoadingRef.current = false
+//       }
+
+//       tag.onerror = () => {
+//         youtubeAPILoadingRef.current = false
+//         setError("Failed to load YouTube player. Please refresh the page.")
+//       }
+
+//       const firstScriptTag = document.getElementsByTagName("script")[0]
+//       firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag)
+//     }
+//   }, [])
+
+//   // Initialize YouTube player when scene changes
+//   useEffect(() => {
+//     // Reset player state
 //     setIsLoading(true)
-//     setHasError(false)
+//     playerInitializedRef.current = false
+//     setPlayerReady(false)
 
-//     const fetchVideoUrl = async () => {
+//     // Clear any existing intervals and timeouts
+//     if (timeUpdateIntervalRef.current) {
+//       clearInterval(timeUpdateIntervalRef.current)
+//       timeUpdateIntervalRef.current = null
+//     }
+
+//     if (autoplayTimeoutRef.current) {
+//       clearTimeout(autoplayTimeoutRef.current)
+//       autoplayTimeoutRef.current = null
+//     }
+
+//     if (endPromptTimeoutRef.current) {
+//       clearTimeout(endPromptTimeoutRef.current)
+//       endPromptTimeoutRef.current = null
+//     }
+
+//     if (!currentScene || !videoId) return
+
+//     // Function to initialize the player
+//     const initializePlayer = () => {
+//       // Make sure the container is ready
+//       if (!playerContainerRef.current) {
+//         setTimeout(initializePlayer, 100)
+//         return
+//       }
+
+//       // Clear previous player
+//       if (playerContainerRef.current) {
+//         playerContainerRef.current.innerHTML = '<div id="youtube-player"></div>'
+//       }
+
+//       // Check if YouTube API is ready
+//       if (typeof window.YT === "undefined" || typeof window.YT.Player === "undefined") {
+//         setTimeout(initializePlayer, 200)
+//         return
+//       }
+
 //       try {
-//         console.log("Fetching video URL for key:", currentScene.videoKey)
-//         // Try to get the signed URL from S3
-//         const url = await getSignedVideoUrl(currentScene.videoKey)
-//         console.log("Received signed URL:", url)
+//         // Create the player with a delay to ensure DOM is ready
+//         setTimeout(() => {
+//           try {
+//             // Create new player with controls disabled except quality settings
+//             playerRef.current = new window.YT.Player("youtube-player", {
+//               videoId: videoId,
+//               playerVars: {
+//                 autoplay: 1, // Enable autoplay
+//                 controls: 1, // Enable controls
+//                 disablekb: 1, // Disable keyboard controls
+//                 fs: 0, // Disable fullscreen button
+//                 modestbranding: 1,
+//                 rel: 0,
+//                 showinfo: 0,
+//                 iv_load_policy: 3, // Hide annotations
+//                 origin: window.location.origin,
+//               },
+//               events: {
+//                 onReady: onPlayerReady,
+//                 onStateChange: onPlayerStateChange,
+//                 onError: onPlayerError,
+//               },
+//             })
 
-//         // Increment the video key to force remount
-//         setVideoKey((prevKey) => prevKey + 1)
+//             playerInitializedRef.current = true
 
-//         setVideoUrl(url)
-//         setIsLoading(false)
-//       } catch (error) {
-//         console.error("Error fetching video URL:", error)
-//         console.error("Error details:", error instanceof Error ? error.message : String(error))
-//         console.error("Error stack:", error instanceof Error ? error.stack : "No stack trace available")
-
-//         // Show error
-//         setHasError(true)
-//         setIsLoading(false)
+//             // Add protection but allow settings button to be clicked
+//             setTimeout(applyYouTubeProtection, 1000)
+//           } catch {
+//             // Use fallback method
+//             loadVideoWithFallbackMethod()
+//           }
+//         }, 200)
+//       } catch {
+//         // Use fallback method
+//         loadVideoWithFallbackMethod()
 //       }
 //     }
 
-//     fetchVideoUrl()
-//   }, [currentTourId, currentSceneId, selectedQuality, forceS3])
+//     // Player event handlers
+//     function onPlayerReady(event: any) {
+//       setIsLoading(false)
+//       setIsPlaying(true)
+//       setPlayerReady(true)
 
-//   if (!currentTour) {
+//       try {
+//         // Force play video
+//         event.target.playVideo()
+
+//         // Try to get the duration
+//         try {
+//           const duration = event.target.getDuration()
+
+//           if (duration && duration > 0) {
+//             setVideoDuration(duration)
+//           }
+//         } catch (err) {
+//           console.error("Error getting duration:", err)
+//         }
+
+//         // Start a timer to check video time
+//         timeUpdateIntervalRef.current = window.setInterval(() => {
+//           if (event.target && typeof event.target.getCurrentTime === "function") {
+//             try {
+//               const currentTime = event.target.getCurrentTime()
+//               const duration = event.target.getDuration() || 0
+
+//               // Update time and last update timestamp
+//               setPlayerTime(currentTime)
+//               lastTimeRef.current = currentTime
+//               setLastTimeUpdate(Date.now())
+
+//               // Update hotspot visibility
+//               if (currentScene?.hotspots) {
+//                 setHotspots((prevHotspots) =>
+//                   prevHotspots.map((hotspot) => {
+//                     const shouldBeVisible = currentTime >= hotspot.startTime
+//                     return {
+//                       ...hotspot,
+//                       visible: shouldBeVisible,
+//                     }
+//                   }),
+//                 )
+//               }
+
+//               // Check if we're near the end of the video (2 seconds before end)
+//               if (duration > 0 && currentTime > 0) {
+//                 const timeRemaining = duration - currentTime
+//                 console.log(`Time remaining: ${timeRemaining.toFixed(1)}s, Duration: ${duration.toFixed(1)}s`)
+
+//                 // If we're 2 seconds from the end and not already showing the prompt
+//                 if (timeRemaining <= 2 && !nearEnd && !showEndPrompt) {
+//                   console.log("Near end of video - pausing and showing prompt")
+//                   setNearEnd(true)
+
+//                   // Pause the video
+//                   event.target.pauseVideo()
+//                   setIsPlaying(false)
+
+//                   // Show the end prompt
+//                   setEndPromptType("auto")
+//                   setShowEndPrompt(true)
+//                 }
+//               }
+//             } catch (err) {
+//               console.error("Error getting current time:", err)
+//             }
+//           }
+//         }, 500)
+//       } catch (err) {
+//         console.error("Error in onPlayerReady:", err)
+//       }
+
+//       // Apply protection but allow settings button to be clicked
+//       setTimeout(applyYouTubeProtection, 1000)
+//     }
+
+//     function onPlayerStateChange(event: any) {
+//       // YT.PlayerState.PLAYING = 1
+//       if (event.data === 1) {
+//         setIsPlaying(true)
+//         setIsLoading(false)
+
+//         // Reset end-of-video flags when video starts playing
+//         setNearEnd(false)
+//         setShowEndPrompt(false)
+//       }
+
+//       // YT.PlayerState.PAUSED = 2
+//       if (event.data === 2) {
+//         setIsPlaying(false)
+//       }
+
+//       // YT.PlayerState.ENDED = 0
+//       if (event.data === 0) {
+//         console.log("Video ended naturally - showing prompt")
+//         // Video ended naturally
+//         setEndPromptType("auto")
+//         setShowEndPrompt(true)
+//         setNearEnd(true)
+//       }
+//     }
+
+//     function onPlayerError(event: any) {
+//       setError(`YouTube player error: ${event.data}`)
+//       setIsLoading(false)
+
+//       // Use fallback method
+//       loadVideoWithFallbackMethod()
+//     }
+
+//     // Start initialization
+//     initializePlayer()
+
+//     // Set a timeout to use fallback method if player doesn't initialize
+//     const fallbackTimeout = setTimeout(() => {
+//       if (!playerInitializedRef.current) {
+//         loadVideoWithFallbackMethod()
+//       }
+//     }, 5000)
+
+//     // Clean up
+//     return () => {
+//       clearTimeout(fallbackTimeout)
+
+//       if (timeUpdateIntervalRef.current) {
+//         clearInterval(timeUpdateIntervalRef.current)
+//         timeUpdateIntervalRef.current = null
+//       }
+
+//       if (autoplayTimeoutRef.current) {
+//         clearTimeout(autoplayTimeoutRef.current)
+//         autoplayTimeoutRef.current = null
+//       }
+
+//       if (endPromptTimeoutRef.current) {
+//         clearTimeout(endPromptTimeoutRef.current)
+//         endPromptTimeoutRef.current = null
+//       }
+
+//       // Destroy player if it exists
+//       if (playerRef.current && typeof playerRef.current.destroy === "function") {
+//         try {
+//           playerRef.current.destroy()
+//         } catch (err) {
+//           console.error("Error destroying player:", err)
+//         }
+//         playerRef.current = null
+//       }
+//     }
+//   }, [currentScene, videoId, navigate, currentTour, isTransitioning])
+
+//   // Add global protection against keyboard shortcuts
+//   useEffect(() => {
+//     const handleKeyDown = (e: KeyboardEvent) => {
+//       // Prevent Ctrl+U (view source), Ctrl+S (save), Ctrl+S (save), Ctrl+C (copy), etc.
+//       if ((e.ctrlKey || e.metaKey) && (e.key === "u" || e.key === "s" || e.key === "c")) {
+//         e.preventDefault()
+//         return false
+//       }
+//     }
+
+//     document.addEventListener("keydown", handleKeyDown)
+
+//     return () => {
+//       document.removeEventListener("keydown", handleKeyDown)
+//     }
+//   }, [])
+
+//   // Handle transition to next scene with animation
+//   const handleTransition = (nextSceneId: number) => {
+//     console.log(`Attempting transition to scene ${nextSceneId}`)
+
+//     if (isTransitioning) {
+//       console.log("Already transitioning, ignoring request")
+//       return
+//     }
+
+//     if (!nextSceneId) {
+//       console.error("No next scene ID provided for transition")
+//       return
+//     }
+
+//     setIsTransitioning(true)
+//     setTransitionProgress(0)
+//     setShowEndPrompt(false)
+
+//     // Pause the video
+//     if (playerRef.current && typeof playerRef.current.pauseVideo === "function") {
+//       try {
+//         playerRef.current.pauseVideo()
+//       } catch (err) {
+//         console.error("Error pausing video:", err)
+//       }
+//     }
+
+//     // Animate the transition progress
+//     const startTime = performance.now()
+//     const duration = 1500 // 1.5 seconds
+
+//     const animateTransition = (timestamp: number) => {
+//       const elapsed = timestamp - startTime
+//       const progress = Math.min(elapsed / duration, 1)
+//       setTransitionProgress(progress * 100)
+
+//       if (progress < 1) {
+//         transitionAnimationRef.current = requestAnimationFrame(animateTransition)
+//       } else {
+//         // Transition complete, navigate to next scene
+//         console.log(`Transition complete, navigating to scene ${nextSceneId}`)
+//         navigate(`/virtual-tour/${currentTour.id}?scene=${nextSceneId}`)
+
+//         // Reset transition state after navigation
+//         setTimeout(() => {
+//           setIsTransitioning(false)
+//           setTransitionProgress(0)
+//           setNearEnd(false)
+//         }, 100)
+//       }
+//     }
+
+//     transitionAnimationRef.current = requestAnimationFrame(animateTransition)
+//   }
+
+//   // Handle replay current scene
+//   const handleReplay = () => {
+//     setShowEndPrompt(false)
+//     setNearEnd(false)
+
+//     if (playerRef.current && typeof playerRef.current.seekTo === "function") {
+//       try {
+//         // Seek to beginning
+//         playerRef.current.seekTo(0)
+//         // Play the video
+//         playerRef.current.playVideo()
+//         setIsPlaying(true)
+//       } catch (err) {
+//         console.error("Error replaying video:", err)
+//       }
+//     }
+//   }
+
+//   // Ensure autoplay after navigation
+//   useEffect(() => {
+//     // This effect runs after navigation is complete
+//     if (!isTransitioning && playerRef.current && typeof playerRef.current.playVideo === "function") {
+//       // Set a short timeout to ensure the player is ready
+//       autoplayTimeoutRef.current = window.setTimeout(() => {
+//         try {
+//           playerRef.current.playVideo()
+//           setIsPlaying(true)
+//         } catch (err) {
+//           console.error("Error auto-playing video after transition:", err)
+//         }
+//       }, 500)
+//     }
+//   }, [isTransitioning, sceneId, playerReady])
+
+//   // Fallback method to load YouTube video directly via iframe
+//   const loadVideoWithFallbackMethod = () => {
+//     if (!videoId || !playerContainerRef.current) return
+
+//     // Clear player container
+//     playerContainerRef.current.innerHTML = ""
+
+//     // Create a direct iframe with parameters to hide controls and autoplay
+//     const iframe = document.createElement("iframe")
+//     iframe.width = "100%"
+//     iframe.height = "100%"
+//     // Add quality parameter to the URL but allow settings button
+//     iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=1&disablekb=1&fs=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3`
+//     iframe.title = "YouTube video player"
+//     iframe.frameBorder = "0"
+//     iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+//     iframe.allowFullscreen = true
+
+//     playerContainerRef.current.appendChild(iframe)
+//     setIsLoading(false)
+//     setIsPlaying(true)
+
+//     // Add a transparent overlay to prevent interaction with YouTube controls except settings
+//     const overlay = document.createElement("div")
+//     overlay.style.position = "absolute"
+//     overlay.style.top = "0"
+//     overlay.style.left = "0"
+//     overlay.style.width = "100%"
+//     overlay.style.height = "100%"
+//     overlay.style.zIndex = "10"
+//     overlay.style.background = "transparent"
+//     overlay.style.userSelect = "none"
+
+//     // Prevent right-click
+//     overlay.addEventListener("contextmenu", (e) => {
+//       e.preventDefault()
+//       return false
+//     })
+
+//     // Allow click events to pass through for play/pause and settings
+//     overlay.addEventListener("click", (e) => {
+//       // Check if the click is on the settings button area (bottom right corner)
+//       const rect = overlay.getBoundingClientRect()
+//       const x = e.clientX - rect.left
+//       const y = e.clientY - rect.top
+
+//       // If click is in the bottom right corner (where settings button is)
+//       if (x > rect.width - 50 && y > rect.height - 50) {
+//         // Let the click pass through to the YouTube controls
+//         overlay.style.pointerEvents = "none"
+//         setTimeout(() => {
+//           overlay.style.pointerEvents = "all"
+//         }, 100)
+//         return
+//       }
+
+//       setIsPlaying(!isPlaying)
+//     })
+
+//     playerContainerRef.current.appendChild(overlay)
+
+//     // Also add event listeners to the document to prevent keyboard shortcuts
+//     document.addEventListener("keydown", (e) => {
+//       // Prevent Ctrl+U (view source), Ctrl+S (save), etc.
+//       if ((e.ctrlKey || e.metaKey) && (e.key === "u" || e.key === "s" || e.key === "c")) {
+//         e.preventDefault()
+//         return false
+//       }
+//     })
+//   }
+
+//   // Toggle fullscreen
+//   const toggleFullscreen = () => {
+//     if (!document.fullscreenElement) {
+//       containerRef.current?.requestFullscreen().catch((err) => {
+//         console.error(`Error attempting to enable fullscreen: ${err.message}`)
+//       })
+//       setIsFullscreen(true)
+//     } else {
+//       document.exitFullscreen()
+//       setIsFullscreen(false)
+//     }
+//   }
+
+//   // Handle fullscreen change events
+//   useEffect(() => {
+//     const handleFullscreenChange = () => {
+//       setIsFullscreen(!!document.fullscreenElement)
+//     }
+
+//     document.addEventListener("fullscreenchange", handleFullscreenChange)
+//     return () => {
+//       document.removeEventListener("fullscreenchange", handleFullscreenChange)
+//     }
+//   }, [])
+
+//   // Apply YouTube protection with settings button visible
+//   useEffect(() => {
+//     // Apply protection immediately
+//     applyYouTubeProtection()
+
+//     // Set up an interval to continuously apply protection
+//     const protectionInterval = setInterval(() => {
+//       applyYouTubeProtection()
+//     }, 1000) // Check every second
+
+//     return () => {
+//       clearInterval(protectionInterval)
+//     }
+//   }, [])
+
+//   // Handle back button click
+//   const handleBackClick = () => {
+//     navigate("/virtual-tour")
+//   }
+
+//   // Toggle play/pause
+//   const handlePlayPause = () => {
+//     if (!playerRef.current) return
+
+//     if (isPlaying) {
+//       playerRef.current.pauseVideo()
+//     } else {
+//       playerRef.current.playVideo()
+//     }
+
+//     setIsPlaying(!isPlaying)
+//   }
+
+//   // Toggle mute
+//   const handleToggleMute = () => {
+//     if (!playerRef.current) return
+
+//     if (isMuted) {
+//       playerRef.current.unMute()
+//     } else {
+//       playerRef.current.mute()
+//     }
+
+//     setIsMuted(!isMuted)
+//   }
+
+//   // Handle hotspot click
+//   const handleHotspotClick = (targetSceneId: number) => {
+//     console.log(`Hotspot clicked for scene ${targetSceneId}`)
+
+//     // Store the target scene ID for the prompt
+//     const clickedHotspot = hotspots.find((h) => h.targetSceneId === targetSceneId && h.visible)
+
+//     if (clickedHotspot) {
+//       setEndPromptType("manual")
+//       setShowEndPrompt(true)
+
+//       // Pause the video if it's playing
+//       if (isPlaying && playerRef.current && typeof playerRef.current.pauseVideo === "function") {
+//         try {
+//           playerRef.current.pauseVideo()
+//           setIsPlaying(false)
+//         } catch (err) {
+//           console.error("Error pausing video:", err)
+//         }
+//       }
+//       // Store the target scene ID for later use
+//       ;(window as any).tempTargetSceneId = targetSceneId
+//     }
+//   }
+
+//   // Clean up on unmount
+//   useEffect(() => {
+//     return () => {
+//       if (transitionAnimationRef.current) {
+//         cancelAnimationFrame(transitionAnimationRef.current)
+//       }
+
+//       if (transitionTimeoutRef.current) {
+//         clearTimeout(transitionTimeoutRef.current)
+//       }
+
+//       if (timeUpdateIntervalRef.current) {
+//         clearInterval(timeUpdateIntervalRef.current)
+//       }
+
+//       if (autoplayTimeoutRef.current) {
+//         clearTimeout(autoplayTimeoutRef.current)
+//       }
+
+//       if (endPromptTimeoutRef.current) {
+//         clearTimeout(endPromptTimeoutRef.current)
+//       }
+//     }
+//   }, [])
+
+//   // Prevent right-click
+//   const handleContextMenu = (e: React.MouseEvent) => {
+//     e.preventDefault()
+//     return false
+//   }
+
+//   // If there's an error, show it
+//   if (error) {
 //     return (
-//       <div className="flex items-center justify-center h-screen bg-black">
-//         <div className="text-white text-center">
-//           <h2 className="text-2xl mb-4">Tour not found</h2>
-//           <button
-//             className="px-4 py-2 bg-[#97E12B] text-black rounded-md hover:bg-opacity-80 transition-colors"
-//             onClick={() => navigate("/virtual-tour")}
-//           >
-//             Back to Tours
-//           </button>
-//         </div>
+//       <div className="w-full h-screen bg-black flex items-center justify-center flex-col">
+//         <div className="text-white text-xl mb-4">Error: {error}</div>
+//         <button
+//           onClick={handleBackClick}
+//           className="flex items-center gap-2 text-white bg-[#1A2E0D] hover:bg-[#2A4A15] px-4 py-2 rounded-full transition-colors"
+//         >
+//           <ArrowLeft size={20} />
+//           <span>Back to Tours</span>
+//         </button>
 //       </div>
 //     )
 //   }
 
-//   // Handle hotspot clicks to navigate between scenes
-//   const handleHotspotClick = (targetSceneId: number) => {
-//     console.log("Hotspot clicked in parent component, navigating to scene:", targetSceneId)
-
-//     // Check if the target scene exists
-//     const targetScene = currentTour?.scenes.find((scene) => scene.id === targetSceneId)
-//     if (!targetScene) {
-//       console.error(`Target scene ${targetSceneId} not found!`)
-//       return
-//     }
-
-//     setTransitioningToScene(targetSceneId)
-
-//     // Add a slight delay before changing scenes for better UX
-//     setTimeout(() => {
-//       setCurrentSceneId(targetSceneId)
-//       setTransitioningToScene(null)
-
-//       // Update URL with new scene ID
-//       const newSearchParams = new URLSearchParams(searchParams)
-//       newSearchParams.set("scene", targetSceneId.toString())
-//       navigate(`/virtual-tour/${currentTourId}?${newSearchParams.toString()}`, { replace: true })
-//     }, 300)
+//   // If tour or scene is not loaded yet, show loading
+//   if (!currentTour || !currentScene) {
+//     return (
+//       <div className="w-full h-screen bg-black flex items-center justify-center">
+//         <div className="text-white text-xl">Loading tour...</div>
+//       </div>
+//     )
 //   }
 
-//   // Handle user interaction notification
-//   const handleUserInteractionNotification = useCallback(() => {
-//     setHasUserInteracted(true)
-//   }, [])
-
-//   // Preload the next scene's video to reduce buffering when navigating
-//   const preloadNextScene = useCallback(() => {
-//     if (!currentTour || !currentScene) return
-
-//     // Find the current scene index
-//     const currentSceneIndex = currentTour.scenes.findIndex((scene) => scene.id === currentSceneId)
-//     if (currentSceneIndex === -1) return
-
-//     // Get the next scene (if any)
-//     const nextScene = currentTour.scenes[currentSceneIndex + 1]
-//     if (!nextScene) return
-
-//     console.log("Preloading next scene:", nextScene.id, nextScene.videoKey)
-
-//     // Start fetching the signed URL in the background
-//     getSignedVideoUrl(nextScene.videoKey)
-//       .then((url) => {
-//         console.log("Preloaded signed URL for next scene")
-//         // Create a hidden video element to start buffering
-//         const video = document.createElement("video")
-//         video.style.display = "none"
-//         video.preload = "auto"
-//         video.src = url
-//         video.load()
-
-//         // Remove after 10 seconds to avoid memory issues
-//         setTimeout(() => {
-//           if (document.body.contains(video)) {
-//             try {
-//               document.body.removeChild(video)
-//             } catch (e) {
-//               console.warn("Could not remove preload video:", e)
-//             }
-//           }
-//         }, 10000)
-
-//         document.body.appendChild(video)
-//       })
-//       .catch((err) => console.error("Error preloading next scene:", err))
-//   }, [currentTourId, currentSceneId, currentTour, currentScene])
-
-//   // Set up preloading when the component mounts and when video loads
-//   useEffect(() => {
-//     // Set isMounted to true after the first render
-//     if (!isMounted.current) {
-//       isMounted.current = true
-//     }
-
-//     // Only preload if we have a loaded video and we're not currently loading
-//     if (isMounted.current && !isLoading && videoUrl) {
-//       // Add a slight delay to prioritize current video playback
-//       const timer = setTimeout(() => {
-//         preloadNextScene()
-//       }, 5000) // Wait 5 seconds after current video loads
-
-//       return () => clearTimeout(timer)
-//     }
-//   }, [isLoading, videoUrl, preloadNextScene])
-
 //   return (
-//     <div className="relative w-full h-screen overflow-hidden bg-black">
-//       {/* Debug info */}
-//       <div className="absolute top-20 left-5 z-50 bg-black bg-opacity-70 p-2 text-white text-xs">
-//         <p>Tour ID: {currentTourId}</p>
-//         <p>Scene ID: {currentSceneId}</p>
-//         <p>Scene from URL: {sceneParam || "None"}</p>
-//         <p>Video Key: {currentScene?.videoKey || "None"}</p>
-//         <p>Has Video URL: {videoUrl ? "Yes" : "No"}</p>
-//         <p>Quality: {selectedQuality}</p>
-//         <p>Loading: {isLoading ? "Yes" : "No"}</p>
-//         <p>Error: {hasError ? "Yes" : "No"}</p>
-//         <p>S3 Connection: {connectionTest ? (connectionTest.success ? "Success" : "Failed") : "Testing..."}</p>
-//         <p>Connection Message: {connectionTest?.message || "N/A"}</p>
-//         <p>Preloading: {!isLoading && videoUrl ? "Active" : "Waiting for current video"}</p>
-//         <p>User Interacted: {hasUserInteracted ? "Yes" : "No"}</p>
-//         <p>Video Component Key: {videoKey}</p>
-//       </div>
-
-//       {/* Force S3 button */}
-//       <button
-//         onClick={() => setForceS3(!forceS3)}
-//         className="absolute top-5 right-5 z-20 px-4 py-2 bg-[#5A8E00] text-white border-none rounded-md cursor-pointer hover:bg-opacity-80 transition-colors"
-//       >
-//         {forceS3 ? "Disable Force S3" : "Force S3"}
-//       </button>
-
-//       {/* Test S3 Connection button */}
-//       <button
-//         onClick={async () => {
-//           try {
-//             setConnectionTest(null) // Reset to show testing
-//             const result = await testS3Connection()
-//             setConnectionTest(result)
-//             console.log("S3 Connection Test:", result)
-
-//             if (result.success && currentScene?.videoKey) {
-//               // If connection is successful, try to get the video URL directly
-//               const url = await getSignedVideoUrl(currentScene.videoKey)
-//               console.log("Test URL generated:", url)
-//               setVideoUrl(url)
-//             }
-//           } catch (error) {
-//             console.error("Error in test button:", error)
-//             setConnectionTest({
-//               success: false,
-//               message: error instanceof Error ? error.message : String(error),
-//             })
-//           }
+//     <div
+//       className="w-full h-screen bg-black relative overflow-hidden"
+//       ref={containerRef}
+//       onContextMenu={handleContextMenu}
+//     >
+//       {/* YouTube player */}
+//       <div
+//         id="youtube-player-container"
+//         className="w-full h-full relative bg-black"
+//         ref={playerContainerRef}
+//         onContextMenu={(e) => {
+//           e.preventDefault()
+//           return false
 //         }}
-//         className="absolute top-5 right-40 z-20 px-4 py-2 bg-[#5A8E00] text-white border-none rounded-md cursor-pointer hover:bg-opacity-80 transition-colors"
 //       >
-//         Test S3 Now
-//       </button>
+//         <div id="youtube-player" className="w-full h-full"></div>
 
-//       {/* Back button */}
-//       <button
-//         onClick={() => navigate("/virtual-tour")}
-//         className="absolute top-5 left-5 z-20 px-4 py-2 bg-[#5A8E00] text-white border-none rounded-md cursor-pointer hover:bg-opacity-80 transition-colors"
-//       >
-//         Back
-//       </button>
+//         <div
+//           className="absolute inset-0 z-15"
+//           style={{ pointerEvents: "all" }}
+//           onContextMenu={(e) => {
+//             e.preventDefault()
+//             e.stopPropagation()
+//             return false
+//           }}
+//           onClick={(e) => {
+//             // Check if the click is on the settings button area (bottom right corner)
+//             const rect = e.currentTarget.getBoundingClientRect()
+//             const x = e.clientX - rect.left
+//             const y = e.clientY - rect.top
 
-//       {/* Scene indicator */}
-//       <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 z-20 px-4 py-2 bg-black bg-opacity-70 text-white rounded-full">
-//         Scene {currentSceneId} of {currentTour.scenes.length}
+//             // If click is in the bottom right corner (where settings button is)
+//             if (x > rect.width - 50 && y > rect.height - 50) {
+//               // Let the click pass through to the YouTube controls
+//               return
+//             }
+
+//             // Allow click to toggle play/pause but prevent right-click
+//             if (!isTransitioning && playerRef.current) {
+//               handlePlayPause()
+//             }
+//           }}
+//         ></div>
 //       </div>
+
+//       {/* UI controls */}
+//       <div className="absolute top-0 left-0 w-full z-20 p-4 flex justify-between items-center">
+//         {/* Back button */}
+//         <button
+//           onClick={handleBackClick}
+//           className="flex items-center gap-2 text-white bg-[#1A2E0D]/80 hover:bg-[#2A4A15] px-4 py-2 rounded-full transition-colors"
+//         >
+//           <ArrowLeft size={20} />
+//           <span>Back</span>
+//         </button>
+
+//         {/* Tour title */}
+//         <div className="text-white text-lg font-medium bg-[#1A2E0D]/80 px-4 py-2 rounded-full">
+//           {currentTour.title} - {currentScene.title || `Scene ${sceneId}`}
+//         </div>
+
+//         {/* Fullscreen toggle */}
+//         <button
+//           className="text-white bg-[#1A2E0D]/80 hover:bg-[#2A4A15] p-2 rounded-full transition-colors"
+//           onClick={toggleFullscreen}
+//         >
+//           {isFullscreen ? <Minimize size={20} /> : <Maximize size={20} />}
+//         </button>
+//       </div>
+
+//       {/* Custom player controls */}
+//       <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 bg-[#1A2E0D]/80 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-4">
+//         <button onClick={handlePlayPause} className="text-white hover:text-[#97E12B] transition-colors">
+//           {isPlaying ? <Pause size={24} /> : <Play size={24} />}
+//         </button>
+
+//         <button onClick={handleToggleMute} className="text-white hover:text-[#97E12B] transition-colors">
+//           {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
+//         </button>
+
+//         <button onClick={handleReplay} className="text-white hover:text-[#97E12B] transition-colors">
+//           <RefreshCw size={24} />
+//         </button>
+
+//         {/* Removed custom quality selector */}
+
+//         {currentScene.nextSceneId && (
+//           <button
+//             onClick={() => handleTransition(currentScene.nextSceneId)}
+//             className="flex items-center gap-1 text-white bg-[#97E12B]/20 hover:bg-[#97E12B]/40 px-3 py-1 rounded-full transition-colors"
+//           >
+//             <span>Skip</span>
+//             <ChevronRight size={16} />
+//           </button>
+//         )}
+//       </div>
+
+//       {/* Hotspots */}
+//       {hotspots.map((hotspot) =>
+//         hotspot.visible ? (
+//           <button
+//             key={hotspot.id}
+//             onClick={() => handleHotspotClick(hotspot.targetSceneId)}
+//             className="absolute z-20 transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-all duration-300 hover:scale-110"
+//             style={{
+//               left: `${hotspot.position.x}%`,
+//               top: `${hotspot.position.y}%`,
+//             }}
+//           >
+//             <div className="relative">
+//               <div className="w-12 h-12 rounded-full bg-[#97E12B] flex items-center justify-center shadow-lg">
+//                 <div className="w-3 h-3 bg-white rounded-full"></div>
+//               </div>
+//               <div className="absolute inset-0 rounded-full animate-ping bg-[#97E12B]/50"></div>
+
+//               {/* Hotspot tooltip */}
+//               <div className="absolute top-14 left-1/2 transform -translate-x-1/2 w-48 bg-[#1A2E0D]/90 text-white rounded-lg p-2 text-sm">
+//                 <h3 className="font-medium text-[#97E12B] mb-1">{hotspot.title}</h3>
+//                 <p className="text-xs text-white/90">{hotspot.description}</p>
+//               </div>
+//             </div>
+//           </button>
+//         ) : null,
+//       )}
 
 //       {/* Loading overlay */}
 //       {isLoading && (
-//         <div className="absolute inset-0 z-50 flex items-center justify-center bg-black">
-//           <LoadingSpinner />
-//         </div>
-//       )}
-
-//       {/* Transition overlay */}
-//       {transitioningToScene !== null && (
-//         <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black">
-//           <LoadingSpinner />
-//           <p className="mt-4 text-white">Transitioning to Scene {transitioningToScene}...</p>
-//         </div>
-//       )}
-
-//       {/* Error message */}
-//       {hasError && (
-//         <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black bg-opacity-80">
-//           <div className="text-white text-center">
-//             <h2 className="text-2xl mb-4">Failed to load video</h2>
-//             <button
-//               className="px-4 py-2 bg-[#97E12B] text-black rounded-md hover:bg-opacity-80 transition-colors"
-//               onClick={() => window.location.reload()}
-//             >
-//               Try Again
-//             </button>
+//         <div className="absolute inset-0 bg-black/90 flex items-center justify-center z-30">
+//           <div className="text-white text-xl flex flex-col items-center">
+//             <div className="w-16 h-16 border-4 border-[#97E12B]/30 border-t-[#97E12B] rounded-full animate-spin mb-4"></div>
+//             <div>Loading video...</div>
 //           </div>
 //         </div>
 //       )}
 
-//       {/* Video Viewer with Error Boundary */}
-//       <ErrorBoundary
-//         FallbackComponent={ErrorFallback}
-//         onReset={() => {
-//           // Reset the error state
-//           setHasError(false)
-//           // Attempt to reload the video
-//           if (currentScene?.videoKey) {
-//             getSignedVideoUrl(currentScene.videoKey)
-//               .then((url) => setVideoUrl(url))
-//               .catch((err) => {
-//                 console.error("Error reloading video:", err)
-//                 setHasError(true)
-//               })
-//           }
-//         }}
-//       >
-//         {/* Use the key prop to force remount when changing scenes */}
-//         <SimpleVideoViewer
-//           key={videoKey}
-//           videoUrl={videoUrl}
-//           hotspots={currentScene?.hotspots?.map((hotspot) => ({
-//             ...hotspot,
-//             id: Number(hotspot.id), // Convert id to number
-//             tooltip: `Go to Scene ${hotspot.targetSceneId}`,
-//           }))}
-//           onHotspotClick={handleHotspotClick}
-//           autoPlay={hasUserInteracted}
-//           onUserInteraction={handleUserInteractionNotification}
-//           initialQuality={selectedQuality}
-//         />
-//       </ErrorBoundary>
+//       {/* End of video prompt overlay */}
+//       <div className="relative z-40">
+//         {showEndPrompt && (
+//           <div className="fixed inset-0 bg-black/80 flex items-center justify-center animate-fadeIn">
+//             <div className="bg-[#1A2E0D] rounded-xl p-6 max-w-md w-full animate-scaleIn shadow-xl">
+//               <div className="text-center">
+//                 <h2 className="text-[#97E12B] text-2xl font-bold mb-2 animate-slideDown">
+//                   {endPromptType === "auto" ? "You've reached the end of this scene!" : "Explore a new location?"}
+//                 </h2>
 
-//       {/* Add HotspotDebugger */}
-//       <HotspotDebugger onHotspotClick={handleHotspotClick} />
+//                 <p className="text-white mb-6 animate-fadeIn" style={{ animationDelay: "0.2s" }}>
+//                   {endPromptType === "auto"
+//                     ? "Would you like to continue to the next scene or replay this one?"
+//                     : "Would you like to visit this new location or continue exploring the current scene?"}
+//                 </p>
+
+//                 <div
+//                   className="flex flex-col sm:flex-row gap-4 justify-center animate-fadeIn"
+//                   style={{ animationDelay: "0.4s" }}
+//                 >
+//                   <button
+//                     onClick={() =>
+//                       handleTransition(
+//                         endPromptType === "auto" ? currentScene.nextSceneId : (window as any).tempTargetSceneId,
+//                       )
+//                     }
+//                     className="bg-[#97E12B] text-[#1A2E0D] px-6 py-3 rounded-full font-medium flex items-center justify-center gap-2 hover:bg-[#86c728] transition-colors animate-pulse"
+//                   >
+//                     {currentScene.id === 5
+//                       ? "Restart All Over"
+//                       : endPromptType === "auto"
+//                         ? "Continue to Next Scene"
+//                         : "Go to New Location"}
+//                     <ChevronRight size={20} />
+//                   </button>
+//                   <button
+//                     onClick={handleReplay}
+//                     className="bg-white/10 text-white px-6 py-3 rounded-full font-medium hover:bg-white/20 transition-colors"
+//                   >
+//                     {currentScene.id === 5
+//                       ? "Restart This Scene"
+//                       : endPromptType === "auto"
+//                         ? "Replay This Scene"
+//                         : "Stay Here"}
+//                   </button>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+//         )}
+//       </div>
+
+//       {/* Transition overlay */}
+//       {isTransitioning && (
+//         <div className="fixed inset-0 bg-black/80 z-50 flex flex-col items-center justify-center">
+//           <div className="text-white text-xl font-medium mb-8">Transitioning to next scene...</div>
+//           <div className="w-64 h-3 bg-[#1A2E0D] rounded-full overflow-hidden">
+//             <div className="h-full bg-[#97E12B] rounded-full" style={{ width: `${transitionProgress}%` }}></div>
+//           </div>
+//         </div>
+//       )}
+
+//       {/* Scene description */}
+//       <div className="absolute bottom-24 left-4 text-white text-sm bg-[#1A2E0D]/80 px-3 py-2 rounded-lg z-20 max-w-xs">
+//         <h3 className="font-medium text-[#97E12B]">{currentScene.title || `Scene ${sceneId}`}</h3>
+//         <p className="text-xs text-white/90">{currentScene.description || "Explore this beautiful location."}</p>
+//       </div>
+
+//       {/* Debug info - can be removed in production */}
+//       <div className="absolute bottom-4 left-4 text-white text-xs bg-black/50 px-2 py-1 rounded z-20">
+//         Time: {playerTime.toFixed(1)}s | Scene: {currentScene.id} | Next: {currentScene.nextSceneId || "None"} |
+//         Hotspots: {hotspots.filter((h) => h.visible).length}/{hotspots.length} visible
+//       </div>
 //     </div>
 //   )
 // }
-
-// export default EnhancedSingleVirtualTourPage
-
