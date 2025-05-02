@@ -29,7 +29,7 @@ export default function PlayerControls({
   handleTransition,
 }: PlayerControlsProps) {
   return (
-    <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 bg-[#1A2E0D]/80 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-4">
+    <div className="bg-[#1A2E0D]/80 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-4 shadow-lg">
       <button onClick={handlePlayPause} className="text-white hover:text-[#97E12B] transition-colors">
         {isPlaying ? <Pause size={24} /> : <Play size={24} />}
       </button>

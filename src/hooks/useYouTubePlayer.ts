@@ -44,6 +44,7 @@ export function useYouTubePlayer(
   const endPromptTimeoutRef = useRef<number | null>(null)
   const lastTimeRef = useRef<number>(0)
   const endPromptShownRef = useRef(false)
+  const seekingRef = useRef(false)
 
   // Load YouTube API
   useEffect(() => {
@@ -449,13 +450,111 @@ export function useYouTubePlayer(
     }
   }
 
+  // NEW FUNCTIONS FOR PLAYBACK CONTROLS
+
+  /**
+   * Seek to a specific time in the video
+   * @param time Time in seconds to seek to
+   */
+  const seekTo = (time: number) => {
+    if (!playerRef.current || isTransitioning || !playerReady) return
+
+    try {
+      console.log(`Seeking to ${time.toFixed(2)} seconds`)
+
+      // Mark that we're seeking to prevent end prompt from showing during seek
+      seekingRef.current = true
+
+      // Reset end-of-video flags if seeking away from the end
+      if (time < videoDuration - 3) {
+        setNearEnd(false)
+        setShowEndPrompt(false)
+        endPromptShownRef.current = false
+      }
+
+      // Seek to the specified time
+      playerRef.current.seekTo(time, true)
+
+      // Update the player time state immediately for a more responsive UI
+      setPlayerTime(time)
+
+      // If the video was paused, resume playback
+      if (!isPlaying) {
+        playerRef.current.playVideo()
+        setIsPlaying(true)
+      }
+
+      // Clear seeking flag after a short delay
+      setTimeout(() => {
+        seekingRef.current = false
+      }, 500)
+    } catch (err) {
+      console.error("Error seeking to time:", err)
+      seekingRef.current = false
+    }
+  }
+
+  /**
+   * Skip forward 10 seconds in the video
+   */
+  const skipForward = () => {
+    if (!playerRef.current || isTransitioning || !playerReady) return
+
+    try {
+      const currentTime = playerRef.current.getCurrentTime() || 0
+      const duration = videoDuration || playerRef.current.getDuration() || 0
+
+      // Calculate new time, ensuring we don't go past the end
+      const newTime = Math.min(currentTime + 10, duration - 0.1)
+
+      // Use the seekTo function to handle the actual seeking
+      seekTo(newTime)
+    } catch (err) {
+      console.error("Error skipping forward:", err)
+    }
+  }
+
+  /**
+   * Skip backward 10 seconds in the video
+   */
+  const skipBackward = () => {
+    if (!playerRef.current || isTransitioning || !playerReady) return
+
+    try {
+      const currentTime = playerRef.current.getCurrentTime() || 0
+
+      // Calculate new time, ensuring we don't go before the start
+      const newTime = Math.max(currentTime - 10, 0)
+
+      // Use the seekTo function to handle the actual seeking
+      seekTo(newTime)
+    } catch (err) {
+      console.error("Error skipping backward:", err)
+    }
+  }
+
+  /**
+   * Get the current video duration in seconds
+   */
+  const getDuration = () => {
+    if (!playerRef.current || !playerReady) return videoDuration || 0
+
+    try {
+      const duration = playerRef.current.getDuration() || 0
+      return duration > 0 ? duration : videoDuration
+    } catch (err) {
+      console.error("Error getting duration:", err)
+      return videoDuration || 0
+    }
+  }
+
   return {
     playerRef,
     isLoading,
     isPlaying,
     isMuted,
     playerTime,
-    videoDuration,
+    playerDuration: videoDuration, // Expose duration as playerDuration for consistency
     playerReady,
     nearEnd,
     showEndPrompt,
@@ -468,5 +567,10 @@ export function useYouTubePlayer(
     handleToggleMute,
     handleReplay,
     handleQualityChange,
+    // New functions for playback controls
+    seekTo,
+    skipForward,
+    skipBackward,
+    getDuration,
   }
 }

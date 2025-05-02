@@ -1,0 +1,43 @@
+/* Unified control bar styling */
+@keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  /* Smooth transitions for progress bar elements */
+  .progress-fill {
+    transition: width 0.1s linear;
+  }
+  
+  .progress-handle {
+    transition: left 0.1s linear, transform 0.2s ease, opacity 0.2s ease;
+  }
+  
+  /* Hover effects */
+  .progress-bar:hover .progress-handle {
+    opacity: 1 !important;
+    transform: scale(1.2);
+  }
+  
+  .progress-bar:active .progress-handle {
+    opacity: 1 !important;
+    transform: scale(1.3);
+  }
+  
+  /* Fix for the visual separation */
+  .unified-controls {
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.9) 0%,
+      rgba(0, 0, 0, 0.7) 40%,
+      rgba(0, 0, 0, 0.4) 70%,
+      rgba(0, 0, 0, 0) 100%
+    );
+    border-top: none !important;
+    margin-bottom: -1px;
+  }
+  

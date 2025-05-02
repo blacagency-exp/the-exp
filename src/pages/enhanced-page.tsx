@@ -12,6 +12,7 @@ import PlayerControls from "../Components/PlayerControls"
 import TransitionOverlay from "../Components/TransitionOverlay"
 import SceneDescription from "../Components/SceneDescription"
 import SceneNavigation from "../Components/Virtual-tour/SceneNavigation"
+import PlaybackControls from "../Components/PlaybackControls"
 // import DebugInfo from "../Components/DebugInfo"
 
 // Import hooks and utilities
@@ -49,17 +50,23 @@ export default function EnhancedSingleVirtualTourPage() {
     isPlaying,
     isMuted,
     playerTime,
-
+    playerDuration,
+    playerReady,
+   
     showEndPrompt,
     endPromptType,
     availableQualities,
     currentQuality,
     setShowEndPrompt,
-
+   
     handlePlayPause,
     handleToggleMute,
     handleReplay,
     handleQualityChange,
+    seekTo,
+    skipForward,
+    skipBackward,
+    
   } = useYouTubePlayer(videoId, currentScene, playerContainerRef, isTransitioning)
 
   // Add CSS styles for YouTube player with controls hidden
@@ -279,25 +286,42 @@ export default function EnhancedSingleVirtualTourPage() {
       {/* Scene Navigation Component */}
       {currentTour && <SceneNavigation tour={currentTour} currentSceneId={sceneId} tourId={tourId || 1} />}
 
-      {/* Player Controls Component */}
-      <PlayerControls
-        isPlaying={isPlaying}
-        isMuted={isMuted}
-        currentQuality={currentQuality}
-        availableQualities={availableQualities}
-        currentScene={currentScene}
-        handlePlayPause={handlePlayPause}
-        handleToggleMute={handleToggleMute}
-        handleReplay={handleReplay}
-        handleQualityChange={(quality) => {
-          console.log(`Quality change requested: ${quality}`)
-          handleQualityChange(quality)
-        }}
-        handleTransition={(nextSceneId) => {
-          // Use React Router navigation
-          navigate(`/virtual-tour/${currentTour.id}?scene=${nextSceneId}`)
-        }}
-      />
+      {/* Playback Controls */}
+      {playerReady && !isLoading && !showEndPrompt && (
+        <div className="absolute bottom-0 left-0 right-0 z-20 unified-controls pt-16">
+          <PlaybackControls
+            currentTime={playerTime}
+            duration={playerDuration}
+            onSeek={seekTo}
+            onForward={skipForward}
+            onRewind={skipBackward}
+          />
+        </div>
+      )}
+
+      {/* Player Controls - Now positioned separately and higher up */}
+      {playerReady && !isLoading && !showEndPrompt && (
+        <div className="absolute bottom-20 left-0 right-0 z-20 flex justify-center">
+          <PlayerControls
+            isPlaying={isPlaying}
+            isMuted={isMuted}
+            currentQuality={currentQuality}
+            availableQualities={availableQualities}
+            currentScene={currentScene}
+            handlePlayPause={handlePlayPause}
+            handleToggleMute={handleToggleMute}
+            handleReplay={handleReplay}
+            handleQualityChange={(quality) => {
+              console.log(`Quality change requested: ${quality}`)
+              handleQualityChange(quality)
+            }}
+            handleTransition={(nextSceneId) => {
+              // Use React Router navigation
+              navigate(`/virtual-tour/${currentTour.id}?scene=${nextSceneId}`)
+            }}
+          />
+        </div>
+      )}
 
       {/* Hotspots */}
       {hotspots.map((hotspot) => (
