@@ -11,6 +11,7 @@ import HotspotMarker from "../Components/HotspotMarker"
 import PlayerControls from "../Components/PlayerControls"
 import TransitionOverlay from "../Components/TransitionOverlay"
 import SceneDescription from "../Components/SceneDescription"
+import SceneNavigation from "../Components/Virtual-tour/SceneNavigation"
 // import DebugInfo from "../Components/DebugInfo"
 
 // Import hooks and utilities
@@ -40,7 +41,7 @@ export default function EnhancedSingleVirtualTourPage() {
   const playerContainerRef = useRef<HTMLDivElement>(null)
 
   // Custom hooks
-  const { isTransitioning, transitionProgress,  cleanupTransition } = useTransition()
+  const { isTransitioning, transitionProgress, cleanupTransition } = useTransition()
 
   const {
     playerRef,
@@ -48,13 +49,13 @@ export default function EnhancedSingleVirtualTourPage() {
     isPlaying,
     isMuted,
     playerTime,
-    
+
     showEndPrompt,
     endPromptType,
     availableQualities,
     currentQuality,
     setShowEndPrompt,
-    
+
     handlePlayPause,
     handleToggleMute,
     handleReplay,
@@ -274,6 +275,9 @@ export default function EnhancedSingleVirtualTourPage() {
           {isFullscreen ? <Minimize size={20} /> : <Maximize size={20} />}
         </button>
       </div>
+
+      {/* Scene Navigation Component */}
+      {currentTour && <SceneNavigation tour={currentTour} currentSceneId={sceneId} tourId={tourId || 1} />}
 
       {/* Player Controls Component */}
       <PlayerControls
