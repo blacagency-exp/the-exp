@@ -94,4 +94,80 @@ export const tourData: Tour[] = [
       },
     ],
   },
+  // Add the preview tours with the user's actual YouTube videos
+  {
+    id: 2,
+    title: "Wildlife Park",
+    description: "Discover the diverse wildlife of Plateau State with our immersive virtual tour",
+    scenes: [
+      {
+        id: 1,
+        youtubeId: "j8vSkPiyYMY", // User's actual Wildlife video
+        title: "Wildlife Park Preview",
+        description: "A sneak peek of our upcoming Wildlife Park virtual tour",
+        hotspots: [
+          {
+            id: "wildlife-preview-hotspot",
+            position: { x: 50, y: 50 },
+            targetSceneId: 1, // Loop back to the same scene
+            title: "Coming Soon",
+            description: "Full tour coming soon!",
+            startTime: 44,
+          },
+        ],
+        nextSceneId: 1, // Loop back to the same scene
+      },
+    ],
+  },
+  {
+    id: 3,
+    title: "Shere Hills",
+    description: "Explore the majestic Shere Hills with panoramic views of Jos Plateau",
+    scenes: [
+      {
+        id: 1,
+        youtubeId: "1xRNzW3SO8g", // User's actual Shere Hills video
+        title: "Shere Hills Preview",
+        description: "A sneak peek of our upcoming Shere Hills virtual tour",
+        hotspots: [
+          {
+            id: "shere-hills-preview-hotspot",
+            position: { x: 50, y: 50 },
+            targetSceneId: 1, // Loop back to the same scene
+            title: "Coming Soon",
+            description: "Full tour coming soon!",
+            startTime: 46,
+          },
+        ],
+        nextSceneId: 1, // Loop back to the same scene
+      },
+    ],
+  },
+  {
+    id: 4,
+    title: "Assop Falls",
+    description: "Experience the magnificent Assop Falls with its cascading waters",
+    scenes: [
+      {
+        id: 1,
+        youtubeId: "__i58THPC6w", // User's actual Assop Falls video
+        title: "Assop Falls Preview",
+        description: "A sneak peek of our upcoming Assop Falls virtual tour",
+        hotspots: [
+          {
+            id: "assop-falls-preview-hotspot",
+            position: { x: 50, y: 50 },
+            targetSceneId: 1, // Loop back to the same scene
+            title: "Coming Soon",
+            description: "Full tour coming soon!",
+            startTime: 43,
+          },
+        ],
+        nextSceneId: 1, // Loop back to the same scene
+      },
+    ],
+  },
 ]
+
+// Create a separate array for preview tours for easy access
+export const previewTours = tourData.filter((tour) => tour.id >= 2 && tour.id <= 4)
