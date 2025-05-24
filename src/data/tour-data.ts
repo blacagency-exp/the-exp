@@ -102,7 +102,7 @@ export const tourData: Tour[] = [
     scenes: [
       {
         id: 1,
-        youtubeId: "j8vSkPiyYMY", // User's actual Wildlife video
+        youtubeId: "_aLXGZG3rGU", // User's actual Wildlife video
         title: "Wildlife Park Preview",
         description: "A sneak peek of our upcoming Wildlife Park virtual tour",
         hotspots: [
@@ -126,7 +126,7 @@ export const tourData: Tour[] = [
     scenes: [
       {
         id: 1,
-        youtubeId: "1xRNzW3SO8g", // User's actual Shere Hills video
+        youtubeId: "NgjZAn04w5U", // User's actual Shere Hills video
         title: "Shere Hills Preview",
         description: "A sneak peek of our upcoming Shere Hills virtual tour",
         hotspots: [
@@ -150,7 +150,7 @@ export const tourData: Tour[] = [
     scenes: [
       {
         id: 1,
-        youtubeId: "__i58THPC6w", // User's actual Assop Falls video
+        youtubeId: "PuOQrqIMhE0", // User's actual Assop Falls video
         title: "Assop Falls Preview",
         description: "A sneak peek of our upcoming Assop Falls virtual tour",
         hotspots: [
