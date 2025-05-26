@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useEffect, useRef, useState } from "react"
 import { applyYouTubeProtection, loadVideoWithFallbackMethod } from "../utils/youtube-utils"
 
@@ -45,6 +44,7 @@ export function useYouTubePlayer(
   const lastTimeRef = useRef<number>(0)
   const endPromptShownRef = useRef(false)
   const seekingRef = useRef(false)
+  const qualityForceAppliedRef = useRef(false)
 
   // Load YouTube API
   useEffect(() => {
@@ -77,6 +77,7 @@ export function useYouTubePlayer(
     setNearEnd(false)
     setShowEndPrompt(false)
     endPromptShownRef.current = false
+    qualityForceAppliedRef.current = false
 
     // Clear any existing intervals and timeouts
     if (timeUpdateIntervalRef.current) {
@@ -155,6 +156,121 @@ export function useYouTubePlayer(
       }
     }
 
+    // Helper function to force quality using loadVideoById with more aggressive approach
+    const forceQualityWithReload = (player: any, targetQuality: string) => {
+      try {
+        console.log("Force reloading video with quality:", targetQuality)
+
+        // Get current state
+        const currentTime = player.getCurrentTime() || 0
+        const wasPlaying = player.getPlayerState() === 1
+        const wasMuted = player.isMuted()
+
+        // First, try to set quality directly
+        player.setPlaybackQuality(targetQuality)
+
+        // Then reload video with specific quality and additional parameters
+        player.loadVideoById({
+          videoId: videoId,
+          startSeconds: currentTime,
+          suggestedQuality: targetQuality,
+        })
+
+        // Restore state after a short delay
+        setTimeout(() => {
+          if (wasMuted) {
+            player.mute()
+          }
+
+          // Force quality again after reload
+          player.setPlaybackQuality(targetQuality)
+
+          if (wasPlaying) {
+            player.playVideo()
+          }
+
+          // Verify and force quality multiple times
+          let qualityCheckAttempts = 0
+          const maxQualityChecks = 5
+
+          const checkAndForceQuality = () => {
+            qualityCheckAttempts++
+            const actualQuality = player.getPlaybackQuality()
+            console.log(`Quality check ${qualityCheckAttempts}: ${actualQuality} (target: ${targetQuality})`)
+
+            if (actualQuality !== targetQuality && qualityCheckAttempts < maxQualityChecks) {
+              console.log(`Forcing quality again (attempt ${qualityCheckAttempts})`)
+              player.setPlaybackQuality(targetQuality)
+              setTimeout(checkAndForceQuality, 1000)
+            } else {
+              console.log("Final quality:", actualQuality)
+              setCurrentQuality(actualQuality)
+            }
+          }
+
+          setTimeout(checkAndForceQuality, 1000)
+        }, 500)
+      } catch (err) {
+        console.error("Error force reloading with quality:", err)
+      }
+    }
+
+    // Helper function to set quality with retry mechanism
+    const setQualityWithRetry = (player: any, retryCount = 0) => {
+      const maxRetries = 3 // Reduced retries but more aggressive
+      const retryDelay = 2000 // Increased delay
+
+      try {
+        // Get available quality levels
+        const availableQualities = player.getAvailableQualityLevels()
+        console.log(`Quality attempt ${retryCount + 1}: Available quality levels:`, availableQualities)
+
+        // If we got quality levels, use them
+        if (availableQualities && availableQualities.length > 0) {
+          setAvailableQualities(availableQualities)
+
+          // Set to 4K priority quality
+          const preferredQuality = getHighestQuality(availableQualities)
+          if (preferredQuality !== "auto") {
+            console.log("Setting quality to:", preferredQuality)
+
+            // Use force reload method immediately for better results
+            if (!qualityForceAppliedRef.current) {
+              qualityForceAppliedRef.current = true
+              forceQualityWithReload(player, preferredQuality)
+            } else {
+              // Standard method as fallback
+              player.setPlaybackQuality(preferredQuality)
+              setCurrentQuality(preferredQuality)
+            }
+          } else {
+            setCurrentQuality("auto")
+          }
+        } else if (retryCount < maxRetries) {
+          // Retry if no qualities found and we haven't exceeded max retries
+          console.log(`No qualities found, retrying in ${retryDelay}ms (attempt ${retryCount + 1}/${maxRetries})`)
+          setTimeout(() => setQualityWithRetry(player, retryCount + 1), retryDelay)
+        } else {
+          console.log("Max retries reached, forcing 4K anyway")
+          // Force set to 4K even if we can't detect available qualities
+          try {
+            console.log("Attempting to force 4K quality without detection")
+            forceQualityWithReload(player, "hd2160")
+          } catch (err) {
+            console.error("Error forcing 4K quality:", err)
+            setCurrentQuality("auto")
+          }
+        }
+      } catch (err) {
+        console.error("Error in setQualityWithRetry:", err)
+        if (retryCount < maxRetries) {
+          setTimeout(() => setQualityWithRetry(player, retryCount + 1), retryDelay)
+        } else {
+          setCurrentQuality("auto")
+        }
+      }
+    }
+
     // Player event handlers
     function onPlayerReady(event: any) {
       setIsLoading(false)
@@ -165,52 +281,8 @@ export function useYouTubePlayer(
         // Force play video
         event.target.playVideo()
 
-        // Set the playback quality to highest available
-        try {
-          // Get available quality levels
-          const availableQualities = event.target.getAvailableQualityLevels()
-          console.log("Available quality levels:", availableQualities)
-
-          // If YouTube returns quality levels, use them, otherwise keep our defaults
-          if (availableQualities && availableQualities.length > 0) {
-            setAvailableQualities(availableQualities)
-          } else {
-            console.log("Using default quality levels as YouTube API returned none")
-          }
-
-          // Try to set to 4K first if available
-          if (availableQualities.includes("hd2160")) {
-            console.log("Setting quality to 4K (2160p)")
-            event.target.setPlaybackQuality("hd2160")
-            setCurrentQuality("hd2160")
-          }
-          // Try 1440p next
-          else if (availableQualities.includes("hd1440")) {
-            console.log("Setting quality to 1440p")
-            event.target.setPlaybackQuality("hd1440")
-            setCurrentQuality("hd1440")
-          }
-          // Then 1080p
-          else if (availableQualities.includes("hd1080")) {
-            console.log("Setting quality to 1080p")
-            event.target.setPlaybackQuality("hd1080")
-            setCurrentQuality("hd1080")
-          }
-          // Set to the highest available quality if none of the above are available
-          else if (availableQualities && availableQualities.length > 0) {
-            const highestQuality = availableQualities[0] // First is highest
-            console.log("Setting quality to:", highestQuality)
-            event.target.setPlaybackQuality(highestQuality)
-            setCurrentQuality(highestQuality)
-          } else {
-            // Default to auto if no qualities are available
-            console.log("Setting quality to auto (default)")
-            setCurrentQuality("auto")
-          }
-        } catch (err) {
-          console.error("Error setting video quality:", err)
-          setCurrentQuality("auto")
-        }
+        // Set the playback quality with retry mechanism
+        setQualityWithRetry(event.target)
 
         // Try to get the duration
         try {
@@ -237,7 +309,6 @@ export function useYouTubePlayer(
               // Check if we're near the end of the video (2 seconds before end)
               if (duration > 0 && currentTime > 0) {
                 const timeRemaining = duration - currentTime
-                console.log(`Time remaining: ${timeRemaining.toFixed(1)}s, Duration: ${duration.toFixed(1)}s`)
 
                 // If we're 2 seconds from the end and not already showing the prompt
                 if (timeRemaining <= 2 && !nearEnd && !endPromptShownRef.current) {
@@ -277,6 +348,28 @@ export function useYouTubePlayer(
         if (!endPromptShownRef.current) {
           setNearEnd(false)
           setShowEndPrompt(false)
+        }
+
+        // Try to set quality again when video starts playing (sometimes this works better)
+        if (playerRef.current && !qualityForceAppliedRef.current) {
+          setTimeout(() => {
+            try {
+              const availableQualities = playerRef.current.getAvailableQualityLevels()
+              if (availableQualities && availableQualities.length > 0) {
+                const preferredQuality = getHighestQuality(availableQualities)
+                const currentQuality = playerRef.current.getPlaybackQuality()
+                if (currentQuality !== preferredQuality && preferredQuality !== "auto") {
+                  console.log("Setting quality during playback:", preferredQuality)
+
+                  // Use force reload method for better quality application
+                  qualityForceAppliedRef.current = true
+                  forceQualityWithReload(playerRef.current, preferredQuality)
+                }
+              }
+            } catch (err) {
+              console.error("Error setting quality during playback:", err)
+            }
+          }, 3000)
         }
       }
 
@@ -350,6 +443,61 @@ export function useYouTubePlayer(
     }
   }, [currentScene, videoId, isTransitioning])
 
+  // Add this helper function to get the highest available quality (now prioritizing 4K)
+  function getHighestQuality(qualities: string[]) {
+    const preferredOrder = ["hd2160", "hd1440", "hd1080", "hd720", "large", "medium", "small", "tiny"]
+    for (const q of preferredOrder) {
+      if (qualities.includes(q)) return q
+    }
+    return "auto"
+  }
+
+  // --- Enhanced quality polling with force reload capability ---
+  useEffect(() => {
+    let qualityInterval: number | null = null
+    if (playerRef.current && playerReady && availableQualities.length > 0) {
+      const highestQuality = getHighestQuality(availableQualities)
+      qualityInterval = window.setInterval(() => {
+        try {
+          const currentQ = playerRef.current.getPlaybackQuality()
+          console.log(`Quality check: current=${currentQ}, target=${highestQuality}`)
+
+          if (currentQ !== highestQuality && highestQuality !== "auto") {
+            console.log("Detected quality downgrade, force reloading with:", highestQuality)
+
+            // Use force reload instead of just setPlaybackQuality
+            const currentTime = playerRef.current.getCurrentTime() || 0
+            const wasPlaying = playerRef.current.getPlayerState() === 1
+            const wasMuted = playerRef.current.isMuted()
+
+            // More aggressive reload
+            playerRef.current.setPlaybackQuality(highestQuality)
+
+            setTimeout(() => {
+              playerRef.current.loadVideoById({
+                videoId: videoId,
+                startSeconds: currentTime,
+                suggestedQuality: highestQuality,
+              })
+
+              setTimeout(() => {
+                if (wasMuted) playerRef.current.mute()
+                playerRef.current.setPlaybackQuality(highestQuality)
+                if (wasPlaying) playerRef.current.playVideo()
+                setCurrentQuality(highestQuality)
+              }, 500)
+            }, 100)
+          }
+        } catch (err) {
+          console.error("Error in quality polling:", err)
+        }
+      }, 3000) // Check every 3 seconds
+    }
+    return () => {
+      if (qualityInterval) clearInterval(qualityInterval)
+    }
+  }, [playerReady, availableQualities, videoId])
+
   // Player control functions
   const handlePlayPause = () => {
     if (!playerRef.current) return
@@ -397,54 +545,25 @@ export function useYouTubePlayer(
     if (!playerRef.current || !quality) return
 
     try {
-      console.log(`Attempting to change quality to: ${quality}`)
+      console.log(`Manually changing quality to: ${quality}`)
 
-      // First try the standard method
-      playerRef.current.setPlaybackQuality(quality)
+      // Use force reload method for manual quality changes
+      const currentTime = playerRef.current.getCurrentTime() || 0
+      const wasPlaying = playerRef.current.getPlayerState() === 1
+      const wasMuted = playerRef.current.isMuted()
 
-      // Also try setting the suggested quality as a backup approach
-      if (typeof playerRef.current.setPlaybackQualityRange === "function") {
-        playerRef.current.setPlaybackQualityRange(quality)
-      }
+      playerRef.current.loadVideoById({
+        videoId: videoId,
+        startSeconds: currentTime,
+        suggestedQuality: quality,
+      })
 
-      // Force quality by reloading with quality parameter if needed
-      if (quality !== "auto" && quality !== "default") {
-        const currentTime = playerRef.current.getCurrentTime() || 0
-        const videoId = playerRef.current.getVideoData().video_id
-
-        if (videoId) {
-          // Only reload if we're changing to a specific quality (not auto)
-          // and we're not already at that quality
-          const currentQuality = playerRef.current.getPlaybackQuality()
-
-          if (currentQuality !== quality) {
-            console.log(`Current quality: ${currentQuality}, forcing change to: ${quality}`)
-
-            // Store current state
-            const wasPlaying = !playerRef.current.getPlayerState || playerRef.current.getPlayerState() === 1
-            const wasMuted = playerRef.current.isMuted && playerRef.current.isMuted()
-
-            // Load the video with the specified quality
-            playerRef.current.loadVideoById({
-              videoId: videoId,
-              startSeconds: currentTime,
-              suggestedQuality: quality,
-            })
-
-            // Restore state
-            if (!wasPlaying) {
-              setTimeout(() => playerRef.current.pauseVideo(), 100)
-            }
-
-            if (wasMuted) {
-              setTimeout(() => playerRef.current.mute(), 100)
-            }
-          }
-        }
-      }
-
-      setCurrentQuality(quality)
-      console.log(`Quality changed to: ${quality}`)
+      setTimeout(() => {
+        if (wasMuted) playerRef.current.mute()
+        if (wasPlaying) playerRef.current.playVideo()
+        setCurrentQuality(quality)
+        console.log(`Quality manually changed to: ${quality}`)
+      }, 500)
     } catch (err) {
       console.error("Error changing quality:", err)
     }

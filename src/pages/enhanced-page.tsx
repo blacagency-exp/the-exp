@@ -5,6 +5,7 @@ import type React from "react"
 import { useEffect, useRef, useState } from "react"
 import { useParams, useSearchParams, useNavigate } from "react-router-dom"
 import { ArrowLeft, Maximize, Minimize, ChevronRight } from "lucide-react"
+import { motion } from "framer-motion"
 
 // Import components
 import HotspotMarker from "../Components/HotspotMarker"
@@ -338,59 +339,75 @@ export default function EnhancedSingleVirtualTourPage() {
         </div>
       )}
 
-      {/* End of video prompt overlay - force display with !important if needed */}
-      {showEndPrompt && (
-        <div
-          className="fixed inset-0 bg-black/80 flex items-center justify-center animate-fadeIn z-40"
-          style={{ display: "flex !important" }}
-        >
-          <div className="bg-[#1A2E0D] rounded-xl p-6 max-w-md w-full animate-scaleIn shadow-xl">
-            <div className="text-center">
+     
+        {/* End Prompt */}
+        {showEndPrompt && (
+          <motion.div
+            className="fixed inset-0 flex  items-center justify-center bg-black/50 backdrop-blur-md z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <div className="bg-[#223D13] p-8 rounded-2xl shadow-lg text-center w-full max-w-md relative z-50">
               <h2 className="text-[#97E12B] text-2xl font-bold mb-2 animate-slideDown">
-                {endPromptType === "auto" ? "You've reached the end of this scene!" : "Explore a new location?"}
+                {currentTour.scenes.length > 1
+                  ? endPromptType === "auto"
+                    ? "You've reached the end of this scene!"
+                    : "Explore a new location?"
+                  : "End of Preview"}
               </h2>
+              {/* Prompt Text */}
 
               <p className="text-white mb-6 animate-fadeIn" style={{ animationDelay: "0.2s" }}>
-                {endPromptType === "auto"
-                  ? "Would you like to continue to the next scene or replay this one?"
-                  : "Would you like to visit this new location or continue exploring the current scene?"}
+                {currentTour.scenes.length > 1
+                  ? endPromptType === "auto"
+                    ? "Would you like to continue to the next scene or replay this one?"
+                    : "Would you like to visit this new location or continue exploring the current scene?"
+                  : "Would you like to replay this preview?"}
               </p>
+
+              {/* Buttons */}
 
               <div
                 className="flex flex-col sm:flex-row gap-4 justify-center animate-fadeIn"
                 style={{ animationDelay: "0.4s" }}
               >
-                <button
-                  onClick={() => {
-                    const targetSceneId =
-                      endPromptType === "auto" ? currentScene.nextSceneId : window.tempTargetSceneId || 1
-                    // Use React Router navigation
-                    navigate(`/virtual-tour/${currentTour.id}?scene=${targetSceneId}`)
-                  }}
-                  className="bg-[#97E12B] text-[#1A2E0D] px-6 py-3 rounded-full font-medium flex items-center justify-center gap-2 hover:bg-[#86c728] transition-colors animate-pulse"
-                >
-                  {currentScene.id === 5
-                    ? "Restart All Over"
-                    : endPromptType === "auto"
-                      ? "Continue to Next Scene"
-                      : "Go to New Location"}
-                  <ChevronRight size={20} />
-                </button>
+                {/* Only show "Continue to Next Scene" button for multi-scene tours (not preview tours) */}
+                {currentTour.scenes.length > 1 && (
+                  <button
+                    onClick={() => {
+                      const targetSceneId =
+                        endPromptType === "auto" ? currentScene.nextSceneId : window.tempTargetSceneId || 1
+                      // Use React Router navigation
+                      navigate(`/virtual-tour/${currentTour.id}?scene=${targetSceneId}`)
+                    }}
+                    className="bg-[#97E12B] text-[#1A2E0D] px-6 py-3 rounded-full font-medium flex items-center justify-center gap-2 hover:bg-[#86c728] transition-colors animate-pulse"
+                  >
+                    {currentScene.id === 5
+                      ? "Restart All Over"
+                      : endPromptType === "auto"
+                        ? "Continue to Next Scene"
+                        : "Go to New Location"}
+                    <ChevronRight size={20} />
+                  </button>
+                )}
+
                 <button
                   onClick={handleReplay}
                   className="bg-white/10 text-white px-6 py-3 rounded-full font-medium hover:bg-white/20 transition-colors"
                 >
-                  {currentScene.id === 5
-                    ? "Restart This Scene"
-                    : endPromptType === "auto"
-                      ? "Replay This Scene"
-                      : "Stay Here"}
+                  {currentTour.scenes.length > 1
+                    ? currentScene.id === 5
+                      ? "Restart This Scene"
+                      : endPromptType === "auto"
+                        ? "Replay This Scene"
+                        : "Stay Here"
+                    : "Replay Preview"}
                 </button>
               </div>
             </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
 
       {/* Transition overlay */}
       <TransitionOverlay isTransitioning={isTransitioning} transitionProgress={transitionProgress} />

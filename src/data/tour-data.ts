@@ -106,14 +106,7 @@ export const tourData: Tour[] = [
         title: "Wildlife Park Preview",
         description: "A sneak peek of our upcoming Wildlife Park virtual tour",
         hotspots: [
-          {
-            id: "wildlife-preview-hotspot",
-            position: { x: 50, y: 50 },
-            targetSceneId: 1, // Loop back to the same scene
-            title: "Coming Soon",
-            description: "Full tour coming soon!",
-            startTime: 44,
-          },
+         
         ],
         nextSceneId: 1, // Loop back to the same scene
       },
@@ -130,14 +123,7 @@ export const tourData: Tour[] = [
         title: "Shere Hills Preview",
         description: "A sneak peek of our upcoming Shere Hills virtual tour",
         hotspots: [
-          {
-            id: "shere-hills-preview-hotspot",
-            position: { x: 50, y: 50 },
-            targetSceneId: 1, // Loop back to the same scene
-            title: "Coming Soon",
-            description: "Full tour coming soon!",
-            startTime: 46,
-          },
+         
         ],
         nextSceneId: 1, // Loop back to the same scene
       },
@@ -154,14 +140,7 @@ export const tourData: Tour[] = [
         title: "Assop Falls Preview",
         description: "A sneak peek of our upcoming Assop Falls virtual tour",
         hotspots: [
-          {
-            id: "assop-falls-preview-hotspot",
-            position: { x: 50, y: 50 },
-            targetSceneId: 1, // Loop back to the same scene
-            title: "Coming Soon",
-            description: "Full tour coming soon!",
-            startTime: 43,
-          },
+        
         ],
         nextSceneId: 1, // Loop back to the same scene
       },
