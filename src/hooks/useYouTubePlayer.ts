@@ -32,6 +32,9 @@ export function useYouTubePlayer(
     "tiny",
   ])
   const [currentQuality, setCurrentQuality] = useState<string>("")
+  const [bufferingProgress, setBufferingProgress] = useState(0)
+  const [isBuffering, setIsBuffering] = useState(false)
+  const [userSelectedQuality, setUserSelectedQuality] = useState<string | null>(null)
 
   // Refs
   const playerRef = useRef<any>(null)
@@ -39,12 +42,14 @@ export function useYouTubePlayer(
   const youtubeAPILoadingRef = useRef(false)
   const playerInitializedRef = useRef(false)
   const timeUpdateIntervalRef = useRef<number | null>(null)
+  const bufferCheckIntervalRef = useRef<number | null>(null)
   const autoplayTimeoutRef = useRef<number | null>(null)
   const endPromptTimeoutRef = useRef<number | null>(null)
   const lastTimeRef = useRef<number>(0)
   const endPromptShownRef = useRef(false)
   const seekingRef = useRef(false)
-  const qualityForceAppliedRef = useRef(false)
+  const qualityAttemptedRef = useRef(false)
+  const initialLoadCompleteRef = useRef(false)
 
   // Load YouTube API
   useEffect(() => {
@@ -77,12 +82,21 @@ export function useYouTubePlayer(
     setNearEnd(false)
     setShowEndPrompt(false)
     endPromptShownRef.current = false
-    qualityForceAppliedRef.current = false
+    qualityAttemptedRef.current = false
+    initialLoadCompleteRef.current = false
+    setBufferingProgress(0)
+    setIsBuffering(false)
+    setUserSelectedQuality(null)
 
     // Clear any existing intervals and timeouts
     if (timeUpdateIntervalRef.current) {
       clearInterval(timeUpdateIntervalRef.current)
       timeUpdateIntervalRef.current = null
+    }
+
+    if (bufferCheckIntervalRef.current) {
+      clearInterval(bufferCheckIntervalRef.current)
+      bufferCheckIntervalRef.current = null
     }
 
     if (autoplayTimeoutRef.current) {
@@ -138,6 +152,7 @@ export function useYouTubePlayer(
                 onReady: onPlayerReady,
                 onStateChange: onPlayerStateChange,
                 onError: onPlayerError,
+                onPlaybackQualityChange: onPlaybackQualityChange,
               },
             })
 
@@ -156,119 +171,77 @@ export function useYouTubePlayer(
       }
     }
 
-    // Helper function to force quality using loadVideoById with more aggressive approach
-    const forceQualityWithReload = (player: any, targetQuality: string) => {
-      try {
-        console.log("Force reloading video with quality:", targetQuality)
-
-        // Get current state
-        const currentTime = player.getCurrentTime() || 0
-        const wasPlaying = player.getPlayerState() === 1
-        const wasMuted = player.isMuted()
-
-        // First, try to set quality directly
-        player.setPlaybackQuality(targetQuality)
-
-        // Then reload video with specific quality and additional parameters
-        player.loadVideoById({
-          videoId: videoId,
-          startSeconds: currentTime,
-          suggestedQuality: targetQuality,
-        })
-
-        // Restore state after a short delay
-        setTimeout(() => {
-          if (wasMuted) {
-            player.mute()
-          }
-
-          // Force quality again after reload
-          player.setPlaybackQuality(targetQuality)
-
-          if (wasPlaying) {
-            player.playVideo()
-          }
-
-          // Verify and force quality multiple times
-          let qualityCheckAttempts = 0
-          const maxQualityChecks = 5
-
-          const checkAndForceQuality = () => {
-            qualityCheckAttempts++
-            const actualQuality = player.getPlaybackQuality()
-            console.log(`Quality check ${qualityCheckAttempts}: ${actualQuality} (target: ${targetQuality})`)
-
-            if (actualQuality !== targetQuality && qualityCheckAttempts < maxQualityChecks) {
-              console.log(`Forcing quality again (attempt ${qualityCheckAttempts})`)
-              player.setPlaybackQuality(targetQuality)
-              setTimeout(checkAndForceQuality, 1000)
-            } else {
-              console.log("Final quality:", actualQuality)
-              setCurrentQuality(actualQuality)
-            }
-          }
-
-          setTimeout(checkAndForceQuality, 1000)
-        }, 500)
-      } catch (err) {
-        console.error("Error force reloading with quality:", err)
-      }
-    }
-
-    // Helper function to set quality with retry mechanism
-    const setQualityWithRetry = (player: any, retryCount = 0) => {
-      const maxRetries = 3 // Reduced retries but more aggressive
-      const retryDelay = 2000 // Increased delay
-
+    // Set initial quality with YouTube's adaptive approach
+    const setInitialQuality = (player: any) => {
       try {
         // Get available quality levels
         const availableQualities = player.getAvailableQualityLevels()
-        console.log(`Quality attempt ${retryCount + 1}: Available quality levels:`, availableQualities)
+        console.log("Available quality levels:", availableQualities)
 
-        // If we got quality levels, use them
         if (availableQualities && availableQualities.length > 0) {
           setAvailableQualities(availableQualities)
 
-          // Set to 4K priority quality
+          // Get preferred quality
           const preferredQuality = getHighestQuality(availableQualities)
-          if (preferredQuality !== "auto") {
-            console.log("Setting quality to:", preferredQuality)
 
-            // Use force reload method immediately for better results
-            if (!qualityForceAppliedRef.current) {
-              qualityForceAppliedRef.current = true
-              forceQualityWithReload(player, preferredQuality)
-            } else {
-              // Standard method as fallback
-              player.setPlaybackQuality(preferredQuality)
-              setCurrentQuality(preferredQuality)
-            }
+          if (preferredQuality !== "auto") {
+            console.log("Setting initial quality to:", preferredQuality)
+
+            // Set quality and let YouTube handle adaptation
+            player.setPlaybackQuality(preferredQuality)
+            setCurrentQuality(preferredQuality)
+
+            // Start monitoring buffer state
+            startBufferMonitoring(player)
           } else {
             setCurrentQuality("auto")
           }
-        } else if (retryCount < maxRetries) {
-          // Retry if no qualities found and we haven't exceeded max retries
-          console.log(`No qualities found, retrying in ${retryDelay}ms (attempt ${retryCount + 1}/${maxRetries})`)
-          setTimeout(() => setQualityWithRetry(player, retryCount + 1), retryDelay)
         } else {
-          console.log("Max retries reached, forcing 4K anyway")
-          // Force set to 4K even if we can't detect available qualities
-          try {
-            console.log("Attempting to force 4K quality without detection")
-            forceQualityWithReload(player, "hd2160")
-          } catch (err) {
-            console.error("Error forcing 4K quality:", err)
-            setCurrentQuality("auto")
-          }
-        }
-      } catch (err) {
-        console.error("Error in setQualityWithRetry:", err)
-        if (retryCount < maxRetries) {
-          setTimeout(() => setQualityWithRetry(player, retryCount + 1), retryDelay)
-        } else {
+          console.log("No quality levels available, using auto")
           setCurrentQuality("auto")
         }
+
+        qualityAttemptedRef.current = true
+      } catch (err) {
+        console.error("Error setting initial quality:", err)
+        setCurrentQuality("auto")
       }
+    }
+
+    // Monitor buffer state
+    const startBufferMonitoring = (player: any) => {
+      if (bufferCheckIntervalRef.current) {
+        clearInterval(bufferCheckIntervalRef.current)
+      }
+
+      bufferCheckIntervalRef.current = window.setInterval(() => {
+        try {
+          if (player && typeof player.getVideoLoadedFraction === "function") {
+            const loadedFraction = player.getVideoLoadedFraction()
+            setBufferingProgress(loadedFraction * 100)
+
+            // Check if player is buffering
+            const playerState = player.getPlayerState()
+            const isCurrentlyBuffering = playerState === 3 // YT.PlayerState.BUFFERING = 3
+
+            if (isCurrentlyBuffering !== isBuffering) {
+              setIsBuffering(isCurrentlyBuffering)
+            }
+
+            // If fully loaded, we can stop checking
+            if (loadedFraction >= 0.98) {
+              if (bufferCheckIntervalRef.current) {
+                clearInterval(bufferCheckIntervalRef.current)
+                bufferCheckIntervalRef.current = null
+              }
+              setBufferingProgress(100)
+              setIsBuffering(false)
+            }
+          }
+        } catch (err) {
+          console.error("Error checking buffer state:", err)
+        }
+      }, 1000)
     }
 
     // Player event handlers
@@ -281,8 +254,8 @@ export function useYouTubePlayer(
         // Force play video
         event.target.playVideo()
 
-        // Set the playback quality with retry mechanism
-        setQualityWithRetry(event.target)
+        // Set initial quality
+        setInitialQuality(event.target)
 
         // Try to get the duration
         try {
@@ -338,11 +311,25 @@ export function useYouTubePlayer(
       }
     }
 
+    function onPlaybackQualityChange(event: any) {
+      const newQuality = event.data
+      console.log("YouTube quality changed to:", newQuality)
+
+      // Update our state to match YouTube's decision
+      setCurrentQuality(newQuality)
+
+      // If this was a user selection, check if YouTube honored it
+      if (userSelectedQuality && newQuality !== userSelectedQuality) {
+        console.log(`YouTube adapted quality from user selection ${userSelectedQuality} to ${newQuality}`)
+      }
+    }
+
     function onPlayerStateChange(event: any) {
       // YT.PlayerState.PLAYING = 1
       if (event.data === 1) {
         setIsPlaying(true)
         setIsLoading(false)
+        setIsBuffering(false)
 
         // Reset end-of-video flags when video starts playing
         if (!endPromptShownRef.current) {
@@ -350,32 +337,32 @@ export function useYouTubePlayer(
           setShowEndPrompt(false)
         }
 
-        // Try to set quality again when video starts playing (sometimes this works better)
-        if (playerRef.current && !qualityForceAppliedRef.current) {
-          setTimeout(() => {
-            try {
-              const availableQualities = playerRef.current.getAvailableQualityLevels()
-              if (availableQualities && availableQualities.length > 0) {
-                const preferredQuality = getHighestQuality(availableQualities)
-                const currentQuality = playerRef.current.getPlaybackQuality()
-                if (currentQuality !== preferredQuality && preferredQuality !== "auto") {
-                  console.log("Setting quality during playback:", preferredQuality)
+        // Mark initial load as complete
+        if (!initialLoadCompleteRef.current) {
+          initialLoadCompleteRef.current = true
 
-                  // Use force reload method for better quality application
-                  qualityForceAppliedRef.current = true
-                  forceQualityWithReload(playerRef.current, preferredQuality)
-                }
-              }
-            } catch (err) {
-              console.error("Error setting quality during playback:", err)
-            }
-          }, 3000)
+          // Get current quality after initial load
+          try {
+            const actualQuality = event.target.getPlaybackQuality()
+            console.log("Quality after initial load:", actualQuality)
+            setCurrentQuality(actualQuality)
+          } catch (err) {
+            console.error("Error getting quality after initial load:", err)
+          }
         }
       }
 
       // YT.PlayerState.PAUSED = 2
       if (event.data === 2) {
         setIsPlaying(false)
+      }
+
+      // YT.PlayerState.BUFFERING = 3
+      if (event.data === 3) {
+        setIsBuffering(true)
+
+        // Start monitoring buffer progress
+        startBufferMonitoring(event.target)
       }
 
       // YT.PlayerState.ENDED = 0
@@ -387,6 +374,7 @@ export function useYouTubePlayer(
         setShowEndPrompt(true)
         setNearEnd(true)
         setIsLoading(false)
+        setIsBuffering(false)
         endPromptShownRef.current = true
 
         // Log to console to verify the prompt should be showing
@@ -397,6 +385,7 @@ export function useYouTubePlayer(
     function onPlayerError(event: any) {
       console.error(`YouTube player error: ${event.data}`)
       setIsLoading(false)
+      setIsBuffering(false)
 
       // Use fallback method
       loadVideoWithFallbackMethod(playerContainerRef, videoId, setIsLoading, setIsPlaying, isPlaying)
@@ -419,6 +408,11 @@ export function useYouTubePlayer(
       if (timeUpdateIntervalRef.current) {
         clearInterval(timeUpdateIntervalRef.current)
         timeUpdateIntervalRef.current = null
+      }
+
+      if (bufferCheckIntervalRef.current) {
+        clearInterval(bufferCheckIntervalRef.current)
+        bufferCheckIntervalRef.current = null
       }
 
       if (autoplayTimeoutRef.current) {
@@ -451,52 +445,6 @@ export function useYouTubePlayer(
     }
     return "auto"
   }
-
-  // --- Enhanced quality polling with force reload capability ---
-  useEffect(() => {
-    let qualityInterval: number | null = null
-    if (playerRef.current && playerReady && availableQualities.length > 0) {
-      const highestQuality = getHighestQuality(availableQualities)
-      qualityInterval = window.setInterval(() => {
-        try {
-          const currentQ = playerRef.current.getPlaybackQuality()
-          console.log(`Quality check: current=${currentQ}, target=${highestQuality}`)
-
-          if (currentQ !== highestQuality && highestQuality !== "auto") {
-            console.log("Detected quality downgrade, force reloading with:", highestQuality)
-
-            // Use force reload instead of just setPlaybackQuality
-            const currentTime = playerRef.current.getCurrentTime() || 0
-            const wasPlaying = playerRef.current.getPlayerState() === 1
-            const wasMuted = playerRef.current.isMuted()
-
-            // More aggressive reload
-            playerRef.current.setPlaybackQuality(highestQuality)
-
-            setTimeout(() => {
-              playerRef.current.loadVideoById({
-                videoId: videoId,
-                startSeconds: currentTime,
-                suggestedQuality: highestQuality,
-              })
-
-              setTimeout(() => {
-                if (wasMuted) playerRef.current.mute()
-                playerRef.current.setPlaybackQuality(highestQuality)
-                if (wasPlaying) playerRef.current.playVideo()
-                setCurrentQuality(highestQuality)
-              }, 500)
-            }, 100)
-          }
-        } catch (err) {
-          console.error("Error in quality polling:", err)
-        }
-      }, 3000) // Check every 3 seconds
-    }
-    return () => {
-      if (qualityInterval) clearInterval(qualityInterval)
-    }
-  }, [playerReady, availableQualities, videoId])
 
   // Player control functions
   const handlePlayPause = () => {
@@ -547,29 +495,58 @@ export function useYouTubePlayer(
     try {
       console.log(`Manually changing quality to: ${quality}`)
 
-      // Use force reload method for manual quality changes
-      const currentTime = playerRef.current.getCurrentTime() || 0
-      const wasPlaying = playerRef.current.getPlayerState() === 1
-      const wasMuted = playerRef.current.isMuted()
+      // Store user selection
+      setUserSelectedQuality(quality)
 
-      playerRef.current.loadVideoById({
-        videoId: videoId,
-        startSeconds: currentTime,
-        suggestedQuality: quality,
-      })
+      // Set quality and let YouTube handle adaptation
+      playerRef.current.setPlaybackQuality(quality)
+      setCurrentQuality(quality)
 
-      setTimeout(() => {
-        if (wasMuted) playerRef.current.mute()
-        if (wasPlaying) playerRef.current.playVideo()
-        setCurrentQuality(quality)
-        console.log(`Quality manually changed to: ${quality}`)
-      }, 500)
+      // Start monitoring buffer state
+      startBufferMonitoring(playerRef.current)
+
+      // Show buffering indicator
+      setIsBuffering(true)
     } catch (err) {
       console.error("Error changing quality:", err)
     }
   }
 
-  // NEW FUNCTIONS FOR PLAYBACK CONTROLS
+  // Helper function to monitor buffer state
+  const startBufferMonitoring = (player: any) => {
+    if (bufferCheckIntervalRef.current) {
+      clearInterval(bufferCheckIntervalRef.current)
+    }
+
+    bufferCheckIntervalRef.current = window.setInterval(() => {
+      try {
+        if (player && typeof player.getVideoLoadedFraction === "function") {
+          const loadedFraction = player.getVideoLoadedFraction()
+          setBufferingProgress(loadedFraction * 100)
+
+          // Check if player is buffering
+          const playerState = player.getPlayerState()
+          const isCurrentlyBuffering = playerState === 3 // YT.PlayerState.BUFFERING = 3
+
+          if (isCurrentlyBuffering !== isBuffering) {
+            setIsBuffering(isCurrentlyBuffering)
+          }
+
+          // If fully loaded, we can stop checking
+          if (loadedFraction >= 0.98) {
+            if (bufferCheckIntervalRef.current) {
+              clearInterval(bufferCheckIntervalRef.current)
+              bufferCheckIntervalRef.current = null
+            }
+            setBufferingProgress(100)
+            setIsBuffering(false)
+          }
+        }
+      } catch (err) {
+        console.error("Error checking buffer state:", err)
+      }
+    }, 1000)
+  }
 
   /**
    * Seek to a specific time in the video
@@ -602,6 +579,10 @@ export function useYouTubePlayer(
         playerRef.current.playVideo()
         setIsPlaying(true)
       }
+
+      // Show buffering indicator
+      setIsBuffering(true)
+      startBufferMonitoring(playerRef.current)
 
       // Clear seeking flag after a short delay
       setTimeout(() => {
@@ -680,6 +661,8 @@ export function useYouTubePlayer(
     endPromptType,
     availableQualities,
     currentQuality,
+    bufferingProgress,
+    isBuffering,
     setShowEndPrompt,
     setEndPromptType,
     handlePlayPause,
