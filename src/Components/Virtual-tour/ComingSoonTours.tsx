@@ -29,7 +29,7 @@ export function ComingSoonTours() {
 
   // Function to navigate to the preview tour
   const handleTourClick = (tourId: number) => {
-    navigate(`/virtual-tour/${tourId}?scene=1`)
+    navigate(`/virtual-tour/${tourId}?scene=1&preview=true`)
   }
 
   // Animation variants

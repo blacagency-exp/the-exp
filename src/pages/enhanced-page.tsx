@@ -20,7 +20,7 @@ import PlaybackControls from "../Components/PlaybackControls"
 import { useYouTubePlayer } from "../hooks/useYouTubePlayer"
 import { useTransition } from "../hooks/useTransition"
 import { extractYouTubeId } from "../utils/youtube-utils"
-import { tourData } from "../data/tour-data"
+import { activeTours, previewTours } from "../data/tour-data"
 import { playerStyles } from "../styles/player-style"
 import type { HotspotState } from "../types/tour-types"
 
@@ -83,9 +83,17 @@ export default function EnhancedSingleVirtualTourPage() {
 
   // Find the current tour and scene
   useEffect(() => {
-    const parsedTourId = Number.parseInt(tourId || "1")
-    const foundTour = tourData.find((tour) => tour.id === parsedTourId) || tourData[0]
-    setCurrentTour(foundTour)
+    const isPreview = searchParams.get("preview") === "true"
+    const sourceTours = isPreview ? previewTours : activeTours
+    // find only in the chosen list
+  const parsedTourId = Number(tourId || "1")
+  const foundTour = sourceTours.find((t) => t.id === parsedTourId) 
+                   || (isPreview
+                       ? previewTours.find((t) => t.id === parsedTourId)
+                       : activeTours.find((t) => t.id === parsedTourId))
+                   || sourceTours[0]
+
+  setCurrentTour(foundTour)
 
     if (foundTour) {
       const foundScene = foundTour.scenes.find((scene) => scene.id === sceneId) || foundTour.scenes[0]
@@ -108,7 +116,7 @@ export default function EnhancedSingleVirtualTourPage() {
       // Reset end prompt state
       setShowEndPrompt(false)
     }
-  }, [tourId, sceneId, setShowEndPrompt])
+  }, [tourId, sceneId, searchParams, setShowEndPrompt])
 
   // Update hotspot visibility based on player time
   useEffect(() => {

@@ -28,6 +28,8 @@ export interface HotspotState {
     id: number
     title: string
     description: string
+    image: string
+    tags: string[]
     scenes: Scene[]
   }
   
