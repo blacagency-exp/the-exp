@@ -31,6 +31,7 @@ export interface HotspotState {
     image: string
     tags: string[]
     scenes: Scene[]
+    isLocked?: boolean // Add this property to mark locked tours
   }
   
   // Declare YT here

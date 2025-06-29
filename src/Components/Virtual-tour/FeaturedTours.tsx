@@ -1,135 +1,102 @@
 "use client"
 
 import { styles } from "../../constants/styles"
-import shere from "../../assets/shereHills.png"
 import { useNavigate } from "react-router-dom"
-import hotspotIcon from "../../assets/hotspot-icon.png"
 import { motion, useInView } from "framer-motion"
-import { useRef } from "react"
+import { useRef, useState, useEffect } from "react"
 import { activeTours } from "../../data/tour-data"
+import { Lock, Play } from "lucide-react"
+import { VirtualTourPaymentModal } from "./VirtualTourPaymentModal"
+import { AccessCodeModal } from "./AccessCodeModal"
+import axios from "axios"
+import { API_URL } from "../../config/api"
 
-// Define a Scene interface for videos within a tour
-interface Scene {
-  id: number
-  videoKey: string // S3 key for the video
-  hotspots?: Hotspot[]
+// Define tour pricing
+const TOUR_PRICING = {
+  1: 0, // Rayfield Resort - Free
+  4: 100, // Assop Falls - Paid (₦15,000)
 }
-
-// Update the Hotspot interface to include timing information
-interface Hotspot {
-  id: string
-  position: { x: number; y: number } // Position in percentages (e.g., { x: 50, y: 50 })
-  targetSceneId: number // ID of the target scene to navigate to
-  icon?: string
-  startTime?: number // Time in seconds when the hotspot should appear
-  endTime?: number // Time in seconds when the hotspot should disappear (optional)
-}
-
-// Define the TourCard interface
-interface TourCard {
-  id: number
-  title: string
-  description: string
-  image: string
-  tags: string[]
-  scenes: Scene[] // Each tour has multiple scenes/videos
-}
-
-// Update the tourData to include scenes for the first tour
-export const tourData: TourCard[] = [
-  {
-    id: 1,
-    title: "Rayfield Resort",
-    description: "Explore the stunning Rayfield Resort with its rugged terrain",
-    image: shere,
-    tags: ["Virtual tour", "Jet Ski", "Scenic Environment"],
-    scenes: [
-      {
-        id: 1,
-        videoKey: "tours/1/main.mp4",
-        hotspots: [
-          {
-            id: "to-scene-2",
-            position: { x: 42, y: 58 },
-            targetSceneId: 2,
-            icon: hotspotIcon,
-            startTime: 17, // Appears after 5 seconds
-            // Disappears after 30 seconds (optional)
-          },
-        ],
-      },
-      {
-        id: 2,
-        videoKey: "tours/2/main.mp4",
-        hotspots: [
-          {
-            id: "back-to-scene-1",
-            position: { x: 70, y: 70 },
-            targetSceneId: 1,
-            icon: hotspotIcon,
-            startTime: 17, // Appears after 3 seconds
-            // Disappears after 30 seconds
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: 2,
-    title: "Assop Falls",
-    description: "Experience the magnificent Assop Falls",
-    image: shere,
-    tags: ["Virtual tour", "Hiking", "Photography"],
-    scenes: [
-      {
-        id: 1,
-        videoKey: "tours/3/main.mp4",
-        hotspots: [],
-      },
-    ],
-  },
-  {
-    id: 3,
-    title: "Shere Hills",
-    description: "Relax at the beautiful Shere Hills",
-    image: shere,
-    tags: ["Virtual tour", "Luxury", "Resort"],
-    scenes: [
-      {
-        id: 1,
-        videoKey: "tours/4/main.mp4",
-        hotspots: [],
-      },
-    ],
-  },
-  {
-    id: 4,
-    title: "Wildlife Park",
-    description: "Discover the diverse wildlife of Plateau State",
-    image: shere,
-    tags: ["Virtual tour", "Animals", "Nature"],
-    scenes: [
-      {
-        id: 1,
-        videoKey: "tours/5/main.mp4",
-        hotspots: [],
-      },
-    ],
-  },
-]
 
 export function FeaturedTours() {
-  
   const navigate = useNavigate()
   const sectionRef = useRef(null)
   const isInView = useInView(sectionRef, { once: true, amount: 0.3 })
 
-  // Function to navigate to the tour with the first scene specified
-  const handleTourClick = (tourId: number) => {
-    navigate(`/virtual-tour/${tourId}?scene=1`)
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false)
+  const [accessCodeModalOpen, setAccessCodeModalOpen] = useState(false)
+  const [selectedTour, setSelectedTour] = useState<any>(null)
+  const [userAccess, setUserAccess] = useState<{ [key: number]: boolean }>({})
+
+  // Check user access on component mount
+  useEffect(() => {
+    checkUserAccess()
+  }, [])
+
+  const checkUserAccess = async () => {
+    try {
+      // Get user email from localStorage or your auth system
+      const userEmail = localStorage.getItem("userEmail")
+      if (!userEmail) return
+
+      const response = await axios.post(`${API_URL}/api/check-user-access`, {
+        email: userEmail,
+        tourIds: [4], // Check access for Assop Falls
+      })
+
+      if (response.data.success) {
+        const accessMap: { [key: number]: boolean } = {}
+        response.data.access.forEach((item: any) => {
+          accessMap[item.tour_id] = true
+        })
+        setUserAccess(accessMap)
+      }
+    } catch (error) {
+      console.error("Error checking user access:", error)
+    }
   }
 
-  // Animation variants
+  const handleTourClick = (tour: any) => {
+    const tourPrice = TOUR_PRICING[tour.id as keyof typeof TOUR_PRICING]
+
+    // If tour is free or user has access, navigate directly
+    if (tourPrice === undefined || tourPrice === 0 || userAccess[tour.id]) {
+      navigate(`/virtual-tour/${tour.id}?scene=1`)
+      return
+    }
+
+    // If tour is paid and user doesn't have access, show access options
+    setSelectedTour(tour)
+    setAccessCodeModalOpen(true)
+  }
+
+  const handlePaymentSuccess = (accessCode: string) => {
+    // Update user access
+    setUserAccess((prev) => ({
+      ...prev,
+      [selectedTour.id]: true,
+    }))
+
+    // Navigate to tour
+    navigate(`/virtual-tour/${selectedTour.id}?scene=1`)
+  }
+
+  const handleAccessGranted = () => {
+    // Update user access
+    setUserAccess((prev) => ({
+      ...prev,
+      [selectedTour.id]: true,
+    }))
+
+    // Navigate to tour
+    navigate(`/virtual-tour/${selectedTour.id}?scene=1`)
+  }
+
+  const showPaymentModal = () => {
+    setAccessCodeModalOpen(false)
+    setPaymentModalOpen(true)
+  }
+
+  // Animation variants (keeping your existing ones)
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -220,8 +187,6 @@ export function FeaturedTours() {
       animate={isInView ? "visible" : "hidden"}
     >
       <div className={`${styles.section.container} text-left px-4 md:px-6`}>
-        {" "}
-        {/* Ensuring left alignment with proper padding */}
         <motion.h2
           className="text-[2.5rem] sm:text-[4rem] md:text-[5rem] lg:text-[7rem] leading-[1.1] md:leading-[1] font-bold text-black mb-2 md:mb-4"
           variants={itemVariants}
@@ -231,58 +196,141 @@ export function FeaturedTours() {
         <motion.p className="text-base md:text-xl text-gray-400 max-w-2xl mb-8 md:mb-16" variants={itemVariants}>
           Discover Plateau State's natural beauty, culture, and adventure without stepping outside.
         </motion.p>
-        {/* Grid of all tours */}
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 gap-8 "
-          variants={containerVariants}
-        >
-          {activeTours.map((tour) => (
-            <motion.div
-              key={tour.id}
-              className="cursor-pointer hover:scale-[1.02] transition-transform"
-              variants={cardVariants}
-              onClick={() => handleTourClick(tour.id)}
-            >
-              <motion.div className="overflow-hidden rounded-2xl" variants={imageVariants}>
-                <motion.img
-                  src={tour.image || "/placeholder.svg"}
-                  alt={tour.title}
-                  className="w-full h-[250px] sm:h-[300px] object-cover"
-                  whileHover={{ scale: 1.05, transition: { duration: 0.5 } }}
-                />
-              </motion.div>
 
-              <motion.div className="mt-4 flex flex-wrap gap-2" variants={tagContainerVariants}>
-                {tour.tags.map((tag) => (
-                  <motion.span
-                    key={tag}
-                    className="px-3 py-1 text-xs bg-[#97E12B] text-[#1A2E0D] rounded-full"
-                    variants={tagVariants}
-                  >
-                    {tag}
-                  </motion.span>
-                ))}
-              </motion.div>
+        <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-8" variants={containerVariants}>
+          {activeTours.map((tour) => {
+            const tourPrice = TOUR_PRICING[tour.id as keyof typeof TOUR_PRICING]
+            const isLocked = tourPrice !== undefined && tourPrice > 0 && !userAccess[tour.id]
+            const isFree = tourPrice === undefined || tourPrice === 0
 
-              <motion.h3 className="mt-2 text-xl font-bold" variants={cardVariants}>
-                {tour.title}
-              </motion.h3>
-              <motion.p className="text-sm text-gray-600" variants={cardVariants}>
-                {tour.description}
-              </motion.p>
-            </motion.div>
-          ))}
+            return (
+              <motion.div
+                key={tour.id}
+                className="cursor-pointer hover:scale-[1.02] transition-transform relative"
+                variants={cardVariants}
+                onClick={() => handleTourClick(tour)}
+              >
+                <motion.div className="overflow-hidden rounded-2xl relative" variants={imageVariants}>
+                  <motion.img
+                    src={tour.image || "/placeholder.svg"}
+                    alt={tour.title}
+                    className={`w-full h-[250px] sm:h-[300px] object-cover ${isLocked ? "filter brightness-75" : ""}`}
+                    whileHover={{ scale: 1.05, transition: { duration: 0.5 } }}
+                  />
+
+                  {/* Overlay for locked tours */}
+                  {isLocked && (
+                    <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                      <div className="text-center text-white">
+                        <Lock className="w-12 h-12 mx-auto mb-2" />
+                        <p className="text-lg font-semibold">Premium Tour</p>
+                        <p className="text-sm">₦{tourPrice.toLocaleString()}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Play icon for accessible tours */}
+                  {!isLocked && (
+                    <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 flex items-center justify-center transition-all duration-300">
+                      <Play className="w-16 h-16 text-white opacity-0 hover:opacity-100 transition-opacity duration-300" />
+                    </div>
+                  )}
+
+                  {/* Price badge */}
+                  <div className="absolute top-4 right-4">
+                    {isFree ? (
+                      <span className="px-3 py-1 bg-[#97E12B] text-[#1A2E0D] rounded-full text-sm font-semibold">
+                        FREE
+                      </span>
+                    ) : userAccess[tour.id] ? (
+                      <span className="px-3 py-1 bg-green-500 text-white rounded-full text-sm font-semibold">
+                        UNLOCKED
+                      </span>
+                    ) : (
+                      <span className="px-3 py-1 bg-orange-500 text-white rounded-full text-sm font-semibold">
+                        ₦{tourPrice.toLocaleString()}
+                      </span>
+                    )}
+                  </div>
+                </motion.div>
+
+                <motion.div className="mt-4 flex flex-wrap gap-2" variants={tagContainerVariants}>
+                  {tour.tags.map((tag) => (
+                    <motion.span
+                      key={tag}
+                      className="px-3 py-1 text-xs bg-[#97E12B] text-[#1A2E0D] rounded-full"
+                      variants={tagVariants}
+                    >
+                      {tag}
+                    </motion.span>
+                  ))}
+                </motion.div>
+
+                <motion.h3 className="mt-2 text-xl font-bold flex items-center gap-2" variants={cardVariants}>
+                  {tour.title}
+                  {isLocked && <Lock className="w-4 h-4 text-gray-500" />}
+                </motion.h3>
+
+                <motion.p className="text-sm text-gray-600" variants={cardVariants}>
+                  {tour.description}
+                </motion.p>
+
+                {isLocked && (
+                  <motion.p className="text-xs text-orange-600 mt-1" variants={cardVariants}>
+                    Click to unlock this premium virtual tour experience
+                  </motion.p>
+                )}
+              </motion.div>
+            )
+          })}
         </motion.div>
 
         <motion.div className="mt-8 text-gray-500 text-sm" variants={hintVariants}>
           <motion.p
-            animate={{ opacity: [0.7, 1, 0.7], transition: { duration: 2, repeat: Infinity, ease: "easeInOut" } }}
+            animate={{
+              opacity: [0.7, 1, 0.7],
+              transition: { duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
+            }}
           >
-           
+            {/* Your hint text here if needed */}
           </motion.p>
         </motion.div>
       </div>
+
+      {/* Payment Modal */}
+      {selectedTour && (
+        <VirtualTourPaymentModal
+          isOpen={paymentModalOpen}
+          onClose={() => setPaymentModalOpen(false)}
+          tourId={selectedTour.id}
+          tourName={selectedTour.title}
+          tourPrice={TOUR_PRICING[selectedTour.id as keyof typeof TOUR_PRICING] || 0}
+          onPaymentSuccess={handlePaymentSuccess}
+        />
+      )}
+
+      {/* Access Code Modal */}
+      {selectedTour && (
+        <AccessCodeModal
+          isOpen={accessCodeModalOpen}
+          onClose={() => setAccessCodeModalOpen(false)}
+          tourId={selectedTour.id}
+          tourName={selectedTour.title}
+          onAccessGranted={handleAccessGranted}
+        />
+      )}
+
+      {/* Purchase button overlay when access code modal is open */}
+      {accessCodeModalOpen && selectedTour && (
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
+          <button
+            onClick={showPaymentModal}
+            className="px-6 py-3 bg-[#5A8E00] text-white rounded-lg hover:bg-[#4A7500] transition-colors font-medium shadow-lg"
+          >
+            Purchase Access - ₦{TOUR_PRICING[selectedTour.id as keyof typeof TOUR_PRICING]?.toLocaleString()}
+          </button>
+        </div>
+      )}
     </motion.section>
   )
 }
-
