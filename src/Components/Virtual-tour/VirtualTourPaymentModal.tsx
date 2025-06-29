@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { X, Lock, CreditCard } from "lucide-react"
 import axios from "axios"
 import { API_URL } from "../../config/api"
+import "../../types/paystack-global"
 
 interface VirtualTourPaymentModalProps {
   isOpen: boolean
@@ -11,34 +12,10 @@ interface VirtualTourPaymentModalProps {
   tourId: number
   tourName: string
   tourPrice: number
-  onPaymentSuccess: (accessCode: string) => void
+  onPaymentSuccess: () => void
 }
 
-declare global {
-  interface Window {
-    PaystackPop: {
-      setup(options: {
-        key: string
-        email: string
-        amount: number
-        metadata: {
-          tour_id: number
-          tour_name: string
-          full_name: string
-          phone_number: string
-          custom_fields: Array<{
-            display_name: string
-            variable_name: string
-            value: string
-          }>
-        }
-        ref: string
-        onClose: () => void
-        callback: (response: { reference: string }) => void
-      }): { openIframe: () => void }
-    }
-  }
-}
+
 
 const PAYSTACK_PUBLIC_KEY = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || ""
 
@@ -166,7 +143,7 @@ export function VirtualTourPaymentModal({
       const { data } = response
 
       if (data.status === "success" || data.status === "completed") {
-        onPaymentSuccess(data.accessCode)
+        onPaymentSuccess()
         onClose()
       } else if (data.status === "pending") {
         setError("Payment is still processing. Please check back later.")

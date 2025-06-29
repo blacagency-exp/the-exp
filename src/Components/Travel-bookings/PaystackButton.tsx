@@ -6,6 +6,7 @@ import axios from "axios"
 import { API_URL } from "../../config/api"
 import { useNavigate } from "react-router-dom"
 import { PaymentSuccessModal } from "./payment-success-modal"
+import "../../types/paystack-global"
 
 interface PaystackButtonProps {
   amount: number
@@ -21,33 +22,7 @@ interface PaystackButtonProps {
   disabled: boolean
 }
 
-declare global {
-  interface Window {
-    PaystackPop: {
-      setup(options: {
-        key: string
-        email: string
-        amount: number
-        metadata: {
-          full_name: string
-          phone_number: string
-          package_type: string
-          traveler_type: string
-          group_size?: number
-          specific_requests: string
-          custom_fields: Array<{
-            display_name: string
-            variable_name: string
-            value: string
-          }>
-        }
-        ref: string
-        onClose: () => void
-        callback: (response: { reference: string }) => void
-      }): { openIframe: () => void }
-    }
-  }
-}
+
 
 const PAYSTACK_PUBLIC_KEY = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || ""
 

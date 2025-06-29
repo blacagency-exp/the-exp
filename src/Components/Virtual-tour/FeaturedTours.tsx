@@ -69,7 +69,7 @@ export function FeaturedTours() {
     setAccessCodeModalOpen(true)
   }
 
-  const handlePaymentSuccess = (accessCode: string) => {
+  const handlePaymentSuccess = () => {
     // Update user access
     setUserAccess((prev) => ({
       ...prev,
