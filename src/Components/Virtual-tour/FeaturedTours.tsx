@@ -317,6 +317,7 @@ export function FeaturedTours() {
           tourId={selectedTour.id}
           tourName={selectedTour.title}
           onAccessGranted={handleAccessGranted}
+           onPurchaseAccess={showPaymentModal}
         />
       )}
 

@@ -231,7 +231,7 @@ export const previewTours: Tour[] = [
     ],
   },
   {
-    id: 4,                      // ← Assop Falls preview
+    id: 5,                      // ← Assop Falls preview
     title: "Assop Falls",
     description: "Experience the magnificent Assop Falls with its cascading waters",
     tags: ["Virtual tour", "Jet Ski", "Scenic Environment"],
@@ -244,6 +244,24 @@ export const previewTours: Tour[] = [
         description: "",
         hotspots: [],
         nextSceneId: 1,
+      },
+    ],
+  },
+ {
+    id: 6, // New Jos Museum preview tour
+    title: "Jos Museum",
+    description: "Discover the rich cultural heritage and history of Plateau State at Jos Museum",
+    tags: ["Virtual tour", "Museum", "Culture", "History"],
+    image: shere,
+    scenes: [
+      {
+        id: 1,
+        youtubeId: "FtakWnJQN6U", // Replace with actual YouTube video ID
+        title: "Jos Museum Preview",
+        description:
+          "A sneak peek of our upcoming Jos Museum virtual tour featuring cultural artifacts and historical exhibits",
+        hotspots: [],
+        nextSceneId: 1, // Loop back to the same scene
       },
     ],
   },

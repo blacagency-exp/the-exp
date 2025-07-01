@@ -20,7 +20,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
 
         {/* Virtual Tour Routes - Add the :tourId parameter route */}
-        <Route path="/virtual-tour" element={<VirtualTourPage />} />
+        <Route path="/virtual-tour/*" element={<VirtualTourPage />} />
         <Route path="/virtual-tour/:tourId" element={<VirtualTourPage />} />
 
         <Route path="/travel-booking" element={<TravelBookingPage />} />

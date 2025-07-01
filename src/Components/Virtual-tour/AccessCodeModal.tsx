@@ -12,9 +12,10 @@ interface AccessCodeModalProps {
   tourId: number
   tourName: string
   onAccessGranted: () => void
+  onPurchaseAccess: () => void 
 }
 
-export function AccessCodeModal({ isOpen, onClose, tourId, tourName, onAccessGranted }: AccessCodeModalProps) {
+export function AccessCodeModal({ isOpen, onClose, tourId, tourName, onAccessGranted, onPurchaseAccess }: AccessCodeModalProps) {
   const [accessCode, setAccessCode] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [isVerifying, setIsVerifying] = useState(false)
@@ -56,6 +57,10 @@ export function AccessCodeModal({ isOpen, onClose, tourId, tourName, onAccessGra
     if (e.key === "Enter") {
       verifyAccessCode()
     }
+  }
+   const handlePurchaseAccess = () => {
+    onClose() // Close access code modal
+    onPurchaseAccess() // Open payment modal
   }
 
   if (!isOpen) return null
@@ -125,7 +130,7 @@ export function AccessCodeModal({ isOpen, onClose, tourId, tourName, onAccessGra
           <div className="mt-4 text-center">
             <p className="text-xs text-gray-500">
               Don't have an access code?{" "}
-              <button onClick={onClose} className="text-[#5A8E00] hover:underline">
+              <button onClick={handlePurchaseAccess} className="text-[#5A8E00] hover:underline">
                 Purchase access
               </button>
             </p>

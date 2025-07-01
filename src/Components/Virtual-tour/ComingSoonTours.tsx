@@ -12,14 +12,16 @@ import img1 from "../../assets/wildlife.jpg"
 const tourTags = {
   2: ["Coming Soon", "Wildlife", "Nature"],
   3: ["Coming Soon", "Mountains", "Hiking"],
-  4: ["Coming Soon", "Waterfall", "Nature"],
+  5: ["Coming Soon", "Waterfall", "Nature"], // Updated ID for Assop Falls preview
+  6: ["Coming Soon", "Museum", "Culture"], // Added Jos Museum
 }
 
 // Define the preview images for each tour
 const tourImages = {
   2:img1,
   3: img1,
-  4: img1,
+  5: img1, // Updated ID for Assop Falls preview
+  6: img1,
 }
 
 export function ComingSoonTours() {
