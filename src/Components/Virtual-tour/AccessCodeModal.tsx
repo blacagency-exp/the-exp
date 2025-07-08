@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState } from "react"
-import { X, Key, ArrowRight } from "lucide-react"
+import { X, Key, ArrowRight, Clock, AlertTriangle } from "lucide-react"
 import axios from "axios"
 import { API_URL } from "../../config/api"
 
@@ -12,13 +12,21 @@ interface AccessCodeModalProps {
   tourId: number
   tourName: string
   onAccessGranted: () => void
-  onPurchaseAccess: () => void 
+  onPurchaseAccess: () => void
 }
 
-export function AccessCodeModal({ isOpen, onClose, tourId, tourName, onAccessGranted, onPurchaseAccess }: AccessCodeModalProps) {
+export function AccessCodeModal({
+  isOpen,
+  onClose,
+  tourId,
+  tourName,
+  onAccessGranted,
+  onPurchaseAccess,
+}: AccessCodeModalProps) {
   const [accessCode, setAccessCode] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [isVerifying, setIsVerifying] = useState(false)
+  const [isExpired, setIsExpired] = useState(false)
 
   const verifyAccessCode = async () => {
     if (!accessCode.trim()) {
@@ -28,6 +36,7 @@ export function AccessCodeModal({ isOpen, onClose, tourId, tourName, onAccessGra
 
     setIsVerifying(true)
     setError(null)
+    setIsExpired(false)
 
     try {
       const response = await axios.post(`${API_URL}/api/verify-access-code`, {
@@ -39,7 +48,12 @@ export function AccessCodeModal({ isOpen, onClose, tourId, tourName, onAccessGra
         onAccessGranted()
         onClose()
       } else {
-        setError(response.data.message || "Invalid access code")
+        if (response.data.expired) {
+          setIsExpired(true)
+          setError("Your access code has expired. Access is valid for 24 hours after purchase.")
+        } else {
+          setError(response.data.message || "Invalid access code")
+        }
       }
     } catch (error) {
       console.error("Access code verification failed:", error)
@@ -58,7 +72,8 @@ export function AccessCodeModal({ isOpen, onClose, tourId, tourName, onAccessGra
       verifyAccessCode()
     }
   }
-   const handlePurchaseAccess = () => {
+
+  const handlePurchaseAccess = () => {
     onClose() // Close access code modal
     onPurchaseAccess() // Open payment modal
   }
@@ -88,6 +103,18 @@ export function AccessCodeModal({ isOpen, onClose, tourId, tourName, onAccessGra
             </button>
           </div>
 
+          {/* 24-hour expiration notice */}
+          <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+            <div className="flex items-center gap-2 text-orange-700">
+              <Clock className="w-4 h-4" />
+              <span className="text-sm font-medium">24-Hour Access</span>
+            </div>
+            <p className="text-xs text-orange-600 mt-1">
+              Access codes are valid for 24 hours after purchase. After expiration, you'll need to purchase access
+              again.
+            </p>
+          </div>
+
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">Access Code</label>
             <input
@@ -104,8 +131,23 @@ export function AccessCodeModal({ isOpen, onClose, tourId, tourName, onAccessGra
           </div>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-sm text-red-600">{error}</p>
+            <div
+              className={`mb-4 p-3 border rounded-lg ${
+                isExpired ? "bg-red-50 border-red-200" : "bg-red-50 border-red-200"
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                {isExpired && <AlertTriangle className="w-4 h-4 text-red-600" />}
+                <p className="text-sm text-red-600">{error}</p>
+              </div>
+              {isExpired && (
+                <button
+                  onClick={handlePurchaseAccess}
+                  className="mt-2 text-sm text-red-700 hover:text-red-800 underline"
+                >
+                  Purchase new access →
+                </button>
+              )}
             </div>
           )}
 
@@ -130,7 +172,7 @@ export function AccessCodeModal({ isOpen, onClose, tourId, tourName, onAccessGra
           <div className="mt-4 text-center">
             <p className="text-xs text-gray-500">
               Don't have an access code?{" "}
-              <button onClick={handlePurchaseAccess} className="text-[#5A8E00] hover:underline">
+              <button onClick={handlePurchaseAccess} className="text-[#5A8E00] hover:underline font-medium">
                 Purchase access
               </button>
             </p>

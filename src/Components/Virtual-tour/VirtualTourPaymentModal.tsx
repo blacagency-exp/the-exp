@@ -1,9 +1,10 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { X, Lock, CreditCard } from "lucide-react"
+import { X, Lock, CreditCard, Clock } from "lucide-react"
 import axios from "axios"
 import { API_URL } from "../../config/api"
+// Import the unified types
 import "../../types/paystack-global"
 
 interface VirtualTourPaymentModalProps {
@@ -12,10 +13,8 @@ interface VirtualTourPaymentModalProps {
   tourId: number
   tourName: string
   tourPrice: number
-  onPaymentSuccess: () => void
+  onPaymentSuccess: (accessCode: string) => void
 }
-
-
 
 const PAYSTACK_PUBLIC_KEY = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || ""
 
@@ -64,11 +63,13 @@ export function VirtualTourPaymentModal({
     setError(null)
 
     try {
+      // Virtual tour specific metadata - no travel booking fields
       const metadata = {
         tour_id: tourId,
         tour_name: tourName,
         full_name: `${firstName} ${lastName}`,
         phone_number: phoneNumber,
+        payment_type: "virtual_tour", // Identify this as a virtual tour payment
         custom_fields: [
           {
             display_name: "Tour Name",
@@ -84,6 +85,16 @@ export function VirtualTourPaymentModal({
             display_name: "Phone Number",
             variable_name: "phone_number",
             value: phoneNumber,
+          },
+          {
+            display_name: "Tour ID",
+            variable_name: "tour_id",
+            value: tourId.toString(),
+          },
+          {
+            display_name: "Payment Type",
+            variable_name: "payment_type",
+            value: "Virtual Tour Access (24h)",
           },
         ],
       }
@@ -143,7 +154,7 @@ export function VirtualTourPaymentModal({
       const { data } = response
 
       if (data.status === "success" || data.status === "completed") {
-        onPaymentSuccess()
+        onPaymentSuccess(data.accessCode)
         onClose()
       } else if (data.status === "pending") {
         setError("Payment is still processing. Please check back later.")
@@ -187,12 +198,24 @@ export function VirtualTourPaymentModal({
             </button>
           </div>
 
+          {/* 24-hour access notice */}
+          <div className="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+            <div className="flex items-center gap-2 text-orange-700 mb-2">
+              <Clock className="w-4 h-4" />
+              <span className="text-sm font-medium">24-Hour Access Period</span>
+            </div>
+            <p className="text-xs text-orange-600">
+              Your access will be valid for 24 hours from the time of purchase. After expiration, you'll need to
+              purchase access again to view the tour.
+            </p>
+          </div>
+
           <div className="mb-6 p-4 bg-[#97E12B] bg-opacity-10 rounded-lg border border-[#97E12B] border-opacity-20">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-gray-700">Tour Price:</span>
               <span className="text-lg font-bold text-[#1A2E0D]">₦{tourPrice.toLocaleString()}</span>
             </div>
-            <p className="text-xs text-gray-600 mt-2">Get instant access to the full virtual tour experience</p>
+            <p className="text-xs text-gray-600 mt-2">Get 24-hour access to the full virtual tour experience</p>
           </div>
 
           <form className="space-y-4">
@@ -269,7 +292,7 @@ export function VirtualTourPaymentModal({
               ) : (
                 <>
                   <CreditCard className="w-4 h-4" />
-                  Pay ₦{tourPrice.toLocaleString()}
+                  Pay ₦{tourPrice.toLocaleString()} • 24h Access
                 </>
               )}
             </button>

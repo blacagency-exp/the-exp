@@ -4,16 +4,16 @@ import { styles } from "../../constants/styles"
 import { useNavigate } from "react-router-dom"
 import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
-import { Clock, AlertCircle } from "lucide-react"
+import { Clock } from "lucide-react"
 import { previewTours } from "../../data/tour-data"
 import img1 from "../../assets/wildlife.jpg"
 
 // Define the tags for each preview tour
 const tourTags = {
-  2: ["Coming Soon", "Wildlife", "Nature"],
-  3: ["Coming Soon", "Mountains", "Hiking"],
-  5: ["Coming Soon", "Waterfall", "Nature"], // Updated ID for Assop Falls preview
-  6: ["Coming Soon", "Museum", "Culture"], // Added Jos Museum
+  2: [ "Wildlife", "Nature"],
+  3: [ "Mountains", "Hiking"],
+  5: [ "Waterfall", "Nature"], // Updated ID for Assop Falls preview
+  6: [ "Museum", "Culture"], // Added Jos Museum
 }
 
 // Define the preview images for each tour
@@ -106,7 +106,7 @@ export function ComingSoonTours() {
             className="text-[2.5rem] sm:text-[4rem] md:text-[5rem] lg:text-[7rem] leading-[1.1] md:leading-[1] font-bold text-black mb-2 md:mb-4"
             variants={itemVariants}
           >
-            Coming Soon
+            Free Previews
           </motion.h2>
           <motion.p className="text-base md:text-xl text-gray-400 max-w-2xl" variants={itemVariants}>
             Get a sneak peek of our upcoming virtual tours. Be the first to explore these amazing locations.
@@ -144,10 +144,7 @@ export function ComingSoonTours() {
                   </div>
                 </div>
                 <div className="absolute top-4 right-4">
-                  <div className="bg-[#FF9800] px-3 py-1 rounded-full flex items-center gap-1">
-                    <AlertCircle size={14} className="text-white" />
-                    <span className="text-white text-xs font-medium">Coming Soon</span>
-                  </div>
+                 
                 </div>
               </div>
               <motion.div className="flex flex-wrap gap-2" variants={tagContainerVariants}>

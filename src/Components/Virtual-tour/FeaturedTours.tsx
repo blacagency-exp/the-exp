@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom"
 import { motion, useInView } from "framer-motion"
 import { useRef, useState, useEffect } from "react"
 import { activeTours } from "../../data/tour-data"
-import { Lock, Play } from "lucide-react"
+import { Lock, Play, Clock } from "lucide-react"
 import { VirtualTourPaymentModal } from "./VirtualTourPaymentModal"
 import { AccessCodeModal } from "./AccessCodeModal"
 import axios from "axios"
@@ -27,9 +27,14 @@ export function FeaturedTours() {
   const [selectedTour, setSelectedTour] = useState<any>(null)
   const [userAccess, setUserAccess] = useState<{ [key: number]: boolean }>({})
 
-  // Check user access on component mount
+  // Check user access on component mount and periodically
   useEffect(() => {
     checkUserAccess()
+
+    // Check access every 5 minutes to handle expiration
+    const interval = setInterval(checkUserAccess, 5 * 60 * 1000)
+
+    return () => clearInterval(interval)
   }, [])
 
   const checkUserAccess = async () => {
@@ -46,7 +51,12 @@ export function FeaturedTours() {
       if (response.data.success) {
         const accessMap: { [key: number]: boolean } = {}
         response.data.access.forEach((item: any) => {
-          accessMap[item.tour_id] = true
+          // Only mark as accessible if not expired
+          const now = new Date()
+          const expiresAt = new Date(item.expires_at)
+          if (now <= expiresAt) {
+            accessMap[item.tour_id] = true
+          }
         })
         setUserAccess(accessMap)
       }
@@ -225,6 +235,10 @@ export function FeaturedTours() {
                         <Lock className="w-12 h-12 mx-auto mb-2" />
                         <p className="text-lg font-semibold">Premium Tour</p>
                         <p className="text-sm">₦{tourPrice.toLocaleString()}</p>
+                        <div className="flex items-center justify-center gap-1 mt-2 text-xs">
+                          <Clock className="w-3 h-3" />
+                          <span>24-hour access</span>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -243,8 +257,9 @@ export function FeaturedTours() {
                         FREE
                       </span>
                     ) : userAccess[tour.id] ? (
-                      <span className="px-3 py-1 bg-green-500 text-white rounded-full text-sm font-semibold">
-                        UNLOCKED
+                      <span className="px-3 py-1 bg-green-500 text-white rounded-full text-sm font-semibold flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        ACTIVE
                       </span>
                     ) : (
                       <span className="px-3 py-1 bg-orange-500 text-white rounded-full text-sm font-semibold">
@@ -276,8 +291,9 @@ export function FeaturedTours() {
                 </motion.p>
 
                 {isLocked && (
-                  <motion.p className="text-xs text-orange-600 mt-1" variants={cardVariants}>
-                    Click to unlock this premium virtual tour experience
+                  <motion.p className="text-xs text-orange-600 mt-1 flex items-center gap-1" variants={cardVariants}>
+                    <Clock className="w-3 h-3" />
+                    24-hour access • Click to unlock this premium virtual tour
                   </motion.p>
                 )}
               </motion.div>
@@ -317,7 +333,7 @@ export function FeaturedTours() {
           tourId={selectedTour.id}
           tourName={selectedTour.title}
           onAccessGranted={handleAccessGranted}
-           onPurchaseAccess={showPaymentModal}
+          onPurchaseAccess={showPaymentModal}
         />
       )}
 
@@ -326,9 +342,10 @@ export function FeaturedTours() {
         <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
           <button
             onClick={showPaymentModal}
-            className="px-6 py-3 bg-[#5A8E00] text-white rounded-lg hover:bg-[#4A7500] transition-colors font-medium shadow-lg"
+            className="px-6 py-3 bg-[#5A8E00] text-white rounded-lg hover:bg-[#4A7500] transition-colors font-medium shadow-lg flex items-center gap-2"
           >
-            Purchase Access - ₦{TOUR_PRICING[selectedTour.id as keyof typeof TOUR_PRICING]?.toLocaleString()}
+            <Clock className="w-4 h-4" />
+            Purchase 24h Access - ₦{TOUR_PRICING[selectedTour.id as keyof typeof TOUR_PRICING]?.toLocaleString()}
           </button>
         </div>
       )}
