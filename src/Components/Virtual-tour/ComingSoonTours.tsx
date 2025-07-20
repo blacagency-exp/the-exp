@@ -14,6 +14,7 @@ const tourTags = {
   3: [ "Mountains", "Hiking"],
   5: [ "Waterfall", "Nature"], // Updated ID for Assop Falls preview
   6: [ "Museum", "Culture"], // Added Jos Museum
+  7: ["Coming Soon", "Rock Formation", "Geology"],
 }
 
 // Define the preview images for each tour
@@ -22,6 +23,7 @@ const tourImages = {
   3: img1,
   5: img1, // Updated ID for Assop Falls preview
   6: img1,
+  7: img1, // New image for Riyom Rock
 }
 
 export function ComingSoonTours() {

@@ -265,4 +265,23 @@ export const previewTours: Tour[] = [
       },
     ],
   },
+  {
+    id: 7, // New ID for Riyom Rock
+    title: "Riyom Rock",
+    description:
+      "Explore the stunning rock formations and scenic landscapes of Riyom, a geological wonder in Plateau State",
+    tags: ["Virtual tour", "Rock Formation", "Geology", "Scenic Views"],
+    image: shere, // You can replace this with a specific Riyom Rock image later
+    scenes: [
+      {
+        id: 1,
+        youtubeId: "rFUGQeQ7fyc", // Replace with actual YouTube video ID
+        title: "Riyom Rock Preview",
+        description:
+          "A sneak peek of our upcoming Riyom Rock virtual tour featuring stunning rock formations and panoramic views",
+        hotspots: [],
+        nextSceneId: 1, // Loop back to the same scene
+      },
+    ],
+  },
 ]
