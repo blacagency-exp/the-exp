@@ -184,6 +184,197 @@ export const activeTours: Tour[] = [
       },
     ]
   },
+
+  {
+    id: 8, // New ID for Riyom Rock full tour
+    title: "Riyom Rock",
+    description: "Discover the stunning geological formations and breathtaking landscapes of Riyom Rock",
+    tags: ["Virtual tour", "Rock Formation", "Geology", "Adventure"],
+    image: shere, // You can replace this with a specific Riyom Rock image later
+    scenes: [
+      {
+        id: 1,
+        youtubeId: "EYAq0868azQ", // Replace with actual YouTube video ID for scene 1
+        title: "WALKING TO THE ROCK",
+        description: "",
+        hotspots: [
+          {
+            id: "to-WALKING TO THE ROCK MAIN ENTERANCE",
+            position: { x: 45, y: 60 },
+            targetSceneId: 2,
+            title: "WALKING TO THE ROCK MAIN ENTERANCE",
+            description: "",
+            startTime: 44,
+          },
+        ],
+        nextSceneId: 2,
+      },
+      {
+        id: 2,
+        youtubeId: "SeMwaDg9DBI", // Replace with actual YouTube video ID for scene 2
+        title: "WALKING TO THE ROCK MAIN ENTERANCE",
+        description: "",
+        hotspots: [
+          {
+            id: "to-ALTERNATIVE ROUTE TO THE ROCK",
+            position: { x: 50, y: 55 },
+            targetSceneId: 3,
+            title: "ALTERNATIVE ROUTE TO THE ROCK",
+            description: "",
+            startTime: 38,
+          },
+        ],
+        nextSceneId: 3,
+      },
+      {
+        id: 3,
+        youtubeId: "FRAy57yXp3k", // Replace with actual YouTube video ID for scene 3
+        title: "ALTERNATIVE ROUTE TO THE ROCK",
+        description: "Follow the winding path up the rock formation for spectacular views",
+        hotspots: [
+          {
+            id: "to-SIDE VIEW OF THE ROCK",
+            position: { x: 40, y: 50 },
+            targetSceneId: 4,
+            title: "SIDE VIEW OF THE ROCK",
+            description: "",
+            startTime: 38,
+          },
+        ],
+        nextSceneId: 4,
+      },
+      {
+        id: 4,
+        youtubeId: "dSd7PUaTEns", // Replace with actual YouTube video ID for scene 4
+        title: "SIDE VIEW OF THE ROCK",
+        description: "",
+        hotspots: [
+          {
+            id: "to-WALKING PASS THE ROCK",
+            position: { x: 35, y: 65 },
+            targetSceneId: 5,
+            title: "WALKING PASS THE ROCK",
+            description: "",
+            startTime: 11,
+          },
+        ],
+        nextSceneId: 5,
+      },
+      {
+        id: 5,
+        youtubeId: "c67igt0Ln0Y", // Replace with actual YouTube video ID for scene 5
+        title: "WALKING PASS THE ROCK",
+        description: "",
+        hotspots: [
+          {
+            id: "return-to-entrance",
+            position: { x: 42, y: 58 },
+            targetSceneId: 1,
+            title: "Return to Entrance",
+            description: "",
+            startTime: 34,
+          },
+        ],
+        nextSceneId: 1, // Loop back to scene 1
+      },
+    ],
+  },
+
+  {
+    id: 9, // NEW ID for Jos Museum FULL TOUR (different from preview)
+    title: "Jos Museum",
+    description: "Discover the rich cultural heritage and history of Plateau State at Jos Museum",
+    tags: ["Virtual tour", "Museum", "Culture", "History"],
+    image: shere, // You can replace this with a specific Jos Museum image later
+    scenes: [
+      {
+        id: 1,
+        youtubeId: "JCG0MMEFTjE", // Different from preview - Replace with actual YouTube video ID for scene 1
+        title: "Museum Entrance",
+        description: "",
+        hotspots: [
+          {
+            id: "to-pottery",
+            position: { x: 45, y: 60 },
+            targetSceneId: 2,
+            title: "Enter Main Exhibition Hall",
+            description: "",
+            startTime: 65,
+          },
+        ],
+        nextSceneId: 2,
+      },
+      {
+        id: 2,
+        youtubeId: "FLbbOeP93-k", // Replace with actual YouTube video ID for scene 2
+        title: "Pottery",
+        description: "",
+        hotspots: [
+          {
+            id: "to-gallery",
+            position: { x: 50, y: 55 },
+            targetSceneId: 3,
+            title: "Visit Pottery & Crafts Section",
+            description: "",
+            startTime: 65,
+          },
+        ],
+        nextSceneId: 3,
+      },
+      {
+        id: 3,
+        youtubeId: "x_OzG1IsxDI", // Replace with actual YouTube video ID for scene 3
+        title: "Gallery",
+        description: "",
+        hotspots: [
+          {
+            id: "to-historical-gallery",
+            position: { x: 40, y: 50 },
+            targetSceneId: 4,
+            title: "Explore Historical Gallery",
+            description: "",
+            startTime: 78,
+          },
+        ],
+        nextSceneId: 4,
+      },
+      {
+        id: 4,
+        youtubeId: "ZipcQFo4MDY", // Replace with actual YouTube video ID for scene 4
+        title: "ZOO-1",
+        description: "Journey through the history of Jos and Plateau State with historical artifacts and displays",
+        hotspots: [
+          {
+            id: "to-zoo-2",
+            position: { x: 35, y: 65 },
+            targetSceneId: 5,
+            title: "Cultural Heritage Section",
+            description: "",
+            startTime: 123,
+          },
+        ],
+        nextSceneId: 5,
+      },
+      {
+        id: 5,
+        youtubeId: "yoqjz_7KcuE", // Replace with actual YouTube video ID for scene 5
+        title: "ZOO-2",
+        description:
+          "",
+        hotspots: [
+          {
+            id: "return-to-entrance",
+            position: { x: 42, y: 58 },
+            targetSceneId: 1,
+            title: "Return to Museum Entrance",
+            description: "",
+            startTime: 110,
+          },
+        ],
+        nextSceneId: 1, // Loop back to scene 1
+      },
+    ],
+  },
   // Add the preview tours with the user's actual YouTube videos
  
   

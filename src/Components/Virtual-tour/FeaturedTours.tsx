@@ -11,10 +11,12 @@ import { AccessCodeModal } from "./AccessCodeModal"
 import axios from "axios"
 import { API_URL } from "../../config/api"
 
-// Define tour pricing
+// Define tour pricing - UPDATED WITH JOS MUSEUM (ID 9)
 const TOUR_PRICING = {
   1: 0, // Rayfield Resort - Free
   4: 100, // Assop Falls - Paid (₦15,000)
+  8: 100, // Riyom Rock - Paid (₦18,000)
+  9: 100, // Jos Museum FULL TOUR - Paid (₦12,000) - cultural/educational pricing
 }
 
 export function FeaturedTours() {
@@ -39,13 +41,15 @@ export function FeaturedTours() {
 
   const checkUserAccess = async () => {
     try {
-      // Get user email from localStorage or your auth system
+      // Get user email from localStorage
       const userEmail = localStorage.getItem("userEmail")
-      if (!userEmail) return
+      if (!userEmail) {
+        return
+      }
 
       const response = await axios.post(`${API_URL}/api/check-user-access`, {
         email: userEmail,
-        tourIds: [4], // Check access for Assop Falls
+        tourIds: [4, 8, 9], // Check access for Assop Falls, Riyom Rock, and Jos Museum FULL TOUR
       })
 
       if (response.data.success) {
@@ -79,7 +83,10 @@ export function FeaturedTours() {
     setAccessCodeModalOpen(true)
   }
 
-  const handlePaymentSuccess = () => {
+  const handlePaymentSuccess = (accessCode: string) => {
+    // Immediately refresh access check after successful payment
+    checkUserAccess()
+
     // Update user access
     setUserAccess((prev) => ({
       ...prev,
@@ -106,7 +113,7 @@ export function FeaturedTours() {
     setPaymentModalOpen(true)
   }
 
-  // Animation variants (keeping your existing ones)
+  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
