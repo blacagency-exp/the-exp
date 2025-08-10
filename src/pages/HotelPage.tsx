@@ -1,5 +1,5 @@
 
-import { HotelBooking } from "@/Components/Hotel/hotel-booking"
+import { HotelBooking } from "@/Components/Hotel/hotel-booking2"
 import { BaseLayout } from "../Components/layout/BaseLayout"
 import { WhyBookSection } from "@/Components/Hotel/why-book-section"
 import { HotelCategories } from "@/Components/Hotel/hotel-categories"
