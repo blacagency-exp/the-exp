@@ -62,7 +62,7 @@ const navLinks = [
   { to: "/count", label: "Home" },
   { to: "/opp", label: "Investments" },
   { to: "/blog", label: "Blogs" },
-  
+  { to: "/virtual-tour", label: "Virtual Tours" },
   { to: "/travel-booking", label: "Travel Booking" },
   { to: "/culture", label: "Cultural Heritage" },
   { to: "/contact", label: "Contact Us" },
@@ -90,7 +90,7 @@ export function PageHeader() {
       <div className={styles.section.container}>
         <div className="flex items-center justify-between h-16">
           {/* Desktop Navigation - Left Side */}
-          <motion.nav className="hidden lg:flex items-center space-x-24" variants={navVariants}>
+          <motion.nav className="hidden lg:flex items-center space-x-20" variants={navVariants}>
             {navLinks.slice(0, 3).map((link) => (
               <motion.div key={link.to} variants={linkVariants} whileHover="hover">
                 <Link to={link.to} className="text-gray-800 hover:text-[#97E12B] transition-colors">
@@ -103,12 +103,12 @@ export function PageHeader() {
           {/* Logo */}
           <motion.div variants={logoVariants}>
             <Link to="/" className="flex items-center">
-              <img src={img1 || "/placeholder.svg"} alt="Experience Plateau Logo" className="h-8" />
+              <img src={img1 || "/placeholder.svg"} alt="Experience Plateau Logo" className="h-9" />
             </Link>
           </motion.div>
 
           {/* Desktop Navigation - Right Side */}
-          <motion.nav className="hidden lg:flex items-center space-x-24" variants={navVariants}>
+          <motion.nav className="hidden lg:flex items-center space-x-20" variants={navVariants}>
             {navLinks.slice(3).map((link) => (
               <motion.div key={link.to} variants={linkVariants} whileHover="hover">
                 <Link to={link.to} className="text-gray-800 hover:text-[#97E12B] transition-colors">
@@ -176,4 +176,3 @@ export function PageHeader() {
     </motion.header>
   )
 }
-
