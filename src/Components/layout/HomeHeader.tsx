@@ -68,6 +68,19 @@ const navLinks = [
   { to: "/contact", label: "Contact Us" },
 ]
 
+// Split navigation links for balanced layout
+const leftNavLinks = [
+  { to: "/count", label: "Home" },
+  { to: "/opp", label: "Investments" },
+  { to: "/blog", label: "Blogs" },
+  { to: "/virtual-tour", label: "Virtual Tours" }
+]
+const rightNavLinks = [
+  { to: "/travel-booking", label: "Travel Booking" },
+  { to: "/culture", label: "Cultural Heritage" },
+  { to: "/contact", label: "Contact Us" }
+]
+
 export function HomeHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
@@ -88,47 +101,85 @@ export function HomeHeader() {
       }}
     >
       <div className={styles.section.container}>
-        <div className="flex items-center justify-between h-16">
-          {/* Desktop Navigation - Left Side */}
-          <motion.nav className="hidden lg:flex items-center space-x-20" variants={navVariants}>
-            {navLinks.slice(0, 3).map((link) => (
+        {/* Desktop Layout - Grid with balanced columns */}
+        <div className="hidden lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:h-16 lg:gap-8">
+          {/* Left Navigation */}
+          <motion.nav 
+            className="flex items-center justify-start space-x-16" 
+            variants={navVariants}
+          >
+            {leftNavLinks.map((link) => (
               <motion.div key={link.to} variants={linkVariants} whileHover="hover">
-                <Link to={link.to} className="text-white hover:text-[#97E12B] transition-colors">
+                <Link to={link.to} className="text-white hover:text-[#97E12B] transition-colors whitespace-nowrap">
                   {link.label}
                 </Link>
               </motion.div>
             ))}
           </motion.nav>
 
-          {/* Logo */}
-          <motion.div variants={logoVariants}>
+          {/* Centered Logo - Minimal width */}
+          <motion.div 
+            className="flex justify-center items-center" 
+            variants={logoVariants}
+          >
             <Link to="/" className="flex items-center">
-              <img src={img1 || "/placeholder.svg"} alt="Experience Plateau Logo" className="h-9 text-white " />
+              <img 
+                src={img1 || "/placeholder.svg"} 
+                alt="Experience Plateau Logo" 
+                className="h-9 text-white"
+              />
             </Link>
           </motion.div>
 
-          {/* Desktop Navigation - Right Side */}
-          <motion.nav className="hidden lg:flex items-center space-x-20" variants={navVariants}>
-            {navLinks.slice(3).map((link) => (
+          {/* Right Navigation */}
+          <motion.nav 
+            className="flex items-center justify-start space-x-14" 
+            variants={navVariants}
+          >
+            {rightNavLinks.map((link) => (
               <motion.div key={link.to} variants={linkVariants} whileHover="hover">
-                <Link to={link.to} className="text-white hover:text-[#97E12B] transition-colors">
+                <Link to={link.to} className="text-white hover:text-[#97E12B] transition-colors whitespace-nowrap">
                   {link.label}
                 </Link>
               </motion.div>
             ))}
           </motion.nav>
+        </div>
+
+        {/* Mobile Layout - Flexbox for mobile */}
+        <div className="flex lg:hidden items-center justify-between h-16">
+          {/* Logo */}
+          <motion.div variants={logoVariants}>
+            <Link to="/" className="flex items-center">
+              <img 
+                src={img1 || "/placeholder.svg"} 
+                alt="Experience Plateau Logo" 
+                className="h-9 text-white"
+              />
+            </Link>
+          </motion.div>
 
           {/* Mobile Menu Button */}
-          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="lg:hidden p-2 focus:outline-none">
+          <button 
+            onClick={() => setIsMenuOpen(!isMenuOpen)} 
+            className="p-2 focus:outline-none"
+            aria-label="Toggle mobile menu"
+          >
             <div className="w-6 h-5 relative flex flex-col justify-between">
               <span
-                className={`w-full h-0.5 bg-[#97E12B] transform transition-all duration-300 ${isMenuOpen ? "rotate-45 translate-y-2" : ""}`}
+                className={`w-full h-0.5 bg-[#97E12B] transform transition-all duration-300 ${
+                  isMenuOpen ? "rotate-45 translate-y-2" : ""
+                }`}
               />
               <span
-                className={`w-full h-0.5 bg-[#97E12B] transition-all duration-300 ${isMenuOpen ? "opacity-0" : ""}`}
+                className={`w-full h-0.5 bg-[#97E12B] transition-all duration-300 ${
+                  isMenuOpen ? "opacity-0" : ""
+                }`}
               />
               <span
-                className={`w-full h-0.5 bg-[#97E12B] transform transition-all duration-300 ${isMenuOpen ? "-rotate-45 -translate-y-2" : ""}`}
+                className={`w-full h-0.5 bg-[#97E12B] transform transition-all duration-300 ${
+                  isMenuOpen ? "-rotate-45 -translate-y-2" : ""
+                }`}
               />
             </div>
           </button>
@@ -147,14 +198,18 @@ export function HomeHeader() {
           >
             <div className="p-6 bg-white">
               <div className="flex justify-end mb-8">
-                <button onClick={() => setIsMenuOpen(false)} className="p-2 focus:outline-none">
+                <button 
+                  onClick={() => setIsMenuOpen(false)} 
+                  className="p-2 focus:outline-none"
+                  aria-label="Close mobile menu"
+                >
                   <div className="w-6 h-6 relative">
                     <span className="absolute top-1/2 left-0 w-full h-0.5 bg-[#97E12B] transform -rotate-45" />
                     <span className="absolute top-1/2 left-0 w-full h-0.5 bg-[#97E12B] transform rotate-45" />
                   </div>
                 </button>
               </div>
-              <nav className="flex flex-col gap-6 ">
+              <nav className="flex flex-col gap-6">
                 {navLinks.map((link) => (
                   <Link
                     key={link.to}
@@ -170,8 +225,13 @@ export function HomeHeader() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Mobile Menu Overlay */}
       {isMenuOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" onClick={() => setIsMenuOpen(false)} />
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" 
+          onClick={() => setIsMenuOpen(false)} 
+        />
       )}
     </motion.header>
   )
