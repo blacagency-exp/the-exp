@@ -31,7 +31,7 @@ interface TravelPackagesProps {
 
 export const TravelPackages: React.FC<TravelPackagesProps> = ({ onPackageClick }) => {
   return (
-    <section className="py-12 md:py-24">
+    <section className="hidden md:block py-12 md:py-24">
       <div className={`${styles.section.container} px-4 md:px-6`}>
         <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-16">Travel Packages</h2>
         <div className="max-w-6xl mx-auto space-y-8 md:space-y-12 flex flex-col items-center">
@@ -71,4 +71,3 @@ export const TravelPackages: React.FC<TravelPackagesProps> = ({ onPackageClick }
     </section>
   )
 }
-

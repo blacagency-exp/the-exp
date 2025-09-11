@@ -5,7 +5,6 @@ import { motion, useAnimation } from "framer-motion"
 import img1 from "../../assets/travel-image.png"
 
 export function Hero() {
-  //const [isVisible, setIsVisible] = useState(false)
   const controls = useAnimation()
 
   useEffect(() => {
@@ -59,13 +58,16 @@ export function Hero() {
         animate={controls}
         variants={backgroundVariants}
       >
-        <div className="absolute inset-0 bg-black/20" /> {/* Overlay for better text visibility */}
+        <div className="absolute inset-0 bg-black/20" />
       </motion.div>
 
       {/* Content */}
       <div className="relative h-full flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8">
         <motion.h1
-          className="text-4xl sm:text-6xl md:text-7xl lg:text-[8rem] leading-tight sm:leading-none font-bold text-white text-center max-w-[15ch] sm:max-w-[12ch] z-10"
+          className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[8rem] 
+                     leading-tight sm:leading-none font-bold text-white text-center 
+                     max-w-[90vw] sm:max-w-[15ch] md:max-w-[12ch] z-10
+                     px-2 sm:px-0"
           initial="hidden"
           animate={controls}
           variants={textVariants}
@@ -73,9 +75,11 @@ export function Hero() {
           Plan your Adventure
         </motion.h1>
 
-        {/* Decorative SVG */}
+        {/* Decorative SVG - Hidden on mobile for cleaner look */}
         <motion.svg
-          className="absolute bottom-10 left-10 w-24 h-24 text-white opacity-50"
+          className="absolute bottom-4 sm:bottom-6 md:bottom-10 left-4 sm:left-6 md:left-10 
+                     w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 
+                     text-white opacity-30 sm:opacity-50 hidden xs:block"
           viewBox="0 0 100 100"
           initial="hidden"
           animate={controls}
@@ -93,4 +97,3 @@ export function Hero() {
     </div>
   )
 }
-

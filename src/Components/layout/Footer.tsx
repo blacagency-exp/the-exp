@@ -146,7 +146,10 @@ export function Footer() {
               <h3 className="text-sm text-white/50 font-medium uppercase tracking-wider">Contact us</h3>
               <div className="space-y-2">
                 <p className="text-white/90 font-normal">+2347086855211</p>
-                <p className="text-white/90 font-normal">info@experienceplateau.com</p>
+            <a 
+              href="mailto:info@experienceplateau.com" 
+              className="text-white/90 font-normal hover:underline">
+  info@experienceplateau.com</a>
               </div>
             </motion.div>
           </motion.div>
@@ -157,35 +160,41 @@ export function Footer() {
             variants={itemVariants}
           >
             <motion.p className="text-sm text-white/60 text-left md:text-right mb-4 md:mb-0" variants={itemVariants}>
-              © 2023 — Copyright
+              © 2025 — Copyright
             </motion.p>
             <motion.div className="flex gap-4" variants={itemVariants}>
               <motion.div variants={socialLinkVariants} whileHover="hover">
-                <Link
-                  to="https://www.instagram.com/experienceplateau?igsh=MXNpdm5obW9qdnY3bQ=="
-                  className="flex items-center justify-center w-10 h-10 border border-white/20 rounded-full hover:bg-white/10"
-                  aria-label="Instagram"
-                >
-                  <Instagram className="w-5 h-5" />
-                </Link>
+               <a
+  href="https://www.instagram.com/experienceplateau?igsh=MXNpdm5obW9qdnY3bQ=="
+  target="_blank"
+  rel="noopener noreferrer"
+  className="flex items-center justify-center w-10 h-10 border border-white/20 rounded-full hover:bg-white/10"
+  aria-label="Instagram"
+>
+  <Instagram className="w-5 h-5" />
+</a>
               </motion.div>
               <motion.div variants={socialLinkVariants} whileHover="hover">
-                <Link
-                  to="https://wa.me/qr/UHL7VTCKPC5VJ1"
-                  className="flex items-center justify-center w-10 h-10 border border-white/20 rounded-full hover:bg-white/10"
-                  aria-label="WhatsApp"
-                >
-                  <WhatsAppIcon />
-                </Link>
+               <a
+  href="https://wa.me/qr/UHL7VTCKPC5VJ1"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="flex items-center justify-center w-10 h-10 border border-white/20 rounded-full hover:bg-white/10"
+  aria-label="WhatsApp"
+>
+  <WhatsAppIcon />
+</a>
               </motion.div>
               <motion.div variants={socialLinkVariants} whileHover="hover">
-                <Link
-                  to="http://t.me/@Experience_Plateau"
-                  className="flex items-center justify-center w-10 h-10 border border-white/20 rounded-full hover:bg-white/10"
-                  aria-label="Telegram"
-                >
-                  <TelegramIcon />
-                </Link>
+               <a
+  href="http://t.me/@Experience_Plateau"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="flex items-center justify-center w-10 h-10 border border-white/20 rounded-full hover:bg-white/10"
+  aria-label="Telegram"
+>
+  <TelegramIcon />
+</a>
               </motion.div>
             </motion.div>
           </motion.div>

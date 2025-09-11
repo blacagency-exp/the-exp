@@ -60,7 +60,7 @@ export function ExploreStories({ currentSlug }: ExploreStoriesProps) {
               className="cursor-pointer group"
             >
               <Link to={`/blog/${story.slug}`} className="block">
-                <div className="rounded-xl sm:rounded-2xl overflow-hidden">
+                <div className="rounded-xl sm:rounded-md overflow-hidden">
                   <div className="aspect-[4/3] relative rounded-xl sm:rounded-2xl overflow-hidden mb-4 sm:mb-6">
                     <img
                       src={story.imageUrl || "/placeholder.svg"}

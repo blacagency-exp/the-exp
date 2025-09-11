@@ -17,7 +17,7 @@ const museums = [
     id: 2,
     name: "Museum of Traditional Nigerian Architecture",
     description:
-      "Take a virtual tour through the stunning 1950s villa, where you'll explore the vast heritage of Jos's rich history, complete with a collection of Nok terracotta sculptures.",
+      "Discover the charm of a 1950s villa brought to life in an immersive virtual tour. Explore Jos’s vibrant history and be captivated by the iconic Nok terracotta sculptures that showcase Nigeria’s timeless heritage.",
     image: img2,
   },
 ]

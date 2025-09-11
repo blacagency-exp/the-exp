@@ -226,7 +226,7 @@ export function OpportunitiesHero() {
 
             <div className="space-y-6">
               <p className="text-white/50 text-sm text-right mb-8 md:mb-16 mt-6 md:mt-12">
-                Is there more places you want to see?
+                Are there more places you want to see?
               </p>
 
               <div className="space-y-4 md:space-y-6">

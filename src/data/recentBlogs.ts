@@ -14,7 +14,7 @@ import img12 from "../assets/Discover plateau second image.jpg"
 
 export const recentBlogs: BlogPostData[] = [
   {
-    date: "Oct 31, 2024",
+    date: "Mar 3, 2024",
     category: "CULTURE",
     title: "Tourism and Hospitality Partnership",
     description: "Tourism and Hospitality Partnership Unlocking the Potential of Plateau State's Tourism and...",
@@ -87,7 +87,7 @@ export const recentBlogs: BlogPostData[] = [
   },
   
   {
-    date: "Oct 31,2024",
+    date: "Aug 31,2024",
     category: "ADVENTURE",
     title: "Unlocking the Potential of Local Businesses and Vendors",
     description: "Discover how small and medium enterprises are driving Plateau State's economic growth",
@@ -306,7 +306,7 @@ export const recentBlogs: BlogPostData[] = [
     ],
   },
   {
-    date: "Oct 31,2024",
+    date: "Dec 31,2024",
     category: "CULTURE",
     title: "Media Collaboration",
     description:
@@ -392,7 +392,7 @@ export const recentBlogs: BlogPostData[] = [
     ],
   },
   {
-    date: "Oct 31,2024",
+    date: "Oct 31,2025",
     category: "ADVENTURE",
     title: "Soccer Partnership: Building Community Through Sports",
     description: "Discover how the Blac Lyfe soccer tournament is revolutionizing sports tourism in Plateau State",

@@ -150,7 +150,7 @@ export function ExploreSection() {
               <p className="text-[#97E12B] text-lg lg:text-xl font-normal">Dive into unforgettable experiences.</p>
             </div>
             <a href="#" className="hidden lg:block text-gray-400 hover:text-white underline font-normal">
-              Is there more places you want to see?
+              Are there more places you want to see?
             </a>
           </div>
         </div>
