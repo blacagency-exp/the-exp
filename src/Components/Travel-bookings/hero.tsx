@@ -64,7 +64,7 @@ export function Hero() {
       {/* Content */}
       <div className="relative h-full flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8">
         <motion.h1
-          className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[8rem] 
+          className="text-5xl xs:text-6xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[8rem] 
                      leading-tight sm:leading-none font-bold text-white text-center 
                      max-w-[90vw] sm:max-w-[15ch] md:max-w-[12ch] z-10
                      px-2 sm:px-0"

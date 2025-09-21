@@ -7,6 +7,7 @@ import { BaseLayout } from "@/Components/layout/BaseLayout"
 import { MuseumsSection } from "@/Components/Culture/museums-section"
 import { FestivalsSection } from "@/Components/Culture/festivals-section"
 import { ContactSection } from "@/Components/Home/ContactSection"
+import { FeaturedEvent } from '@/Components/Home/FeaturedEvent'
 
 export function CulturePage() {
   // const { pathname } = useLocation()
@@ -19,6 +20,7 @@ export function CulturePage() {
     <BaseLayout>
       <CulturalHero />
       <MuseumsSection />
+      <FeaturedEvent/>      
       <FestivalsSection />
       <ContactSection />
     </BaseLayout>

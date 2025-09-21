@@ -125,17 +125,17 @@ export function Footer() {
             {/* Top links */}
             <motion.div className="space-y-2">
               <motion.div variants={linkVariants} whileHover="hover">
-                <Link to="#" className="block text-white/90 hover:text-white font-normal">
+                {/* <Link to="#" className="block text-white/90 hover:text-white font-normal">
                   For designers
-                </Link>
+                </Link> */}
               </motion.div>
               <motion.div variants={linkVariants} whileHover="hover">
-                <Link to="#" className="block text-white/90 hover:text-white font-normal">
+                <Link to="/blog" className="block text-white/90 hover:text-white font-normal">
                   Articles
                 </Link>
               </motion.div>
               <motion.div variants={linkVariants} whileHover="hover">
-                <Link to="#" className="block text-white/90 hover:text-white font-normal">
+                <Link to="/contact" className="block text-white/90 hover:text-white font-normal">
                   Contacts
                 </Link>
               </motion.div>
@@ -145,11 +145,18 @@ export function Footer() {
             <motion.div className="space-y-4 mt-8 md:mt-0" variants={itemVariants}>
               <h3 className="text-sm text-white/50 font-medium uppercase tracking-wider">Contact us</h3>
               <div className="space-y-2">
-                <p className="text-white/90 font-normal">+2347086855211</p>
-            <a 
-              href="mailto:info@experienceplateau.com" 
-              className="text-white/90 font-normal hover:underline">
-  info@experienceplateau.com</a>
+                <a
+                  href="tel:+2347086855211"
+                  className="text-white/90 font-normal hover:text-white hover:underline transition-colors"
+                >
+                  +2347086855211
+                </a>
+                <a
+                  href="mailto:info@experienceplateau.com"
+                  className="block text-white/90 font-normal hover:text-white hover:underline transition-colors"
+                >
+                  info@experienceplateau.com
+                </a>
               </div>
             </motion.div>
           </motion.div>
@@ -164,37 +171,37 @@ export function Footer() {
             </motion.p>
             <motion.div className="flex gap-4" variants={itemVariants}>
               <motion.div variants={socialLinkVariants} whileHover="hover">
-               <a
-  href="https://www.instagram.com/experienceplateau?igsh=MXNpdm5obW9qdnY3bQ=="
-  target="_blank"
-  rel="noopener noreferrer"
-  className="flex items-center justify-center w-10 h-10 border border-white/20 rounded-full hover:bg-white/10"
-  aria-label="Instagram"
->
-  <Instagram className="w-5 h-5" />
-</a>
+                <a
+                  href="https://www.instagram.com/experienceplateau?igsh=MXNpdm5obW9qdnY3bQ=="
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center w-10 h-10 border border-white/20 rounded-full hover:bg-white/10"
+                  aria-label="Instagram"
+                >
+                  <Instagram className="w-5 h-5" />
+                </a>
               </motion.div>
               <motion.div variants={socialLinkVariants} whileHover="hover">
-               <a
-  href="https://wa.me/qr/UHL7VTCKPC5VJ1"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="flex items-center justify-center w-10 h-10 border border-white/20 rounded-full hover:bg-white/10"
-  aria-label="WhatsApp"
->
-  <WhatsAppIcon />
-</a>
+                <a
+                  href="https://wa.me/qr/UHL7VTCKPC5VJ1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center w-10 h-10 border border-white/20 rounded-full hover:bg-white/10"
+                  aria-label="WhatsApp"
+                >
+                  <WhatsAppIcon />
+                </a>
               </motion.div>
               <motion.div variants={socialLinkVariants} whileHover="hover">
-               <a
-  href="http://t.me/@Experience_Plateau"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="flex items-center justify-center w-10 h-10 border border-white/20 rounded-full hover:bg-white/10"
-  aria-label="Telegram"
->
-  <TelegramIcon />
-</a>
+                <a
+                  href="http://t.me/@Experience_Plateau"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center w-10 h-10 border border-white/20 rounded-full hover:bg-white/10"
+                  aria-label="Telegram"
+                >
+                  <TelegramIcon />
+                </a>
               </motion.div>
             </motion.div>
           </motion.div>
@@ -203,4 +210,3 @@ export function Footer() {
     </motion.footer>
   )
 }
-

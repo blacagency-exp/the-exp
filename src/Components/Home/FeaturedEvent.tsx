@@ -4,6 +4,7 @@ import { useRef } from "react"
 import { ArrowRight } from "lucide-react"
 import { motion, useInView } from "framer-motion"
 import { styles } from "../../constants/styles"
+import { Link } from "react-router-dom"
 import featuredEventImage from "../../assets/newposter.png"
 
 export function FeaturedEvent() {
@@ -59,15 +60,17 @@ export function FeaturedEvent() {
               </motion.p>
             </div>
           </div>
-          <motion.button
-            variants={itemVariants}
-            className="flex font-medium items-center gap-2 px-6 lg:px-8 py-2 bg-[#E7FBD0] text-[#5A8E00] rounded-full hover:bg-[#D9F99D] transition-colors w-fit lg:w-auto"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            View more
-            <ArrowRight className="w-4 h-4" />
-          </motion.button>
+          <motion.div variants={itemVariants}>
+            <Link
+              to="/gallery"
+              className="flex font-medium items-center gap-2 px-6 lg:px-8 py-2 bg-[#E7FBD0] text-[#5A8E00] rounded-full hover:bg-[#D9F99D] transition-colors w-fit lg:w-auto"
+            >
+              <motion.div className="flex items-center gap-2" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                View more
+                <ArrowRight className="w-4 h-4" />
+              </motion.div>
+            </Link>
+          </motion.div>
         </motion.div>
 
         <motion.div

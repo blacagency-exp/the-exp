@@ -149,9 +149,7 @@ export function ExploreSection() {
               <h3 className="text-4xl lg:text-5xl font-semibold">Places to visit</h3>
               <p className="text-[#97E12B] text-lg lg:text-xl font-normal">Dive into unforgettable experiences.</p>
             </div>
-            <a href="#" className="hidden lg:block text-gray-400 hover:text-white underline font-normal">
-              Are there more places you want to see?
-            </a>
+          
           </div>
         </div>
 

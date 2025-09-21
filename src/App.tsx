@@ -8,6 +8,7 @@ import { VirtualTourPage } from "./pages/VirtualTourPage"
 import { CulturePage } from "./pages/CulturePage"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { BlogPostPage } from "./pages/BlogPostPage"
+import { GalleryPage } from "./pages/GalleryPage"
 import { ContactPage } from "./pages/ContactPage"
 import { ScrollToTop } from "./Components/ScrollToTop"
 
@@ -28,6 +29,7 @@ function App() {
         <Route path="/opp" element={<OpportunityPage />} />
         <Route path="/hotel" element={<HotelPage />} />
         <Route path="/tour" element={<TourPage />} />
+        <Route path="/gallery" element={<GalleryPage />} />
         <Route path="/culture" element={<CulturePage />} />
         <Route path="/blogpost" element={<BlogPostPage />} />
         <Route path="/blog/:slug" element={<BlogPostPage />} />

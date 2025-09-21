@@ -45,7 +45,6 @@ const investmentOptions = [
 export function OpportunitiesHero() {
   const [activeIndex, setActiveIndex] = useState(0)
   const [loadedImages, setLoadedImages] = useState<Record<number, boolean>>({})
-  // Removed unused isInitialLoad state
   const imageContainerRef = useRef<HTMLDivElement>(null)
 
   // Helper function to get image src from imported image
@@ -95,8 +94,6 @@ export function OpportunitiesHero() {
     }
 
     loadActiveImage()
-
-    // Removed unused timer logic for isInitialLoad
   }, [activeIndex])
 
   // Preload the next image when hovering
@@ -176,7 +173,8 @@ export function OpportunitiesHero() {
       {/* Investment Section - Full width background */}
       <section className="bg-[#141E03] -mt-32 md:-mt-64 pt-12 md:pt-24 pb-12 md:pb-24 relative">
         <div className={`${styles.section.container} px-4 md:px-0`}>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 mt-24 md:mt-48">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 mt-24 md:mt-48 items-start">
+            {/* Left Column - Image and Description */}
             <div className="space-y-4">
               <div className="space-y-1 mb-8 md:mb-16">
                 <h2 className="text-3xl md:text-4xl font-bold text-white">Why Invest in Plateau State?</h2>
@@ -224,10 +222,12 @@ export function OpportunitiesHero() {
               </p>
             </div>
 
-            <div className="space-y-6">
-              <p className="text-white/50 text-sm text-right mb-8 md:mb-16 mt-6 md:mt-12">
-                Are there more places you want to see?
-              </p>
+            {/* Right Column - Investment Options aligned with image */}
+            <div className="flex flex-col justify-start">
+              {/* Reduced spacer height for better alignment */}
+              <div className="mb-8 md:mb-16">
+                <div className="h-[80px] md:h-[80px]"></div>
+              </div>
 
               <div className="space-y-4 md:space-y-6">
                 {investmentOptions.map((option, index) => (
@@ -254,4 +254,3 @@ export function OpportunitiesHero() {
     </>
   )
 }
-

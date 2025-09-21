@@ -86,7 +86,7 @@ export function PageHeader() {
 
   return (
     <motion.header
-      className="w-full top-0 left-0 z-50 bg-white"
+      className="w-full sticky top-0 left-0 z-50 bg-white shadow-sm border-b border-gray-100"
       initial="hidden"
       animate="visible"
       variants={{
