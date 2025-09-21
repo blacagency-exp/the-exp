@@ -233,7 +233,7 @@ export function InteractiveGallery() {
   const containerRef = useRef<HTMLDivElement>(null)
   const isInView = useInView(containerRef, { once: true, amount: 0.1 })
 
-  const { scrollYProgress } = useScroll({
+  const { } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"],
   })
@@ -357,7 +357,7 @@ export function InteractiveGallery() {
           animate={isInView ? "visible" : "hidden"}
         >
           <AnimatePresence mode="wait">
-            {filteredImages.map((item, index) => (
+            {filteredImages.map((item,) => (
               <motion.div
                 key={item.id}
                 variants={itemVariants}
