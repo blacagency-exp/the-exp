@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useCallback } from "react"
 import { motion, AnimatePresence, useScroll, useInView } from "framer-motion"
 import { X, Heart, Share2, Download } from "lucide-react"
 import art1 from "../../assets/GRstudios354.jpg"
@@ -46,15 +46,80 @@ const galleryData = [
   { id: 19, image: fest6 },
 ]
 
+// Loading skeleton component
+const ImageSkeleton = () => (
+  <div className="w-full h-full bg-gray-200 animate-pulse rounded-2xl flex items-center justify-center">
+    <div className="w-16 h-16 bg-gray-300 rounded-full animate-pulse"></div>
+  </div>
+)
+
+// Optimized image component with lazy loading
+const LazyImage = ({
+  src,
+  alt,
+  className,
+  onClick,
+  onLoad,
+}: {
+  src: string
+  alt: string
+  className: string
+  onClick?: () => void
+  onLoad?: () => void
+}) => {
+  const [isLoaded, setIsLoaded] = useState(false)
+  const [isError, setIsError] = useState(false)
+  const imgRef = useRef<HTMLImageElement>(null)
+  const isInView = useInView(imgRef, { once: true, margin: "100px" })
+
+  const handleLoad = useCallback(() => {
+    setIsLoaded(true)
+    onLoad?.()
+  }, [onLoad])
+
+  const handleError = useCallback(() => {
+    setIsError(true)
+  }, [])
+
+  return (
+    <div ref={imgRef} className="relative w-full h-full">
+      {!isLoaded && !isError && <ImageSkeleton />}
+
+      {isInView && (
+        <img
+          src={src || "/placeholder.svg"}
+          alt={alt}
+          className={`${className} ${isLoaded ? "opacity-100" : "opacity-0"} transition-opacity duration-500`}
+          onClick={onClick}
+          onLoad={handleLoad}
+          onError={handleError}
+          loading="lazy"
+          decoding="async"
+        />
+      )}
+
+      {isError && (
+        <div className="w-full h-full bg-gray-100 flex items-center justify-center rounded-2xl">
+          <div className="text-gray-400 text-center">
+            <div className="w-12 h-12 bg-gray-300 rounded-full mx-auto mb-2"></div>
+            <p className="text-sm">Failed to load</p>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export function InteractiveGallery() {
   const [selectedImage, setSelectedImage] = useState<(typeof galleryData)[0] | null>(null)
   const [hoveredId, setHoveredId] = useState<number | null>(null)
   const [likedImages, setLikedImages] = useState<Set<number>>(new Set())
+  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set())
 
   const containerRef = useRef<HTMLDivElement>(null)
   const isInView = useInView(containerRef, { once: true, amount: 0.1 })
 
-  const {  } = useScroll({
+  const { } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"],
   })
@@ -71,33 +136,38 @@ export function InteractiveGallery() {
     })
   }
 
+  const handleImageLoad = useCallback((id: number) => {
+    setLoadedImages((prev) => new Set(prev).add(id))
+  }, [])
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2,
+        staggerChildren: 0.05, // Reduced stagger for faster loading appearance
+        delayChildren: 0.1,
       },
     },
   }
 
   const itemVariants = {
-    hidden: { y: 60, opacity: 0, scale: 0.8 },
+    hidden: { y: 30, opacity: 0, scale: 0.95 }, // Reduced animation intensity
     visible: {
       y: 0,
       opacity: 1,
       scale: 1,
       transition: {
         type: "spring",
-        stiffness: 100,
-        damping: 15,
+        stiffness: 120,
+        damping: 20,
+        duration: 0.4,
       },
     },
   }
 
   const modalVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
+    hidden: { opacity: 0, scale: 0.9 },
     visible: {
       opacity: 1,
       scale: 1,
@@ -109,7 +179,7 @@ export function InteractiveGallery() {
     },
     exit: {
       opacity: 0,
-      scale: 0.8,
+      scale: 0.9,
       transition: {
         duration: 0.2,
       },
@@ -143,6 +213,19 @@ export function InteractiveGallery() {
           </p>
         </motion.div>
 
+        {/* Loading Progress Indicator */}
+        <motion.div
+          className="mb-8 text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: loadedImages.size < galleryData.length ? 1 : 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="inline-flex items-center gap-2 text-sm text-gray-500">
+            <div className="w-4 h-4 border-2 border-[#97E12B] border-t-transparent rounded-full animate-spin"></div>
+            Loading images... ({loadedImages.size}/{galleryData.length})
+          </div>
+        </motion.div>
+
         {/* Gallery Grid */}
         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
@@ -162,35 +245,40 @@ export function InteractiveGallery() {
                 onClick={() => setSelectedImage(item)}
               >
                 <div className="relative overflow-hidden rounded-2xl bg-gray-100 aspect-[4/3]">
-                  <img
-                    src={item.image || "/placeholder.svg"}
+                  <LazyImage
+                    src={item.image}
                     alt={`Gallery image ${item.id}`}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    onLoad={() => handleImageLoad(item.id)}
                   />
 
-                  {/* Overlay */}
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: hoveredId === item.id ? 1 : 0 }}
-                    transition={{ duration: 0.3 }}
-                  />
-
-                  {/* Like Button */}
-                  <motion.button
-                    className="absolute top-4 right-4 w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center"
-                    initial={{ scale: 0 }}
-                    animate={{ scale: hoveredId === item.id ? 1 : 0 }}
-                    transition={{ duration: 0.2 }}
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      toggleLike(item.id)
-                    }}
-                  >
-                    <Heart
-                      className={`w-5 h-5 ${likedImages.has(item.id) ? "fill-red-500 text-red-500" : "text-white"}`}
+                  {/* Overlay - only show when image is loaded */}
+                  {loadedImages.has(item.id) && (
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: hoveredId === item.id ? 1 : 0 }}
+                      transition={{ duration: 0.3 }}
                     />
-                  </motion.button>
+                  )}
+
+                  {/* Like Button - only show when image is loaded */}
+                  {loadedImages.has(item.id) && (
+                    <motion.button
+                      className="absolute top-4 right-4 w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: hoveredId === item.id ? 1 : 0 }}
+                      transition={{ duration: 0.2 }}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        toggleLike(item.id)
+                      }}
+                    >
+                      <Heart
+                        className={`w-5 h-5 ${likedImages.has(item.id) ? "fill-red-500 text-red-500" : "text-white"}`}
+                      />
+                    </motion.button>
+                  )}
                 </div>
               </motion.div>
             ))}
@@ -225,9 +313,9 @@ export function InteractiveGallery() {
               </button>
 
               {/* Image */}
-              <div className="aspect-[16/10] relative">
-                <img
-                  src={selectedImage.image || "/placeholder.svg"}
+              <div className="aspect-[16/10] relative bg-gray-100">
+                <LazyImage
+                  src={selectedImage.image}
                   alt={`Gallery image ${selectedImage.id}`}
                   className="w-full h-full object-cover"
                 />
