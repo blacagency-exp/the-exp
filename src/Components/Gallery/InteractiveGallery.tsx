@@ -23,209 +23,30 @@ import fest4 from "../../assets/GRstudios100.jpg"
 import fest5 from "../../assets/551A0245.jpg"
 import fest6 from "../../assets/551A9990.jpg"
 
-// Updated gallery data with realistic Plateau State events
+// Simplified gallery data with only id and image
 const galleryData = [
-  // Art Category
-  {
-    id: 1,
-    title: "Contemporary Art Showcase",
-    category: "Art",
-    image: art1,
-    description:
-      "A vibrant display of contemporary artworks by emerging and established artists from Plateau State, showcasing the creative spirit of the region.",
-    date: "March 2024",
-    location: "Jos Museum, Jos",
-  },
-  {
-    id: 2,
-    title: "Traditional Pottery Exhibition",
-    category: "Art",
-    image: art2,
-    description:
-      "An exhibition celebrating the ancient art of pottery making, featuring traditional techniques passed down through generations in Plateau communities.",
-    date: "February 2024",
-    location: "Cultural Centre, Jos",
-  },
-  {
-    id: 3,
-    title: "Modern Sculpture Gallery",
-    category: "Art",
-    image: art3,
-    description:
-      "Innovative sculptures that blend traditional African motifs with contemporary artistic expressions, created by local Plateau State artists.",
-    date: "January 2024",
-    location: "Plateau Arts Council, Jos",
-  },
-  {
-    id: 4,
-    title: "Mixed Media Art Fair",
-    category: "Art",
-    image: art4,
-    description:
-      "A diverse collection of mixed media artworks exploring themes of identity, culture, and modernity in Plateau State.",
-    date: "December 2023",
-    location: "University of Jos Art Gallery",
-  },
-  {
-    id: 5,
-    title: "Photography & Visual Arts",
-    category: "Art",
-    image: art5,
-    description:
-      "Stunning photography and visual arts capturing the natural beauty and cultural richness of Plateau State landscapes and people.",
-    date: "November 2023",
-    location: "Jos Photography Studio",
-  },
-  {
-    id: 6,
-    title: "Abstract Art Collection",
-    category: "Art",
-    image: art6,
-    description:
-      "Bold abstract paintings and installations that represent the dynamic energy and spirit of Plateau State's artistic community.",
-    date: "October 2023",
-    location: "Modern Art Gallery, Jos",
-  },
-  {
-    id: 7,
-    title: "Cultural Art Heritage",
-    category: "Art",
-    image: art7,
-    description:
-      "Traditional art forms and cultural artifacts showcasing the rich heritage of the various ethnic groups in Plateau State.",
-    date: "September 2023",
-    location: "Heritage Museum, Jos",
-  },
-
-  // Culture Category (Fashion & Cultural Events)
-  {
-    id: 8,
-    title: "Plateau Fashion Week",
-    category: "Culture",
-    image: fash1,
-    description:
-      "The premier fashion event showcasing traditional and contemporary designs by Plateau State fashion designers, celebrating local textile traditions.",
-    date: "August 2024",
-    location: "Yakubu Gowon Stadium, Jos",
-  },
-  {
-    id: 9,
-    title: "Traditional Attire Showcase",
-    category: "Culture",
-    image: fash2,
-    description:
-      "A beautiful display of traditional clothing from various ethnic groups in Plateau State, highlighting the diversity of cultural dress.",
-    date: "July 2024",
-    location: "Cultural Centre, Jos",
-  },
-  {
-    id: 10,
-    title: "Modern African Fashion",
-    category: "Culture",
-    image: fash3,
-    description:
-      "Contemporary African fashion designs that blend traditional patterns with modern cuts, representing the evolution of Plateau State fashion.",
-    date: "June 2024",
-    location: "Fashion Hub, Jos",
-  },
-  {
-    id: 11,
-    title: "Cultural Dress Festival",
-    category: "Culture",
-    image: fash4,
-    description:
-      "A celebration of cultural identity through traditional dress, featuring authentic costumes from Berom, Anaguta, Afizere, and other Plateau communities.",
-    date: "May 2024",
-    location: "Jos Main Market Square",
-  },
-  {
-    id: 15,
-    title: "Youth Fashion Show",
-    category: "Culture",
-    image: fash5,
-    description:
-      "Young designers from Plateau State showcase their innovative fashion creations, blending traditional motifs with contemporary style.",
-    date: "April 2024",
-    location: "University of Jos Campus",
-  },
-  {
-    id: 19,
-    title: "Bridal Fashion Exhibition",
-    category: "Culture",
-    image: fash6,
-    description:
-      "Elegant bridal wear showcasing traditional wedding attire from different Plateau State communities, celebrating matrimonial customs.",
-    date: "March 2024",
-    location: "Wedding Expo Centre, Jos",
-  },
-
-  // Festival Category
-  {
-    id: 12,
-    title: "Jos Carnival Celebration",
-    category: "Festival",
-    image: fest1,
-    description:
-      "The annual Jos Carnival featuring colorful parades, traditional dances, and cultural performances celebrating the unity and diversity of Plateau State.",
-    date: "December 2024",
-    location: "Jos City Centre",
-  },
-  {
-    id: 13,
-    title: "Nzem Berom Festival",
-    category: "Festival",
-    image: fest2,
-    description:
-      "The traditional harvest festival of the Berom people, celebrating agricultural abundance with traditional dances, music, and cultural displays.",
-    date: "November 2024",
-    location: "Berom Land, Jos South",
-  },
-  {
-    id: 14,
-    title: "Cultural Unity Festival",
-    category: "Festival",
-    image: fest3,
-    description:
-      "A festival promoting peace and unity among the diverse ethnic groups of Plateau State through music, dance, and cultural exchange.",
-    date: "October 2024",
-    location: "Rwang Pam Stadium, Jos",
-  },
-  {
-    id: 16,
-    title: "Traditional Music Festival",
-    category: "Festival",
-    image: fest4,
-    description:
-      "A celebration of traditional music and instruments from various Plateau State communities, featuring live performances and cultural storytelling.",
-    date: "September 2024",
-    location: "Jos Township Stadium",
-  },
-  {
-    id: 17,
-    title: "Plateau Peace Festival",
-    category: "Festival",
-    image: fest5,
-    description:
-      "An annual festival dedicated to promoting peace, harmony, and coexistence among all communities in Plateau State through cultural activities.",
-    date: "August 2024",
-    location: "Government House Grounds, Jos",
-  },
-  {
-    id: 18,
-    title: "Youth Cultural Festival",
-    category: "Festival",
-    image: fest6,
-    description:
-      "Young people from across Plateau State come together to celebrate their cultural heritage through dance, music, and traditional performances.",
-    date: "July 2024",
-    location: "Youth Centre, Jos",
-  },
+  { id: 1, image: art1 },
+  { id: 2, image: art2 },
+  { id: 3, image: art3 },
+  { id: 4, image: art4 },
+  { id: 5, image: art5 },
+  { id: 6, image: art6 },
+  { id: 7, image: art7 },
+  { id: 8, image: fash1 },
+  { id: 9, image: fash2 },
+  { id: 10, image: fash3 },
+  { id: 11, image: fash4 },
+  { id: 12, image: fash5 },
+  { id: 13, image: fash6 },
+  { id: 14, image: fest1 },
+  { id: 15, image: fest2 },
+  { id: 16, image: fest3 },
+  { id: 17, image: fest4 },
+  { id: 18, image: fest5 },
+  { id: 19, image: fest6 },
 ]
 
-const categories = ["All", "Festival", "Culture", "Art"]
-
 export function InteractiveGallery() {
-  const [selectedCategory, setSelectedCategory] = useState("All")
   const [selectedImage, setSelectedImage] = useState<(typeof galleryData)[0] | null>(null)
   const [hoveredId, setHoveredId] = useState<number | null>(null)
   const [likedImages, setLikedImages] = useState<Set<number>>(new Set())
@@ -233,13 +54,10 @@ export function InteractiveGallery() {
   const containerRef = useRef<HTMLDivElement>(null)
   const isInView = useInView(containerRef, { once: true, amount: 0.1 })
 
-  const { } = useScroll({
+  const {  } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"],
   })
-
-  const filteredImages =
-    selectedCategory === "All" ? galleryData : galleryData.filter((item) => item.category === selectedCategory)
 
   const toggleLike = (id: number) => {
     setLikedImages((prev) => {
@@ -325,30 +143,6 @@ export function InteractiveGallery() {
           </p>
         </motion.div>
 
-        {/* Category Filter */}
-        <motion.div
-          className="flex flex-wrap justify-center gap-4 mb-12"
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-        >
-          {categories.map((category) => (
-            <motion.button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
-                selectedCategory === category
-                  ? "bg-[#97E12B] text-[#141E03] shadow-lg"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-              }`}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              {category}
-            </motion.button>
-          ))}
-        </motion.div>
-
         {/* Gallery Grid */}
         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
@@ -357,7 +151,7 @@ export function InteractiveGallery() {
           animate={isInView ? "visible" : "hidden"}
         >
           <AnimatePresence mode="wait">
-            {filteredImages.map((item,) => (
+            {galleryData.map((item) => (
               <motion.div
                 key={item.id}
                 variants={itemVariants}
@@ -370,36 +164,17 @@ export function InteractiveGallery() {
                 <div className="relative overflow-hidden rounded-2xl bg-gray-100 aspect-[4/3]">
                   <img
                     src={item.image || "/placeholder.svg"}
-                    alt={item.title}
+                    alt={`Gallery image ${item.id}`}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
 
                   {/* Overlay */}
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"
+                    className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: hoveredId === item.id ? 1 : 0 }}
                     transition={{ duration: 0.3 }}
                   />
-
-                  {/* Content Overlay */}
-                  <motion.div
-                    className="absolute bottom-0 left-0 right-0 p-6 text-white"
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{
-                      y: hoveredId === item.id ? 0 : 20,
-                      opacity: hoveredId === item.id ? 1 : 0,
-                    }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <span className="inline-block px-3 py-1 bg-[#97E12B] text-[#141E03] text-sm font-medium rounded-full mb-2">
-                      {item.category}
-                    </span>
-                    <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-                    <p className="text-sm text-gray-200">
-                      {item.date} • {item.location}
-                    </p>
-                  </motion.div>
 
                   {/* Like Button */}
                   <motion.button
@@ -434,7 +209,7 @@ export function InteractiveGallery() {
             onClick={() => setSelectedImage(null)}
           >
             <motion.div
-              className="relative max-w-4xl w-full bg-white rounded-2xl overflow-hidden"
+              className="relative max-w-5xl w-full bg-white rounded-2xl overflow-hidden"
               variants={modalVariants}
               initial="hidden"
               animate="visible"
@@ -453,23 +228,15 @@ export function InteractiveGallery() {
               <div className="aspect-[16/10] relative">
                 <img
                   src={selectedImage.image || "/placeholder.svg"}
-                  alt={selectedImage.title}
+                  alt={`Gallery image ${selectedImage.id}`}
                   className="w-full h-full object-cover"
                 />
               </div>
 
-              {/* Content */}
-              <div className="p-8">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <span className="inline-block px-3 py-1 bg-[#97E12B] text-[#141E03] text-sm font-medium rounded-full mb-3">
-                      {selectedImage.category}
-                    </span>
-                    <h3 className="text-3xl font-bold text-[#141E03] mb-2">{selectedImage.title}</h3>
-                    <p className="text-gray-600 mb-4">
-                      {selectedImage.date} • {selectedImage.location}
-                    </p>
-                  </div>
+              {/* Action Bar */}
+              <div className="p-6 bg-white">
+                <div className="flex items-center justify-between">
+                  <div className="text-lg font-medium text-gray-800"></div>
 
                   {/* Action Buttons */}
                   <div className="flex gap-2">
@@ -491,8 +258,6 @@ export function InteractiveGallery() {
                     </button>
                   </div>
                 </div>
-
-                <p className="text-gray-700 leading-relaxed">{selectedImage.description}</p>
               </div>
             </motion.div>
           </motion.div>

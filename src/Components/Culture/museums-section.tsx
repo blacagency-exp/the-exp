@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import { styles } from "../../constants/styles"
+import { Link } from "react-router-dom"
 import img1 from "../../assets/muse-one.png"
 import img2 from "../../assets/muse-two.png"
 
@@ -70,6 +71,7 @@ export function MuseumsSection() {
                 }
               `}
             >
+              <Link to="/virtual-tour" className="block">
               <div className="aspect-[4/3]">
                 <img
                   src={museum.image || "/placeholder.svg"}
@@ -83,6 +85,7 @@ export function MuseumsSection() {
                   <p className="text-white/80 text-xs sm:text-sm max-w-xl font-light">{museum.description}</p>
                 </div>
               </div>
+              </Link>
             </motion.div>
           ))}
         </motion.div>
