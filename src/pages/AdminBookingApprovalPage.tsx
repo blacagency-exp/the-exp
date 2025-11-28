@@ -49,7 +49,7 @@ export default function AdminBookingApprovalPage() {
         adminNotes,
       })
       setSuccess(true)
-      setTimeout(() => navigate("/admin/bookings"), 3000)
+      setTimeout(() => navigate("/"), 3000)
     } catch (error) {
       console.error("Error approving booking:", error)
       setError("Failed to approve booking. Please try again.")

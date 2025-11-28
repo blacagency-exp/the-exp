@@ -49,7 +49,7 @@ export default function AdminBookingRejectionPage() {
         rejectionReason,
       })
       setSuccess(true)
-      setTimeout(() => navigate("/admin/bookings"), 3000)
+      setTimeout(() => navigate("/"), 3000)
     } catch (error) {
       console.error("Error rejecting booking:", error)
       setError("Failed to reject booking. Please try again.")
