@@ -1,10 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useState,useEffect } from "react"
 import { Link } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { styles } from "../../constants/styles"
-import img1 from "../../assets/logo_white.png"
+import img1 from "../../assets/Logomark 1.png"
 
 const navVariants = {
   hidden: { opacity: 0, y: -20 },
@@ -73,20 +73,32 @@ const leftNavLinks = [
   { to: "/count", label: "Home" },
   { to: "/opp", label: "Investments" },
   { to: "/blog", label: "Blogs" },
-  { to: "/virtual-tour", label: "Virtual Tours" }
+  { to: "/virtual-tour", label: "Virtual Tours" },
 ]
 const rightNavLinks = [
   { to: "/travel-booking", label: "Travel Booking" },
   { to: "/culture", label: "Cultural Heritage" },
-  { to: "/contact", label: "Contact Us" }
+  { to: "/contact", label: "Contact Us" },
 ]
 
 export function HomeHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 100)
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   return (
     <motion.header
-      className="w-full absolute top-0 left-0 z-50 bg-black/5 backdrop-blur-sm"
+       className={`w-full fixed top-0 left-0 z-50 transition-all duration-300 bg-transparent ${
+        isScrolled ? "backdrop-blur-md bg-black/70 border-b border-white/10" : ""
+      }`}
       initial="hidden"
       animate="visible"
       variants={{
@@ -100,14 +112,11 @@ export function HomeHeader() {
         },
       }}
     >
-      <div className={styles.section.container}>
+     <div className={`${styles.section.container} bg-transparent`}>
         {/* Desktop Layout - Grid with balanced columns */}
-        <div className="hidden lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:h-16 lg:gap-8">
+        <div className="hidden lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:h-20 lg:gap-16">
           {/* Left Navigation */}
-          <motion.nav 
-            className="flex items-center justify-start space-x-16" 
-            variants={navVariants}
-          >
+          <motion.nav className="flex items-center justify-end space-x-8" variants={navVariants}>
             {leftNavLinks.map((link) => (
               <motion.div key={link.to} variants={linkVariants} whileHover="hover">
                 <Link to={link.to} className="text-white hover:text-[#97E12B] transition-colors whitespace-nowrap">
@@ -118,24 +127,18 @@ export function HomeHeader() {
           </motion.nav>
 
           {/* Centered Logo - Minimal width */}
-          <motion.div 
-            className="flex justify-center items-center" 
-            variants={logoVariants}
-          >
+          <motion.div className="flex justify-center items-center px-8" variants={logoVariants}>
             <Link to="/" className="flex items-center">
               <img 
-                src={img1 || "/placeholder.svg"} 
+                src={img1}
                 alt="Experience Plateau Logo" 
-                className="h-9 text-white"
+                className="h-14 w-auto"
               />
             </Link>
           </motion.div>
 
           {/* Right Navigation */}
-          <motion.nav 
-            className="flex items-center justify-start space-x-14" 
-            variants={navVariants}
-          >
+          <motion.nav className="flex items-center justify-start space-x-8" variants={navVariants}>
             {rightNavLinks.map((link) => (
               <motion.div key={link.to} variants={linkVariants} whileHover="hover">
                 <Link to={link.to} className="text-white hover:text-[#97E12B] transition-colors whitespace-nowrap">
@@ -152,16 +155,16 @@ export function HomeHeader() {
           <motion.div variants={logoVariants}>
             <Link to="/" className="flex items-center">
               <img 
-                src={img1 || "/placeholder.svg"} 
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-ZMA1GAfNCpxkzl0eUFI6VhTWoSV1NR.png" 
                 alt="Experience Plateau Logo" 
-                className="h-9 text-white"
+                className="h-10"
               />
             </Link>
           </motion.div>
 
           {/* Mobile Menu Button */}
-          <button 
-            onClick={() => setIsMenuOpen(!isMenuOpen)} 
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="p-2 focus:outline-none"
             aria-label="Toggle mobile menu"
           >
@@ -172,9 +175,7 @@ export function HomeHeader() {
                 }`}
               />
               <span
-                className={`w-full h-0.5 bg-[#97E12B] transition-all duration-300 ${
-                  isMenuOpen ? "opacity-0" : ""
-                }`}
+                className={`w-full h-0.5 bg-[#97E12B] transition-all duration-300 ${isMenuOpen ? "opacity-0" : ""}`}
               />
               <span
                 className={`w-full h-0.5 bg-[#97E12B] transform transition-all duration-300 ${
@@ -198,8 +199,8 @@ export function HomeHeader() {
           >
             <div className="p-6 bg-white">
               <div className="flex justify-end mb-8">
-                <button 
-                  onClick={() => setIsMenuOpen(false)} 
+                <button
+                  onClick={() => setIsMenuOpen(false)}
                   className="p-2 focus:outline-none"
                   aria-label="Close mobile menu"
                 >
@@ -228,10 +229,7 @@ export function HomeHeader() {
 
       {/* Mobile Menu Overlay */}
       {isMenuOpen && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" 
-          onClick={() => setIsMenuOpen(false)} 
-        />
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" onClick={() => setIsMenuOpen(false)} />
       )}
     </motion.header>
   )

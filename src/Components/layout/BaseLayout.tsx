@@ -15,7 +15,7 @@ export function BaseLayout({ children }: BaseLayoutProps) {
   const isHomePage = location.pathname === "/" || location.pathname === "/count"
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className={`min-h-screen ${isHomePage ? "" : "bg-white"}`}>
       {isHomePage ? <HomeHeader /> : <PageHeader />}
       <main>{children}</main>
       <Footer />

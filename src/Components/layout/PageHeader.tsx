@@ -102,9 +102,9 @@ export function PageHeader() {
     >
       <div className={styles.section.container}>
         {/* Desktop Layout - Grid with balanced columns */}
-        <div className="hidden lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:h-16 lg:gap-8">
+        <div className="hidden lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:h-20 lg:gap-16">
           {/* Left Navigation */}
-          <motion.nav className="flex items-center justify-start space-x-16" variants={navVariants}>
+          <motion.nav className="flex items-center justify-end space-x-8" variants={navVariants}>
             {leftNavLinks.map((link) => (
               <motion.div key={link.to} variants={linkVariants} whileHover="hover">
                 <Link to={link.to} className="text-gray-800 hover:text-[#97E12B] transition-colors whitespace-nowrap">
@@ -115,14 +115,18 @@ export function PageHeader() {
           </motion.nav>
 
           {/* Centered Logo - Minimal width */}
-          <motion.div className="flex justify-center items-center" variants={logoVariants}>
+          <motion.div className="flex justify-center items-center px-8" variants={logoVariants}>
             <Link to="/" className="flex items-center">
-              <img src={img1 || "/placeholder.svg"} alt="Experience Plateau Logo" className="h-9" />
+              <img 
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-ZMA1GAfNCpxkzl0eUFI6VhTWoSV1NR.png" 
+                alt="Experience Plateau Logo" 
+                className="h-14 w-auto"
+              />
             </Link>
           </motion.div>
 
           {/* Right Navigation */}
-          <motion.nav className="flex items-center justify-start space-x-14" variants={navVariants}>
+          <motion.nav className="flex items-center justify-start space-x-8" variants={navVariants}>
             {rightNavLinks.map((link) => (
               <motion.div key={link.to} variants={linkVariants} whileHover="hover">
                 <Link to={link.to} className="text-gray-800 hover:text-[#97E12B] transition-colors whitespace-nowrap">
@@ -138,7 +142,11 @@ export function PageHeader() {
           {/* Logo */}
           <motion.div variants={logoVariants}>
             <Link to="/" className="flex items-center">
-              <img src={img1 || "/placeholder.svg"} alt="Experience Plateau Logo" className="h-9" />
+              <img 
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-ZMA1GAfNCpxkzl0eUFI6VhTWoSV1NR.png" 
+                alt="Experience Plateau Logo" 
+                className="h-10"
+              />
             </Link>
           </motion.div>
 

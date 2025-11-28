@@ -4,8 +4,9 @@ import { useRef, useState } from "react"
 import { Hero } from "@/Components/Travel-bookings/hero"
 import { BaseLayout } from "../Components/layout/BaseLayout"
 import { TravelPackages } from "../Components/Travel-bookings/travel-packages"
-import { BookingForm } from "@/Components/Travel-bookings/booking-form"
+// import { BookingForm } from "@/Components/Travel-bookings/booking-form"
 import { ContactSection } from "@/Components/Home/ContactSection"
+import { BookingRequestForm } from "@/Components/Travel-bookings/BookingRequestForm"
 
 
 export function TravelBookingPage() {
@@ -24,7 +25,7 @@ export function TravelBookingPage() {
       <Hero />
       <TravelPackages onPackageClick={handlePackageClick} />
       <div ref={bookingFormRef}>
-        <BookingForm selectedPackage={selectedPackage} />
+        <BookingRequestForm selectedPackage={selectedPackage} />
       </div>
       <ContactSection />
      

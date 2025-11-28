@@ -11,6 +11,9 @@ import { BlogPostPage } from "./pages/BlogPostPage"
 import { GalleryPage } from "./pages/GalleryPage"
 import { ContactPage } from "./pages/ContactPage"
 import { ScrollToTop } from "./Components/ScrollToTop"
+import AdminBookingApprovalPage from "./pages/AdminBookingApprovalPage"
+import AdminBookingRejectionPage from "./pages/AdminBookingRejectionPage"
+import { BookingRequestPaymentPage } from "./pages/BookingRequestPaymentPage"
 
 
 function App() {
@@ -25,6 +28,11 @@ function App() {
         <Route path="/virtual-tour/:tourId" element={<VirtualTourPage />} />
 
         <Route path="/travel-booking" element={<TravelBookingPage />} />
+
+         
+    <Route path="/travel-booking/payment/:id" element={<BookingRequestPaymentPage />} />
+         <Route path="/admin/booking-requests/:id/approve" element={<AdminBookingApprovalPage />} />
+        <Route path="/admin/booking-requests/:id/reject" element={<AdminBookingRejectionPage />} />
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/opp" element={<OpportunityPage />} />
         <Route path="/hotel" element={<HotelPage />} />
