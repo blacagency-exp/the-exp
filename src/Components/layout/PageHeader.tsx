@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { styles } from "../../constants/styles"
-import img1 from "../../assets/logo_exp.png"
+import img1 from "../../assets/Logomark 1 (1).png"
 
 const navVariants = {
   hidden: { opacity: 0, y: -20 },
@@ -118,7 +118,7 @@ export function PageHeader() {
           <motion.div className="flex justify-center items-center px-8" variants={logoVariants}>
             <Link to="/" className="flex items-center">
               <img 
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-ZMA1GAfNCpxkzl0eUFI6VhTWoSV1NR.png" 
+                src={img1} 
                 alt="Experience Plateau Logo" 
                 className="h-14 w-auto"
               />
