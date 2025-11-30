@@ -4,7 +4,9 @@ import { motion } from "framer-motion"
 import { ArrowDown } from "lucide-react"
 import { styles } from "../../constants/styles"
 import { useRef, useEffect, useState } from "react"
-import vid from "../../assets/X P.mp4"
+
+// Replace this URL with your actual hosted video URL (Vercel Blob, YouTube, Cloudinary, etc.)
+const VIDEO_URL = "https://7r7nzzm7jnvxfgbi.public.blob.vercel-storage.com/X%20P.mp4" // You can change this to external URL
 
 export function HeroUpdate() {
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -17,7 +19,7 @@ export function HeroUpdate() {
       y: isMobile ? 0 : -40,
       x: isMobile ? 0 : -160,
       opacity: 1,
-      transition: { duration: 0.8, delay: 0.5 }, // Reduced delay since we're now waiting for video
+      transition: { duration: 0.8, delay: 0.5 },
     }),
   }
 
@@ -34,19 +36,15 @@ export function HeroUpdate() {
         setIsVideoLoading(false)
         playVideo()
 
-        // Add a small delay before showing the button to ensure smooth transition
         setTimeout(() => {
           setIsVideoReady(true)
         }, 500)
       }
 
-      // Track loading progress
       const handleProgress = () => {
         if (video.readyState >= 3) {
-          // HAVE_FUTURE_DATA or higher
           setIsVideoLoading(false)
 
-          // Add a small delay before showing the button to ensure smooth transition
           setTimeout(() => {
             setIsVideoReady(true)
           }, 500)
@@ -57,17 +55,14 @@ export function HeroUpdate() {
       video.addEventListener("canplay", handleCanPlay)
       video.addEventListener("progress", handleProgress)
 
-      // Preload the video
       if (video.preload !== "auto") {
         video.preload = "auto"
       }
 
-      // Attempt to play immediately in case the video is already loaded
       if (video.readyState >= 3) {
         setIsVideoLoading(false)
         playVideo()
 
-        // Add a small delay before showing the button to ensure smooth transition
         setTimeout(() => {
           setIsVideoReady(true)
         }, 500)
@@ -108,7 +103,7 @@ export function HeroUpdate() {
   const scrollToNextSection = () => {
     const nextSection = document.getElementById("text-section")
     if (nextSection) {
-      smoothScroll(nextSection, 1000) // Adjust the duration (in ms) as needed
+      smoothScroll(nextSection, 1000)
     }
   }
 
@@ -128,9 +123,10 @@ export function HeroUpdate() {
           loop
           muted
           playsInline
-          preload="auto"
+          preload="metadata"
+          poster="/images/hero-poster.jpg"
         >
-          <source src={vid} type="video/mp4" />
+          <source src={VIDEO_URL} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
         <div className="absolute inset-0 bg-black/30" />
@@ -139,7 +135,6 @@ export function HeroUpdate() {
       {/* Content */}
       <div className={`${styles.section.container} relative z-10 h-full pt-24`}>
         <div className="flex flex-col justify-center h-full lg:block lg:pt-32 -mt-16 lg:mt-0">
-          {/* Start Journey Button - Only animate after video is ready */}
           {isVideoReady && (
             <motion.div
               className="lg:absolute relative mt-[490px] lg:mt-0 lg:bottom-12 lg:left-1/2 lg:transform lg:-translate-x-[160px] flex justify-center lg:block"
@@ -162,4 +157,3 @@ export function HeroUpdate() {
     </section>
   )
 }
-
