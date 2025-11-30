@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import { ArrowDown } from "lucide-react"
 import { styles } from "../../constants/styles"
 import { useRef, useEffect, useState } from "react"
-import vid from "../../assets/realvid.mp4"
+import vid from "../../assets/X P.mp4"
 
 export function HeroUpdate() {
   const videoRef = useRef<HTMLVideoElement>(null)
