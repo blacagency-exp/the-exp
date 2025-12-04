@@ -4,7 +4,7 @@ import { useState,useEffect } from "react"
 import { Link } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { styles } from "../../constants/styles"
-import img1 from "../../assets/Logomark 1.png"
+import img1 from "../../assets/Logomark_WHITE.png"
 
 const navVariants = {
   hidden: { opacity: 0, y: -20 },
@@ -97,7 +97,7 @@ export function HomeHeader() {
   return (
     <motion.header
        className={`w-full fixed top-0 left-0 z-50 transition-all duration-300 bg-transparent ${
-        isScrolled ? "backdrop-blur-md bg-black/35 border-b border-white/10" : ""
+        isScrolled ? "backdrop-blur-md bg-black/55 border-b border-white/10" : ""
       }`}
       initial="hidden"
       animate="visible"

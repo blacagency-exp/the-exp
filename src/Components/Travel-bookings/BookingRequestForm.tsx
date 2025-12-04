@@ -5,7 +5,16 @@ import { useEffect, useState } from "react"
 import { GuideSelector } from "./GuideSelector"
 import axios from "axios"
 import { API_URL } from "../../config/api"
-import { CheckCircle, Loader2 } from "lucide-react"
+import { CheckCircle, Loader2, Globe } from "lucide-react"
+import { useCurrency } from "../../hooks/useCurrency"
+import {
+  getBasePrice,
+  convertCurrency,
+  convertToNGN,
+  formatCurrency,
+  CURRENCIES,
+  type CurrencyCode,
+} from "../../utils/currency"
 
 interface BookingRequestFormProps {
   selectedPackage?: string
@@ -28,6 +37,8 @@ export const BookingRequestForm: React.FC<BookingRequestFormProps> = ({ selected
   const [submitSuccess, setSubmitSuccess] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
 
+  const { currency, setCurrency} = useCurrency()
+
   useEffect(() => {
     if (selectedPackage) {
       setPackageType(selectedPackage)
@@ -35,27 +46,15 @@ export const BookingRequestForm: React.FC<BookingRequestFormProps> = ({ selected
   }, [selectedPackage])
 
   useEffect(() => {
-    let basePrice = 0
-    switch (packageType) {
-      case "Discoverer":
-        basePrice = 100 * 1
-        break
-      case "Explorer":
-        basePrice = 100 * 1
-        break
-      case "Adventurer":
-        basePrice = 100 * 1
-        break
-      default:
-        basePrice = 0
-    }
+    let basePrice = getBasePrice(packageType)
 
     if (travelerType === "group") {
       basePrice *= groupSize
     }
 
-    setTotalAmount(basePrice)
-  }, [packageType, travelerType, groupSize])
+    const priceInUserCurrency = convertCurrency(basePrice, "USD", currency)
+    setTotalAmount(priceInUserCurrency)
+  }, [packageType, travelerType, groupSize, currency])
 
   useEffect(() => {
     setFormComplete(
@@ -75,6 +74,8 @@ export const BookingRequestForm: React.FC<BookingRequestFormProps> = ({ selected
     setSubmitError(null)
 
     try {
+      const amountInNGN = convertToNGN(totalAmount, currency)
+
       const requestData = {
         firstName,
         lastName,
@@ -86,14 +87,15 @@ export const BookingRequestForm: React.FC<BookingRequestFormProps> = ({ selected
         travelDate,
         specificRequests: specificRequests || "None",
         selectedGuideId,
-        totalAmount,
+        totalAmount: amountInNGN,
+        displayCurrency: currency,
+        displayAmount: totalAmount,
       }
 
       const response = await axios.post(`${API_URL}/api/booking-requests`, requestData)
 
       if (response.data.success) {
         setSubmitSuccess(true)
-        // Reset form after 3 seconds
         setTimeout(() => {
           setFirstName("")
           setLastName("")
@@ -153,6 +155,24 @@ export const BookingRequestForm: React.FC<BookingRequestFormProps> = ({ selected
           </div>
 
           <div className="bg-white rounded-xl sm:rounded-2xl md:rounded-[2rem] p-4 sm:p-6 md:p-8 lg:p-12 xl:p-16 shadow-xl order-1 lg:order-2 mb-4 sm:mb-6 md:mb-8 lg:mb-16 xl:mb-32 w-full max-w-2xl mx-auto lg:max-w-none">
+            <div className="mb-6 flex items-center justify-between bg-gray-50 p-3 rounded-lg">
+              <div className="flex items-center gap-2">
+                <Globe className="w-4 h-4 text-gray-600" />
+                <span className="text-sm text-gray-600">Currency:</span>
+              </div>
+              <select
+                value={currency}
+                onChange={(e) => setCurrency(e.target.value as CurrencyCode)}
+                className="px-3 py-1.5 bg-white border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-[#97E12B] focus:outline-none"
+              >
+                {Object.values(CURRENCIES).map((curr) => (
+                  <option key={curr.code} value={curr.code}>
+                    {curr.symbol} {curr.code}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <form onSubmit={handleSubmitRequest} className="space-y-4 sm:space-y-5 md:space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div className="space-y-2">
@@ -297,10 +317,15 @@ export const BookingRequestForm: React.FC<BookingRequestFormProps> = ({ selected
 
               <div className="bg-gray-50 p-3 sm:p-4 rounded-lg border-l-4 border-[#97E12B]">
                 <div className="text-lg sm:text-xl font-semibold text-gray-800">
-                  Estimated Amount: ₦{totalAmount.toLocaleString()}
+                  Estimated Amount: {formatCurrency(totalAmount, currency)}
                 </div>
                 {travelerType === "group" && (
                   <div className="text-xs sm:text-sm text-gray-600 mt-1">For {groupSize} people</div>
+                )}
+                {currency !== "NGN" && (
+                  <div className="text-xs text-gray-500 mt-2">
+                    ≈ ₦{convertToNGN(totalAmount, currency).toLocaleString()} NGN (Paystack processes in NGN)
+                  </div>
                 )}
                 <p className="text-xs text-gray-500 mt-2">Payment required only after approval</p>
               </div>

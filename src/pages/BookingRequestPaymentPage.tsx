@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom"
 import axios from "axios"
 import { PageHeader } from "../Components/layout/PageHeader"
 import { Loader2, CheckCircle2, XCircle, Calendar, Users, Package, Mail, Phone } from "lucide-react"
+import { formatCurrency, type CurrencyCode } from "../utils/currency"
 
 const API_URL = "https://exp-server2.vercel.app"
 const PAYSTACK_PUBLIC_KEY = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || ""
@@ -19,6 +20,8 @@ interface BookingRequest {
   travel_date: string
   group_size: number
   estimated_amount: number
+  display_currency?: CurrencyCode
+  display_amount?: number
   status: string
   special_requests?: string
   guide_id?: number
@@ -84,14 +87,20 @@ export function BookingRequestPaymentPage() {
     setPaymentStatus("processing")
 
     try {
+      const displayCurrency = bookingRequest.display_currency || "NGN"
+      const displayAmount = bookingRequest.display_amount || bookingRequest.estimated_amount
+      const amountInNGN = bookingRequest.estimated_amount // Already in NGN from backend
+
       const metadata = {
         booking_request_id: bookingRequest.id,
         full_name: `${bookingRequest.first_name} ${bookingRequest.last_name}`,
-        phone_number: bookingRequest.phone_number, // Updated to use phone_number
+        phone_number: bookingRequest.phone_number,
         package_type: bookingRequest.package_type,
         travel_date: bookingRequest.travel_date,
         group_size: bookingRequest.group_size,
         guide_id: bookingRequest.guide_id,
+        display_currency: displayCurrency,
+        display_amount: displayAmount,
         custom_fields: [
           {
             display_name: "Booking ID",
@@ -118,7 +127,7 @@ export function BookingRequestPaymentPage() {
 
       const response = await axios.post(`${API_URL}/api/booking-requests/${bookingRequest.id}/initialize-payment`, {
         email: bookingRequest.email,
-        amount: bookingRequest.estimated_amount,
+        amount: amountInNGN, // Paystack always receives NGN
         metadata,
       })
 
@@ -135,7 +144,7 @@ export function BookingRequestPaymentPage() {
       const handler = window.PaystackPop.setup({
         key: PAYSTACK_PUBLIC_KEY,
         email: bookingRequest.email,
-        amount: bookingRequest.estimated_amount * 100,
+        amount: amountInNGN * 100, // Paystack amount in kobo (NGN)
         metadata,
         ref: data.data.reference,
         onClose: () => {
@@ -322,13 +331,29 @@ export function BookingRequestPaymentPage() {
             </div>
 
             <div className="bg-gray-50 rounded-lg p-6 mb-8">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-gray-600">Package Amount</span>
-                <span className="text-gray-800">₦{bookingRequest?.estimated_amount.toLocaleString()}</span>
-              </div>
-              <div className="border-t border-gray-300 pt-3 mt-3">
+              {bookingRequest?.display_currency && bookingRequest.display_currency !== "NGN" && (
+                <>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-gray-600">Package Amount ({bookingRequest.display_currency})</span>
+                    <span className="text-gray-800">
+                      {formatCurrency(bookingRequest.display_amount || 0, bookingRequest.display_currency)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center mb-2 pb-2 border-b border-gray-300">
+                    <span className="text-gray-600">Converted to NGN</span>
+                    <span className="text-gray-800">₦{bookingRequest.estimated_amount.toLocaleString()}</span>
+                  </div>
+                </>
+              )}
+              {(!bookingRequest?.display_currency || bookingRequest.display_currency === "NGN") && (
+                <div className="flex justify-between items-center mb-2 pb-2 border-b border-gray-300">
+                  <span className="text-gray-600">Package Amount</span>
+                  <span className="text-gray-800">₦{bookingRequest?.estimated_amount.toLocaleString()}</span>
+                </div>
+              )}
+              <div className="pt-3 mt-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-lg font-semibold text-gray-800">Total Amount</span>
+                  <span className="text-lg font-semibold text-gray-800">Total Amount (NGN)</span>
                   <span className="text-2xl font-bold text-[#5A8E00]">
                     ₦{bookingRequest?.estimated_amount.toLocaleString()}
                   </span>

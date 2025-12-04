@@ -2,9 +2,9 @@
 
 import type React from "react"
 import { styles } from "@/constants/styles"
-import img1 from "../../assets/discover.png"
-import img2 from "../../assets/explorer.png"
-import img3 from "../../assets/adventurer.png"
+import img1 from "../../assets/newDis.png"
+import img2 from "../../assets/newExp.png"
+import img3 from "../../assets/newAdv.png"
 import { motion } from "framer-motion"
 
 const packages = [
