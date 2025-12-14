@@ -6,13 +6,15 @@ import axios from "axios"
 import { API_URL } from "../../config/api"
 // Import the unified types
 import "../../types/paystack-global"
+import { convertCurrency, formatCurrency, type CurrencyCode } from "../../utils/currency"
 
 interface VirtualTourPaymentModalProps {
   isOpen: boolean
   onClose: () => void
   tourId: number
   tourName: string
-  tourPrice: number
+  tourPrice: number // This is always in NGN (base price)
+  userCurrency: string // Add user's currency code
   onPaymentSuccess: (accessCode: string) => void
 }
 
@@ -24,6 +26,7 @@ export function VirtualTourPaymentModal({
   tourId,
   tourName,
   tourPrice,
+  userCurrency,
   onPaymentSuccess,
 }: VirtualTourPaymentModalProps) {
   const [firstName, setFirstName] = useState("")
@@ -52,6 +55,11 @@ export function VirtualTourPaymentModal({
   useEffect(() => {
     setFormComplete(firstName !== "" && lastName !== "" && email !== "" && phoneNumber !== "")
   }, [firstName, lastName, email, phoneNumber])
+
+  const priceInUserCurrency = convertCurrency(tourPrice, "NGN", userCurrency as CurrencyCode)
+  const formattedUserPrice = formatCurrency(priceInUserCurrency, userCurrency as CurrencyCode)
+  const formattedNGNPrice = formatCurrency(tourPrice, "NGN")
+  const showCurrencyNote = userCurrency !== "NGN"
 
   const initializePayment = async () => {
     if (!isScriptLoaded || !formComplete) {
@@ -213,8 +221,11 @@ export function VirtualTourPaymentModal({
           <div className="mb-6 p-4 bg-[#97E12B] bg-opacity-10 rounded-lg border border-[#97E12B] border-opacity-20">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-gray-700">Tour Price:</span>
-              <span className="text-lg font-bold text-[#1A2E0D]">₦{tourPrice.toLocaleString()}</span>
+              <span className="text-lg font-bold text-[#1A2E0D]">{formattedUserPrice}</span>
             </div>
+            {showCurrencyNote && (
+              <div className="mt-2 text-xs text-gray-600">Payment will be processed in Naira: {formattedNGNPrice}</div>
+            )}
             <p className="text-xs text-gray-600 mt-2">Get 24-hour access to the full virtual tour experience</p>
           </div>
 
@@ -291,8 +302,15 @@ export function VirtualTourPaymentModal({
                 </>
               ) : (
                 <>
-                  <CreditCard className="w-4 h-4" />
-                  Pay ₦{tourPrice.toLocaleString()} • 24h Access
+                   <CreditCard className="w-4 h-4" />
+                  {showCurrencyNote ? (
+                    <span className="flex flex-col items-center">
+                      <span>Pay {formattedUserPrice} • 24h Access</span>
+                      <span className="text-xs opacity-75">({formattedNGNPrice})</span>
+                    </span>
+                  ) : (
+                    <span>Pay {formattedNGNPrice} • 24h Access</span>
+                  )}
                 </>
               )}
             </button>

@@ -10,6 +10,8 @@ import { VirtualTourPaymentModal } from "./VirtualTourPaymentModal"
 import { AccessCodeModal } from "./AccessCodeModal"
 import axios from "axios"
 import { API_URL } from "../../config/api"
+import { useCurrency } from "../../hooks/useCurrency"
+import { convertCurrency, formatCurrency } from "../../utils/currency"
 
 // Define tour pricing - UPDATED WITH JOS MUSEUM (ID 9)
 const TOUR_PRICING = {
@@ -23,6 +25,8 @@ export function FeaturedTours() {
   const navigate = useNavigate()
   const sectionRef = useRef(null)
   const isInView = useInView(sectionRef, { once: true, amount: 0.3 })
+
+  const { currency } = useCurrency()
 
   const [paymentModalOpen, setPaymentModalOpen] = useState(false)
   const [accessCodeModalOpen, setAccessCodeModalOpen] = useState(false)
@@ -220,6 +224,9 @@ export function FeaturedTours() {
             const isLocked = tourPrice !== undefined && tourPrice > 0 && !userAccess[tour.id]
             const isFree = tourPrice === undefined || tourPrice === 0
 
+            const priceInUserCurrency = convertCurrency(tourPrice || 0, "NGN", currency)
+            const formattedPrice = formatCurrency(priceInUserCurrency, currency)
+
             return (
               <motion.div
                 key={tour.id}
@@ -241,7 +248,7 @@ export function FeaturedTours() {
                       <div className="text-center text-white">
                         <Lock className="w-12 h-12 mx-auto mb-2" />
                         <p className="text-lg font-semibold">Premium Tour</p>
-                        <p className="text-sm">₦{tourPrice.toLocaleString()}</p>
+                        <p className="text-sm">{formattedPrice}</p>
                         <div className="flex items-center justify-center gap-1 mt-2 text-xs">
                           <Clock className="w-3 h-3" />
                           <span>24-hour access</span>
@@ -270,7 +277,7 @@ export function FeaturedTours() {
                       </span>
                     ) : (
                       <span className="px-3 py-1 bg-orange-500 text-white rounded-full text-sm font-semibold">
-                        ₦{tourPrice.toLocaleString()}
+                         {formattedPrice}
                       </span>
                     )}
                   </div>
@@ -328,6 +335,7 @@ export function FeaturedTours() {
           tourId={selectedTour.id}
           tourName={selectedTour.title}
           tourPrice={TOUR_PRICING[selectedTour.id as keyof typeof TOUR_PRICING] || 0}
+          userCurrency={currency}
           onPaymentSuccess={handlePaymentSuccess}
         />
       )}
@@ -352,7 +360,11 @@ export function FeaturedTours() {
             className="px-6 py-3 bg-[#5A8E00] text-white rounded-lg hover:bg-[#4A7500] transition-colors font-medium shadow-lg flex items-center gap-2"
           >
             <Clock className="w-4 h-4" />
-            Purchase 24h Access - ₦{TOUR_PRICING[selectedTour.id as keyof typeof TOUR_PRICING]?.toLocaleString()}
+            Purchase 24h Access -{" "}
+            {formatCurrency(
+              convertCurrency(TOUR_PRICING[selectedTour.id as keyof typeof TOUR_PRICING] || 0, "NGN", currency),
+              currency,
+            )}
           </button>
         </div>
       )}

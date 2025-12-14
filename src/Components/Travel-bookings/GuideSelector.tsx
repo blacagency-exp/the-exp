@@ -147,7 +147,7 @@ export const GuideSelector: React.FC<GuideSelectorProps> = ({ onSelectGuide }) =
               ${selectedGuide === guide.id ? 'ring-2 ring-[#5A8E00] border-[#5A8E00]' : 'border-gray-200 hover:border-[#97E12B]'}
             `}
           >
-            <div className="aspect-[3/3] overflow-hidden">
+            <div className="aspect-[3/5] overflow-hidden">
             <img 
                 src={imageMap[guide.image] || "/placeholder.svg"} 
                 alt={guide.name} 
