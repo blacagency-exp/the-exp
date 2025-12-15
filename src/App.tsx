@@ -14,6 +14,8 @@ import { ScrollToTop } from "./Components/ScrollToTop"
 import AdminBookingApprovalPage from "./pages/AdminBookingApprovalPage"
 import AdminBookingRejectionPage from "./pages/AdminBookingRejectionPage"
 import { BookingRequestPaymentPage } from "./pages/BookingRequestPaymentPage"
+import { CreatorLeaderboardPage } from "./pages/CreatorLeaderboardPage"
+import { ChristmasLeaderboardPage } from "./pages/ChristmasLeaderboardPage"
 
 
 function App() {
@@ -33,6 +35,9 @@ function App() {
     <Route path="/travel-booking/payment/:id" element={<BookingRequestPaymentPage />} />
          <Route path="/admin/booking-requests/:id/approve" element={<AdminBookingApprovalPage />} />
         <Route path="/admin/booking-requests/:id/reject" element={<AdminBookingRejectionPage />} />
+
+        <Route path="/creator-leaderboard" element={<CreatorLeaderboardPage />} />
+        <Route path="/christmas-leaderboard" element={<ChristmasLeaderboardPage />} />
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/opp" element={<OpportunityPage />} />
         <Route path="/hotel" element={<HotelPage />} />
