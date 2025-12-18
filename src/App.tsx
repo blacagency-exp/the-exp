@@ -16,6 +16,7 @@ import AdminBookingRejectionPage from "./pages/AdminBookingRejectionPage"
 import { BookingRequestPaymentPage } from "./pages/BookingRequestPaymentPage"
 import { CreatorLeaderboardPage } from "./pages/CreatorLeaderboardPage"
 import { ChristmasLeaderboardPage } from "./pages/ChristmasLeaderboardPage"
+import { LeaderboardPage } from "./pages/LeaderboardPage"
 
 
 function App() {
@@ -35,7 +36,7 @@ function App() {
     <Route path="/travel-booking/payment/:id" element={<BookingRequestPaymentPage />} />
          <Route path="/admin/booking-requests/:id/approve" element={<AdminBookingApprovalPage />} />
         <Route path="/admin/booking-requests/:id/reject" element={<AdminBookingRejectionPage />} />
-
+      <Route path="/leaderboard" element={<LeaderboardPage />} />
         <Route path="/creator-leaderboard" element={<CreatorLeaderboardPage />} />
         <Route path="/christmas-leaderboard" element={<ChristmasLeaderboardPage />} />
         <Route path="/blog" element={<BlogPage />} />

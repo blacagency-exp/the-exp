@@ -1,8 +1,9 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { TrendingUp, Users, Eye, Heart } from "lucide-react"
+import { TrendingUp, Users, Trophy } from "lucide-react"
 import type { CreatorData } from "../../utils/googleSheet"
+import { formatFollowerCount } from "../../utils/googleSheet"
 
 interface LeaderboardTableProps {
   creators: CreatorData[]
@@ -36,13 +37,13 @@ export function LeaderboardTable({ creators, isChristmas = false }: LeaderboardT
               </th>
               <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 <div className="flex items-center justify-center gap-1">
-                  <Eye className="w-4 h-4" />
-                  Views
+                  <Trophy className="w-4 h-4" />
+                  Quality
                 </div>
               </th>
               <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 <div className="flex items-center justify-center gap-1">
-                  <Heart className="w-4 h-4" />
+                  <TrendingUp className="w-4 h-4" />
                   Engagement
                 </div>
               </th>
@@ -107,41 +108,28 @@ export function LeaderboardTable({ creators, isChristmas = false }: LeaderboardT
                 {/* Followers */}
                 <td className="px-6 py-4 whitespace-nowrap text-center">
                   <span className="text-sm font-medium text-gray-900">
-                    {creator.baselineFollowers > 1000000
-                      ? `${(creator.baselineFollowers / 1000000).toFixed(1)}M`
-                      : `${(creator.baselineFollowers / 1000).toFixed(0)}K`}
+                    {formatFollowerCount(creator.baselineFollowers)}
                   </span>
                 </td>
 
-                {/* Views */}
+                {/* Quality Score */}
                 <td className="px-6 py-4 whitespace-nowrap text-center">
-                  <span className="text-sm font-medium text-gray-900">
-                    {creator.totalViews > 1000000
-                      ? `${(creator.totalViews / 1000000).toFixed(1)}M`
-                      : `${(creator.totalViews / 1000).toFixed(0)}K`}
-                  </span>
+                  <span className="text-sm font-medium text-gray-900">{creator.qualityScore.toFixed(1)}/10</span>
                 </td>
 
                 {/* Engagement Rate */}
                 <td className="px-6 py-4 whitespace-nowrap text-center">
-                  <div className="flex flex-col items-center gap-1">
-                    <span className="text-sm font-medium text-gray-900">{creator.engagementRate.toFixed(2)}%</span>
-                    <span className="text-xs text-gray-500">
-                      {creator.totalEngagements > 1000000
-                        ? `${(creator.totalEngagements / 1000000).toFixed(1)}M`
-                        : `${(creator.totalEngagements / 1000).toFixed(0)}K`}
-                    </span>
-                  </div>
+                  <span className="text-sm font-medium text-gray-900">{creator.engagementRate.toFixed(2)}%</span>
                 </td>
 
                 {/* Performance Score */}
                 <td className="px-6 py-4 whitespace-nowrap text-center">
                   <div className="flex flex-col items-center gap-2">
-                    <span className="text-lg font-bold text-[#97E12B]">{creator.performanceScore.toFixed(1)}</span>
+                    <span className="text-lg font-bold text-[#97E12B]">{creator.performanceScore.toFixed(1)}/10</span>
                     <div className="w-16 bg-gray-200 rounded-full h-2 overflow-hidden">
                       <motion.div
                         initial={{ width: 0 }}
-                        animate={{ width: `${creator.performanceScore}%` }}
+                        animate={{ width: `${(creator.performanceScore / 10) * 100}%` }}
                         transition={{ duration: 1, delay: index * 0.05 }}
                         className={
                           isChristmas

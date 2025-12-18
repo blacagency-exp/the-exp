@@ -9,8 +9,6 @@ export interface CreatorData {
   baselineFollowers: number
   engagementRate: number
   qualityScore: number
-  totalViews: number
-  totalEngagements: number
   performanceScore: number
   tier: "Elite" | "Pro" | "Rookie"
   rank?: number
@@ -22,47 +20,84 @@ export async function fetchCreatorLeaderboardData(sheetId: string): Promise<Crea
   try {
     const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=1212061050`
 
+    console.log("[v0] Fetching leaderboard data from:", csvUrl)
+
     const response = await fetch(csvUrl)
     const csvText = await response.text()
 
-    // Parse CSV data
+    console.log("[v0] Raw CSV data received, length:", csvText.length)
+
+    // Parse CSV data - handle quoted fields properly
     const rows = csvText.split("\n").filter((row) => row.trim())
     const creators: CreatorData[] = []
 
+    console.log("[v0] Total rows:", rows.length)
+
     // Skip header row, start from index 1
     for (let i = 1; i < rows.length; i++) {
-      const cells = rows[i].split(",")
+      // Split by comma but respect quoted values
+      const cells = rows[i].match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g)?.map((cell) => cell.replace(/^"|"$/g, "").trim()) || []
 
-      if (cells.length < 5) continue // Skip invalid rows
+      console.log(`[v0] Row ${i} cells:`, cells)
 
-      creators.push({
+      // Skip rows with invalid data or empty creator names
+      if (cells.length < 11 || !cells[1]?.trim() || !cells[0]?.trim()) {
+        console.log(`[v0] Skipping row ${i} - insufficient data or empty creator`)
+        continue
+      }
+
+      // Parse followers - handle k/m suffixes and commas
+      let followers = 0
+      const followersStr = cells[6]?.replace(/,/g, "").trim() || "0"
+      if (followersStr.toLowerCase().includes("k")) {
+        followers = Number.parseFloat(followersStr.replace(/k/gi, "")) * 1000
+      } else if (followersStr.toLowerCase().includes("m")) {
+        followers = Number.parseFloat(followersStr.replace(/m/gi, "")) * 1000000
+      } else {
+        followers = Number.parseInt(followersStr) || 0
+      }
+
+      // Parse performance score (column 10)
+      const performanceScore = Number.parseFloat(cells[9] || "0")
+
+      // Skip if performance score is 0 (invalid data)
+      if (performanceScore === 0) {
+        console.log(`[v0] Skipping row ${i} - zero performance score`)
+        continue
+      }
+
+      const creator: CreatorData = {
         creatorId: cells[0]?.trim() || "",
         creatorName: cells[1]?.trim() || "",
         primaryHandle: cells[2]?.trim() || "",
-        platform: cells[4]?.trim() || "",
-        niche: cells[5]?.trim() || "",
-        location: cells[6]?.trim() || "Jos",
-        baselineFollowers: Number.parseInt(cells[7]?.replace(/,/g, "") || "0"),
-        engagementRate: Number.parseFloat(cells[8] || "0"),
-        qualityScore: Number.parseFloat(cells[9] || "0"),
-        totalViews:
-          Number.parseInt(cells[12]?.replace(/[km]/gi, "") || "0") *
-          (cells[12]?.toLowerCase().includes("k") ? 1000 : cells[12]?.toLowerCase().includes("m") ? 1000000 : 1),
-        totalEngagements:
-          Number.parseInt(cells[13]?.replace(/[km]/gi, "") || "0") *
-          (cells[13]?.toLowerCase().includes("k") ? 1000 : cells[13]?.toLowerCase().includes("m") ? 1000000 : 1),
-        performanceScore: Number.parseFloat(cells[24] || "0"),
-        tier: (cells[25]?.trim() as "Elite" | "Pro" | "Rookie") || "Rookie",
+        platform: cells[3]?.trim() || "",
+        niche: cells[4]?.trim() || "",
+        location: cells[5]?.trim() || "Jos",
+        baselineFollowers: followers,
+        engagementRate: Number.parseFloat(cells[7] || "0"),
+        qualityScore: Number.parseFloat(cells[8] || "0"),
+        performanceScore: performanceScore,
+        tier: (cells[10]?.trim() as "Elite" | "Pro" | "Rookie") || "Rookie",
         profilePicture: generateProfilePicture(cells[1]?.trim() || ""),
-        badge: getBadgeForTier((cells[25]?.trim() as "Elite" | "Pro" | "Rookie") || "Rookie"),
-      })
+        badge: getBadgeForTier((cells[10]?.trim() as "Elite" | "Pro" | "Rookie") || "Rookie"),
+      }
+
+      console.log(`[v0] Parsed creator ${i}:`, creator.creatorName, "Score:", creator.performanceScore)
+      creators.push(creator)
     }
+
+    console.log(`[v0] Total creators parsed: ${creators.length}`)
 
     // Sort by performance score and assign ranks
     creators.sort((a, b) => b.performanceScore - a.performanceScore)
     creators.forEach((creator, index) => {
       creator.rank = index + 1
     })
+
+    console.log(
+      "[v0] Top 3 creators:",
+      creators.slice(0, 3).map((c) => `${c.creatorName}: ${c.performanceScore}`),
+    )
 
     return creators
   } catch (error) {
@@ -89,23 +124,62 @@ function getBadgeForTier(tier: "Elite" | "Pro" | "Rookie"): string {
 function getMockCreatorData(): CreatorData[] {
   return [
     {
-      creatorId: "XP C1",
-      creatorName: "Luka Susan",
-      primaryHandle: "_zig_wai",
-      platform: "IG",
-      niche: "Lifestyle/Fashion",
+      creatorId: "XP C10",
+      creatorName: "Wendypatrick",
+      primaryHandle: "wendypatrick.___",
+      platform: "Tiktok",
+      niche: "Lifestyle/Tourism",
       location: "Jos",
-      baselineFollowers: 14260,
-      engagementRate: 0.37,
-      qualityScore: 6.5,
-      totalViews: 314000000,
-      totalEngagements: 3000000,
-      performanceScore: 85.5,
+      baselineFollowers: 2411,
+      engagementRate: 8.31,
+      qualityScore: 8,
+      performanceScore: 8.155,
       tier: "Elite",
       rank: 1,
-      profilePicture: generateProfilePicture("Luka Susan"),
+      profilePicture: generateProfilePicture("Wendypatrick"),
       badge: "Top Creator",
     },
-    // Add more mock data as needed
+    {
+      creatorId: "XP C12",
+      creatorName: "Lizzy",
+      primaryHandle: "afro_bab",
+      platform: "Tiktok",
+      niche: "Lifestyle/Tourism",
+      location: "Jos",
+      baselineFollowers: 925,
+      engagementRate: 6.94,
+      qualityScore: 6,
+      performanceScore: 6.47,
+      tier: "Elite",
+      rank: 2,
+      profilePicture: generateProfilePicture("Lizzy"),
+      badge: "Top Creator",
+    },
+    {
+      creatorId: "XP C27",
+      creatorName: "theglobalbankss",
+      primaryHandle: "Theglobalbankss",
+      platform: "TikTok",
+      niche: "Lifestyle",
+      location: "Jos",
+      baselineFollowers: 825,
+      engagementRate: 6.56,
+      qualityScore: 6,
+      performanceScore: 6.28,
+      tier: "Elite",
+      rank: 3,
+      profilePicture: generateProfilePicture("theglobalbankss"),
+      badge: "Top Creator",
+    },
   ]
+}
+
+export function formatFollowerCount(followers: number): string {
+  if (followers >= 1000000) {
+    return `${(followers / 1000000).toFixed(1)}M`
+  } else if (followers >= 1000) {
+    return `${(followers / 1000).toFixed(1)}K`
+  } else {
+    return followers.toString()
+  }
 }
