@@ -153,9 +153,7 @@ export function ChristmasLeaderboardPage() {
                 <TrendingUp className="w-6 h-6 text-yellow-400" />
                 <div className="text-left">
                   <p className="text-sm text-gray-200">Total Views</p>
-                  <p className="text-2xl font-bold text-white">
-                    {(creators.reduce((sum, c) => sum + c.totalViews, 0) / 1000000).toFixed(0)}M+
-                  </p>
+                  
                 </div>
               </div>
             </motion.div>

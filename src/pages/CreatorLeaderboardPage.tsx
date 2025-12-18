@@ -117,9 +117,7 @@ export function CreatorLeaderboardPage() {
                 <TrendingUp className="w-6 h-6 text-[#97E12B]" />
                 <div className="text-left">
                   <p className="text-sm text-gray-400">Total Views</p>
-                  <p className="text-2xl font-bold text-white">
-                    {(creators.reduce((sum, c) => sum + c.totalViews, 0) / 1000000).toFixed(0)}M+
-                  </p>
+                  
                 </div>
               </div>
             </motion.div>
