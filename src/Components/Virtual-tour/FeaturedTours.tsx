@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom"
 import { motion, useInView } from "framer-motion"
 import { useRef, useState, useEffect } from "react"
 import { activeTours } from "../../data/tour-data"
-import { Lock, Play, Clock } from "lucide-react"
+import { Lock, Play, Clock, ExternalLink } from "lucide-react"
 import { VirtualTourPaymentModal } from "./VirtualTourPaymentModal"
 import { AccessCodeModal } from "./AccessCodeModal"
 import axios from "axios"
@@ -16,9 +16,9 @@ import { convertCurrency, formatCurrency } from "../../utils/currency"
 // Define tour pricing - UPDATED WITH JOS MUSEUM (ID 9)
 const TOUR_PRICING = {
   1: 0, // Rayfield Resort - Free
-  4: 100, // Assop Falls - Paid (₦15,000)
-  8: 100, // Riyom Rock - Paid (₦18,000)
-  9: 100, // Jos Museum FULL TOUR - Paid (₦12,000) - cultural/educational pricing
+  4: 5000, // Assop Falls - Paid (₦15,000)
+  8: 5000, // Riyom Rock - Paid (₦18,000)
+  9: 5000, // Jos Museum FULL TOUR - Paid (₦12,000) - cultural/educational pricing
 }
 
 export function FeaturedTours() {
@@ -212,11 +212,23 @@ export function FeaturedTours() {
           className="text-[2.5rem] sm:text-[4rem] md:text-[5rem] lg:text-[7rem] leading-[1.1] md:leading-[1] font-bold text-black mb-2 md:mb-4"
           variants={itemVariants}
         >
-          Featured Tour
+          Featured Tours
         </motion.h2>
         <motion.p className="text-base md:text-xl text-gray-400 max-w-2xl mb-8 md:mb-16" variants={itemVariants}>
           Discover Plateau State's natural beauty, culture, and adventure without stepping outside.
         </motion.p>
+        <motion.a
+          href="https://art.kunstmatrix.com/apps/artspaces/dist/index.html?timestamp=1766416900880#/?external=true&language=en&uid=120367&exhibition=14214377"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-[#97E12B] text-[#1A2E0D] rounded-lg hover:bg-[#85C625] transition-all duration-300 font-semibold text-sm mb-8 md:mb-16 shadow-md hover:shadow-lg"
+          variants={itemVariants}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <span>Visit Enchanting Plateau Virtual Gallery</span>
+          <ExternalLink className="w-4 h-4" />
+        </motion.a>
 
         <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-8" variants={containerVariants}>
           {activeTours.map((tour) => {

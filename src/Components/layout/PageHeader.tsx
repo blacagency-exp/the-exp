@@ -66,6 +66,7 @@ const navLinks = [
   { to: "/travel-booking", label: "Travel Booking" },
   { to: "/culture", label: "Cultural Heritage" },
   { to: "/contact", label: "Contact Us" },
+  { to: "/leaderboard", label: "Leaderboard" },
 ]
 
 // Split navigation links for balanced layout
@@ -78,6 +79,7 @@ const leftNavLinks = [
 const rightNavLinks = [
   { to: "/travel-booking", label: "Travel Booking" },
   { to: "/culture", label: "Cultural Heritage" },
+  { to: "/leaderboard", label: "Leaderboard" },
   { to: "/contact", label: "Contact Us" },
 ]
 

@@ -1,4 +1,4 @@
-  "use client"
+"use client"
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence, useInView } from "framer-motion"
@@ -224,7 +224,7 @@ export function LeaderboardPage() {
               >
                 <div className="flex items-center gap-2">
                   <Trophy className="w-5 h-5" />
-                  Regular Leaderboard
+                  Creator Leaderboard
                 </div>
                 {activeTab === "regular" && (
                   <motion.div
@@ -237,10 +237,11 @@ export function LeaderboardPage() {
 
               <button
                 onClick={() => setActiveTab("christmas")}
-                className={`relative px-8 py-4 rounded-full font-semibold transition-all duration-300 ${
+                disabled={true}
+                className={`relative px-8 py-4 rounded-full font-semibold transition-all duration-300 opacity-50 cursor-not-allowed ${
                   activeTab === "christmas"
                     ? "bg-gradient-to-r from-red-500 to-green-600 text-white shadow-lg scale-105"
-                    : "bg-white/10 text-white hover:bg-white/20"
+                    : "bg-white/10 text-white"
                 }`}
               >
                 <div className="flex items-center gap-2">
