@@ -20,29 +20,45 @@ export async function fetchCreatorLeaderboardData(sheetId: string): Promise<Crea
   try {
     const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=1212061050`
 
-    console.log("[v0] Fetching leaderboard data from:", csvUrl)
+    console.log("Fetching leaderboard data from:", csvUrl)
 
     const response = await fetch(csvUrl)
     const csvText = await response.text()
 
-    console.log("[v0] Raw CSV data received, length:", csvText.length)
+    console.log("Raw CSV data received, length:", csvText.length)
 
     // Parse CSV data - handle quoted fields properly
     const rows = csvText.split("\n").filter((row) => row.trim())
     const creators: CreatorData[] = []
 
-    console.log("[v0] Total rows:", rows.length)
+    console.log("Total rows:", rows.length)
 
     // Skip header row, start from index 1
     for (let i = 1; i < rows.length; i++) {
-      // Split by comma but respect quoted values
-      const cells = rows[i].match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g)?.map((cell) => cell.replace(/^"|"$/g, "").trim()) || []
+      // Split by comma while preserving empty fields
+      const cells: string[] = []
+      let currentCell = ""
+      let inQuotes = false
+      const row = rows[i]
+      
+      for (let j = 0; j < row.length; j++) {
+        const char = row[j]
+        if (char === '"') {
+          inQuotes = !inQuotes
+        } else if (char === ',' && !inQuotes) {
+          cells.push(currentCell.trim())
+          currentCell = ""
+        } else {
+          currentCell += char
+        }
+      }
+      cells.push(currentCell.trim()) // Push the last cell
 
-      console.log(`[v0] Row ${i} cells:`, cells)
+      console.log(`Row ${i} cells (${cells.length}):`, cells)
 
       // Skip rows with invalid data or empty creator names
       if (cells.length < 11 || !cells[1]?.trim() || !cells[0]?.trim()) {
-        console.log(`[v0] Skipping row ${i} - insufficient data or empty creator`)
+        console.log(`Skipping row ${i} - insufficient data or empty creator`)
         continue
       }
 
@@ -62,15 +78,20 @@ export async function fetchCreatorLeaderboardData(sheetId: string): Promise<Crea
 
       // Skip if performance score is 0 (invalid data)
       if (performanceScore === 0) {
-        console.log(`[v0] Skipping row ${i} - zero performance score`)
+        console.log(`Skipping row ${i} - zero performance score`)
         continue
       }
 
+      // Create a unique ID combining creatorId and platform to capture same creator on different platforms
+      const platform = cells[3]?.trim() || ""
+      const baseCreatorId = cells[0]?.trim() || ""
+      const uniqueId = `${baseCreatorId}-${platform.toLowerCase().replace(/\s+/g, "")}`
+
       const creator: CreatorData = {
-        creatorId: cells[0]?.trim() || "",
+        creatorId: uniqueId,
         creatorName: cells[1]?.trim() || "",
         primaryHandle: cells[2]?.trim() || "",
-        platform: cells[3]?.trim() || "",
+        platform: platform,
         niche: cells[4]?.trim() || "",
         location: cells[5]?.trim() || "Jos",
         baselineFollowers: followers,
@@ -82,11 +103,11 @@ export async function fetchCreatorLeaderboardData(sheetId: string): Promise<Crea
         badge: getBadgeForTier((cells[10]?.trim() as "Elite" | "Pro" | "Rookie") || "Rookie"),
       }
 
-      console.log(`[v0] Parsed creator ${i}:`, creator.creatorName, "Score:", creator.performanceScore)
+      console.log(`Parsed creator ${i}:`, creator.creatorName, "Score:", creator.performanceScore)
       creators.push(creator)
     }
 
-    console.log(`[v0] Total creators parsed: ${creators.length}`)
+    console.log(`Total creators parsed: ${creators.length}`)
 
     // Sort by performance score and assign ranks
     creators.sort((a, b) => b.performanceScore - a.performanceScore)
@@ -95,13 +116,13 @@ export async function fetchCreatorLeaderboardData(sheetId: string): Promise<Crea
     })
 
     console.log(
-      "[v0] Top 3 creators:",
+      "Top 3 creators:",
       creators.slice(0, 3).map((c) => `${c.creatorName}: ${c.performanceScore}`),
     )
 
     return creators
   } catch (error) {
-    console.error("[v0] Error fetching creator leaderboard data:", error)
+    console.error("Error fetching creator leaderboard data:", error)
     return getMockCreatorData() // Fallback to mock data
   }
 }
