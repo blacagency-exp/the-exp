@@ -1,8 +1,8 @@
-"use client"
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { Link } from "react-router-dom"
 import { styles } from "../../constants/styles"
-import { recentBlogs } from "../../data/recentBlogs"
+import { client, urlFor } from "@/sanity/lib/client"
 
 interface ExploreStoriesProps {
   currentSlug: string
@@ -30,7 +30,33 @@ const itemVariants = {
 }
 
 export function ExploreStories({ currentSlug }: ExploreStoriesProps) {
-  const otherStories = recentBlogs.filter((blog) => blog.slug !== currentSlug).slice(0, 3)
+  const [otherStories, setOtherStories] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchOtherStories = async () => {
+      try {
+        const query = `*[_type == "blog" && slug.current != $currentSlug][0...3] {
+          title,
+          slug,
+          date,
+          category,
+          description,
+          "imageUrl": mainImage
+        }`
+        const data = await client.fetch(query, { currentSlug })
+        setOtherStories(data)
+      } catch (error) {
+        console.error("Error fetching explore stories:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchOtherStories()
+  }, [currentSlug])
+
+  if (loading) return null;
 
   return (
     <section className="py-12 sm:py-16 md:py-24 bg-[#F5FFEB]">
@@ -63,7 +89,7 @@ export function ExploreStories({ currentSlug }: ExploreStoriesProps) {
                 <div className="rounded-xl sm:rounded-md overflow-hidden">
                   <div className="aspect-[4/3] relative rounded-xl sm:rounded-2xl overflow-hidden mb-4 sm:mb-6">
                     <img
-                      src={story.imageUrl || "/placeholder.svg"}
+                      src={story.imageUrl ? urlFor(story.imageUrl).url() : "/placeholder.svg"}
                       alt={story.title}
                       className="w-full h-full object-cover"
                     />

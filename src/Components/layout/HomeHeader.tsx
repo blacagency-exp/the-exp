@@ -1,6 +1,6 @@
 "use client"
 
-import { useState,useEffect } from "react"
+import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { styles } from "../../constants/styles"
@@ -66,7 +66,8 @@ const navLinks = [
   { to: "/travel-booking", label: "Travel Booking" },
   { to: "/culture", label: "Cultural Heritage" },
   { to: "/contact", label: "Contact Us" },
-    { to: "/leaderboard", label: "Leaderboard" },
+  { to: "/leaderboard", label: "Leaderboard" },
+  { to: "/shop", label: "Shop" },
 ]
 
 // Split navigation links for balanced layout
@@ -75,6 +76,7 @@ const leftNavLinks = [
   { to: "/opp", label: "Investments" },
   { to: "/blog", label: "Blogs" },
   { to: "/virtual-tour", label: "Virtual Tours" },
+  { to: "/shop", label: "Shop" },
 ]
 const rightNavLinks = [
   { to: "/travel-booking", label: "Travel Booking" },
@@ -98,9 +100,8 @@ export function HomeHeader() {
 
   return (
     <motion.header
-       className={`w-full fixed top-0 left-0 z-50 transition-all duration-300 bg-transparent ${
-        isScrolled ? "backdrop-blur-md bg-black/85 border-b border-white/10" : ""
-      }`}
+      className={`w-full fixed top-0 left-0 z-50 transition-all duration-300 bg-transparent ${isScrolled ? "backdrop-blur-md bg-black/85 border-b border-white/10" : ""
+        }`}
       initial="hidden"
       animate="visible"
       variants={{
@@ -114,11 +115,11 @@ export function HomeHeader() {
         },
       }}
     >
-     <div className={`${styles.section.container} bg-transparent`}>
+      <div className={`${styles.section.container} bg-transparent`}>
         {/* Desktop Layout - Grid with balanced columns */}
-        <div className="hidden lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:h-20 lg:gap-16">
+        <div className="hidden lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:h-20 lg:gap-4 xl:gap-8 xl:px-8">
           {/* Left Navigation */}
-          <motion.nav className="flex items-center justify-end space-x-8" variants={navVariants}>
+          <motion.nav className="flex items-center justify-between max-w-[700px]" variants={navVariants}>
             {leftNavLinks.map((link) => (
               <motion.div key={link.to} variants={linkVariants} whileHover="hover">
                 <Link to={link.to} className="text-white hover:text-[#97E12B] transition-colors whitespace-nowrap">
@@ -129,18 +130,18 @@ export function HomeHeader() {
           </motion.nav>
 
           {/* Centered Logo - Minimal width */}
-          <motion.div className="flex justify-center items-center px-8" variants={logoVariants}>
+          <motion.div className="flex justify-center items-center" variants={logoVariants}>
             <Link to="/" className="flex items-center">
-              <img 
+              <img
                 src={img1}
-                alt="Experience Plateau Logo" 
+                alt="Experience Plateau Logo"
                 className="h-14 w-auto"
               />
             </Link>
           </motion.div>
 
           {/* Right Navigation */}
-          <motion.nav className="flex items-center justify-start space-x-8" variants={navVariants}>
+          <motion.nav className="flex items-center justify-between max-w-[700px]" variants={navVariants}>
             {rightNavLinks.map((link) => (
               <motion.div key={link.to} variants={linkVariants} whileHover="hover">
                 <Link to={link.to} className="text-white hover:text-[#97E12B] transition-colors whitespace-nowrap">
@@ -156,9 +157,9 @@ export function HomeHeader() {
           {/* Logo */}
           <motion.div variants={logoVariants}>
             <Link to="/" className="flex items-center">
-              <img 
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-ZMA1GAfNCpxkzl0eUFI6VhTWoSV1NR.png" 
-                alt="Experience Plateau Logo" 
+              <img
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-ZMA1GAfNCpxkzl0eUFI6VhTWoSV1NR.png"
+                alt="Experience Plateau Logo"
                 className="h-10"
               />
             </Link>
@@ -172,20 +173,19 @@ export function HomeHeader() {
           >
             <div className="w-6 h-5 relative flex flex-col justify-between">
               <span
-                className={`w-full h-0.5 bg-[#97E12B] transform transition-all duration-300 ${
-                  isMenuOpen ? "rotate-45 translate-y-2" : ""
-                }`}
+                className={`w-full h-0.5 bg-[#97E12B] transform transition-all duration-300 ${isMenuOpen ? "rotate-45 translate-y-2" : ""
+                  }`}
               />
               <span
                 className={`w-full h-0.5 bg-[#97E12B] transition-all duration-300 ${isMenuOpen ? "opacity-0" : ""}`}
               />
               <span
-                className={`w-full h-0.5 bg-[#97E12B] transform transition-all duration-300 ${
-                  isMenuOpen ? "-rotate-45 -translate-y-2" : ""
-                }`}
+                className={`w-full h-0.5 bg-[#97E12B] transform transition-all duration-300 ${isMenuOpen ? "-rotate-45 -translate-y-2" : ""
+                  }`}
               />
             </div>
           </button>
+
         </div>
       </div>
 
