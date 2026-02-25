@@ -2,10 +2,11 @@ import React from 'react';
 import ShopHeroImage from "@/assets/shop-hero.png";
 
 export const ShopHero: React.FC = () => {
+  const ShopHeroVideo = "https://7r7nzzm7jnvxfgbi.public.blob.vercel-storage.com/MERCH.MP4";
   return (
     <section className="relative w-full h-[calc(100vh-64px)] lg:h-[calc(100vh-80px)] bg-[#141E03] flex flex-col items-center justify-end text-white">
       <div className="absolute inset-0 z-0 opacity-80">
-        <img src={ShopHeroImage} alt="Shop Hero" className="w-full h-full object-cover" />
+        <video poster={ShopHeroImage} src={ShopHeroVideo} autoPlay loop muted className="w-full h-full object-cover" />
       </div>
       <div className="relative z-10 text-center mb-12 lg:mb-20">
         <h1 className="text-[48px] font-normal leading-[56px] mb-8">
