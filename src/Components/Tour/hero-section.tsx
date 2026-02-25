@@ -61,17 +61,17 @@ export function HeroSection() {
               animate={
                 isFilterOpen
                   ? {
-                      opacity: 1,
-                      y: 0,
-                      display: "block",
-                    }
+                    opacity: 1,
+                    y: 0,
+                    display: "block",
+                  }
                   : {
-                      opacity: 0,
-                      y: -20,
-                      transitionEnd: {
-                        display: "none",
-                      },
-                    }
+                    opacity: 0,
+                    y: -20,
+                    transitionEnd: {
+                      display: "none",
+                    },
+                  }
               }
               transition={{ duration: 0.2 }}
               className="absolute top-14 left-0 bg-white shadow-lg rounded-2xl p-4 min-w-[200px] z-10"

@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useEffect, useState } from "react"
-import { motion, useInView, useAnimation } from "framer-motion"
+import { motion, useInView, useAnimation, Variants } from "framer-motion"
 import { Camera, Users, Calendar, Award } from "lucide-react"
 
 const stats = [
@@ -83,7 +83,7 @@ export function GalleryStats() {
     }
   }, [isInView, controls])
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -94,13 +94,12 @@ export function GalleryStats() {
     },
   }
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { y: 50, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
       transition: {
-        type: "spring",
         stiffness: 100,
         damping: 15,
       },

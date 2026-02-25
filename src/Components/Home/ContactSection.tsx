@@ -2,7 +2,7 @@
 
 import { useRef } from "react"
 import { ArrowRight } from "lucide-react"
-import { motion, useInView } from "framer-motion"
+import { motion, useInView, Variants } from "framer-motion"
 import { styles } from "../../constants/styles"
 import headphone from "../../assets/headphone_icon.png"
 import question from "../../assets/help_icon.png"
@@ -13,7 +13,7 @@ export function ContactSection() {
   const sectionRef = useRef(null)
   const isInView = useInView(sectionRef, { once: true, amount: 0.3 })
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -24,7 +24,7 @@ export function ContactSection() {
     },
   }
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,
@@ -33,14 +33,14 @@ export function ContactSection() {
     },
   }
 
-  const boxHoverVariants = {
+  const boxHoverVariants: Variants = {
     hover: {
       scale: 1.02,
       transition: { duration: 0.3 },
     },
   }
 
- 
+
 
   return (
     <section ref={sectionRef} className="w-full flex flex-col md:flex-row overflow-hidden">

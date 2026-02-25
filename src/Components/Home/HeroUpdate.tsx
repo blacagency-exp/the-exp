@@ -1,6 +1,6 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, Variants } from "framer-motion"
 import { ArrowDown } from "lucide-react"
 import { styles } from "../../constants/styles"
 import { useRef, useEffect, useState } from "react"
@@ -13,7 +13,7 @@ export function HeroUpdate() {
   const [isVideoLoading, setIsVideoLoading] = useState(true)
   const [isVideoReady, setIsVideoReady] = useState(false)
 
-  const buttonVariants = {
+  const buttonVariants: Variants = {
     initial: { y: 50, opacity: 0 },
     animate: (isMobile: boolean) => ({
       y: isMobile ? 0 : -40,

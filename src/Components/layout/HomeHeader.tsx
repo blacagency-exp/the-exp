@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence, Variants } from "framer-motion"
 import { styles } from "../../constants/styles"
 import img1 from "../../assets/Logomark_WHITE.png"
 
-const navVariants = {
+const navVariants: Variants = {
   hidden: { opacity: 0, y: -20 },
   visible: {
     opacity: 1,
@@ -19,7 +19,7 @@ const navVariants = {
   },
 }
 
-const logoVariants = {
+const logoVariants: Variants = {
   hidden: { opacity: 0, scale: 0.8 },
   visible: {
     opacity: 1,
@@ -33,11 +33,11 @@ const logoVariants = {
   },
 }
 
-const linkVariants = {
+const linkVariants: Variants = {
   hover: { scale: 1.1, color: "#97E12B" },
 }
 
-const mobileMenuVariants = {
+const mobileMenuVariants: Variants = {
   closed: {
     opacity: 0,
     x: "100%",

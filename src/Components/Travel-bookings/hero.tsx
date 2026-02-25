@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect } from "react"
-import { motion, useAnimation } from "framer-motion"
+import { motion, useAnimation, Variants } from "framer-motion"
 import img1 from "../../assets/travel-image.png"
 
 export function Hero() {
@@ -11,7 +11,7 @@ export function Hero() {
     controls.start("visible")
   }, [controls])
 
-  const backgroundVariants = {
+  const backgroundVariants: Variants = {
     hidden: { scale: 1.1 },
     visible: {
       scale: 1,
@@ -22,7 +22,7 @@ export function Hero() {
     },
   }
 
-  const textVariants = {
+  const textVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
@@ -34,7 +34,7 @@ export function Hero() {
     },
   }
 
-  const decorationVariants = {
+  const decorationVariants: Variants = {
     hidden: { pathLength: 0, opacity: 0 },
     visible: {
       pathLength: 1,

@@ -1,6 +1,6 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, Variants } from "framer-motion"
 import { ArrowDown } from "lucide-react"
 import { styles } from "../../constants/styles"
 import { useRef } from "react"
@@ -9,7 +9,7 @@ import vid from "../../assets/realvid.mp4"
 export function HeroUpdate() {
   const videoRef = useRef<HTMLVideoElement>(null)
 
-  const buttonVariants = {
+  const buttonVariants: Variants = {
     initial: { y: 50, opacity: 0 },
     animate: (isMobile: boolean) => ({
       y: isMobile ? 0 : -40,
@@ -33,7 +33,7 @@ export function HeroUpdate() {
       {/* Content */}
       <div className={`${styles.section.container} relative z-10 h-full pt-24`}>
         <div className="flex flex-col justify-center h-full lg:block lg:pt-32 -mt-16 lg:mt-0">
-          
+
 
           {/* Start Journey Button */}
           <motion.div

@@ -1,13 +1,13 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, Variants } from "framer-motion"
 import { ArrowDown } from "lucide-react"
 import { styles } from "../../constants/styles"
 import img1 from "../../assets/headset.png"
 
 export function HeroSection({ scrollToFeaturedTours }: { scrollToFeaturedTours: () => void }) {
   // Text animation variants
-  const headingVariants = {
+  const headingVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -17,16 +17,19 @@ export function HeroSection({ scrollToFeaturedTours }: { scrollToFeaturedTours: 
     },
   }
 
-  const textVariants = {
+  const textVariants: Variants = {
     hidden: { y: 50, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
-      transition: { duration: 0.8, ease: "easeOut" },
+      transition: {
+        duration: 0.8, ease: "easeOut",
+        type: "spring",
+      },
     },
   }
 
-  const paragraphVariants = {
+  const paragraphVariants: Variants = {
     hidden: { opacity: 0, x: -20 },
     visible: {
       opacity: 1,
@@ -35,7 +38,7 @@ export function HeroSection({ scrollToFeaturedTours }: { scrollToFeaturedTours: 
     },
   }
 
-  const buttonVariants = {
+  const buttonVariants: Variants = {
     initial: { y: 20, opacity: 0 },
     animate: {
       y: 0,
@@ -44,7 +47,7 @@ export function HeroSection({ scrollToFeaturedTours }: { scrollToFeaturedTours: 
     },
   }
 
-  const imageVariants = {
+  const imageVariants: Variants = {
     hidden: { scale: 0.9, opacity: 0 },
     visible: {
       scale: 1,
