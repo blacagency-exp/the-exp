@@ -4,7 +4,7 @@ import { styles } from "../../constants/styles"
 import shere from "../../assets/shereHills.png"
 import { useNavigate } from "react-router-dom"
 import hotspotIcon from "../../assets/hotspot-icon.png"
-import { motion, useInView } from "framer-motion"
+import { motion, useInView, Variants } from "framer-motion"
 import { useRef } from "react"
 
 // Define a Scene interface for videos within a tour
@@ -226,7 +226,7 @@ export function FeaturedTours() {
   }
 
   // Animation variants
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -237,7 +237,7 @@ export function FeaturedTours() {
     },
   }
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { y: 50, opacity: 0 },
     visible: {
       y: 0,
@@ -246,7 +246,7 @@ export function FeaturedTours() {
     },
   }
 
-  const cardVariants = {
+  const cardVariants: Variants = {
     hidden: { y: 80, opacity: 0 },
     visible: {
       y: 0,
@@ -259,7 +259,7 @@ export function FeaturedTours() {
     },
   }
 
-  const imageVariants = {
+  const imageVariants: Variants = {
     hidden: { scale: 0.9, opacity: 0 },
     visible: {
       scale: 1,
@@ -271,7 +271,7 @@ export function FeaturedTours() {
     },
   }
 
-  const tagContainerVariants = {
+  const tagContainerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -282,7 +282,7 @@ export function FeaturedTours() {
     },
   }
 
-  const tagVariants = {
+  const tagVariants: Variants = {
     hidden: { scale: 0, opacity: 0 },
     visible: {
       scale: 1,
@@ -295,7 +295,7 @@ export function FeaturedTours() {
     },
   }
 
-  const hintVariants = {
+  const hintVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,

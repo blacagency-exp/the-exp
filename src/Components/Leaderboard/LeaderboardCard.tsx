@@ -40,9 +40,8 @@ export function LeaderboardCard({ creator, index, isChristmas = false }: Leaderb
     >
       {/* Card Container */}
       <div
-        className={`relative overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-2xl transition-all duration-300 ${
-          isTopThree ? "border-4" : "border-2"
-        } ${isTopThree ? `border-gradient bg-gradient-to-br ${rankColors[creator.rank as 1 | 2 | 3]}` : "border-gray-200"}`}
+        className={`relative overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-2xl transition-all duration-300 ${isTopThree ? "border-4" : "border-2"
+          } ${isTopThree ? `border-gradient bg-gradient-to-br ${rankColors[creator.rank as 1 | 2 | 3]}` : "border-gray-200"}`}
       >
         {/* Christmas decoration overlay */}
         {isChristmas && (
@@ -58,9 +57,8 @@ export function LeaderboardCard({ creator, index, isChristmas = false }: Leaderb
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: index * 0.1 + 0.3, type: "spring", stiffness: 200 }}
-              className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-white shadow-lg ${
-                isTopThree ? `bg-gradient-to-br ${rankColors[creator.rank as 1 | 2 | 3]}` : "bg-gray-600"
-              }`}
+              className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-white shadow-lg ${isTopThree ? `bg-gradient-to-br ${rankColors[creator.rank as 1 | 2 | 3]}` : "bg-gray-600"
+                }`}
             >
               {creator.rank <= 3 ? <Trophy className="w-6 h-6" /> : creator.rank}
             </motion.div>

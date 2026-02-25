@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence, Variants } from "framer-motion"
 import { styles } from "../../constants/styles"
 import React from "react"
 import img1 from "../../assets/bg_count.jpg"
@@ -68,7 +68,7 @@ export function CountdownSection() {
     return () => clearInterval(timer)
   }, [targetDate, navigate])
 
-  const numberVariants = {
+  const numberVariants: Variants = {
     hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,
@@ -81,7 +81,7 @@ export function CountdownSection() {
     },
   }
 
-  const labelVariants = {
+  const labelVariants: Variants = {
     hidden: { y: 10, opacity: 0 },
     visible: {
       y: 0,

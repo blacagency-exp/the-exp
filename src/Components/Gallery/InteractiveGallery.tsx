@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useCallback } from "react"
-import { motion, AnimatePresence, useScroll, useInView } from "framer-motion"
+import { motion, AnimatePresence, useScroll, useInView, Variants } from "framer-motion"
 import { X, Heart, Share2, Download } from "lucide-react"
 import art1 from "../../assets/GRstudios354.jpg"
 import art2 from "../../assets/GRstudios404.jpg"
@@ -140,7 +140,7 @@ export function InteractiveGallery() {
     setLoadedImages((prev) => new Set(prev).add(id))
   }, [])
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -151,7 +151,7 @@ export function InteractiveGallery() {
     },
   }
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { y: 30, opacity: 0, scale: 0.95 }, // Reduced animation intensity
     visible: {
       y: 0,
@@ -166,7 +166,7 @@ export function InteractiveGallery() {
     },
   }
 
-  const modalVariants = {
+  const modalVariants: Variants = {
     hidden: { opacity: 0, scale: 0.9 },
     visible: {
       opacity: 1,
@@ -333,9 +333,8 @@ export function InteractiveGallery() {
                       onClick={() => toggleLike(selectedImage.id)}
                     >
                       <Heart
-                        className={`w-5 h-5 ${
-                          likedImages.has(selectedImage.id) ? "fill-red-500 text-red-500" : "text-gray-600"
-                        }`}
+                        className={`w-5 h-5 ${likedImages.has(selectedImage.id) ? "fill-red-500 text-red-500" : "text-gray-600"
+                          }`}
                       />
                     </button>
                     <button className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors">

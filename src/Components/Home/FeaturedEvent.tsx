@@ -2,7 +2,7 @@
 
 import { useRef } from "react"
 import { ArrowRight } from "lucide-react"
-import { motion, useInView } from "framer-motion"
+import { motion, useInView, Variants } from "framer-motion"
 import { styles } from "../../constants/styles"
 import { Link } from "react-router-dom"
 import featuredEventImage from "../../assets/newposter.png"
@@ -11,7 +11,7 @@ export function FeaturedEvent() {
   const sectionRef = useRef(null)
   const isInView = useInView(sectionRef, { once: true, amount: 0.2 })
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -22,7 +22,7 @@ export function FeaturedEvent() {
     },
   }
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,

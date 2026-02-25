@@ -1,6 +1,6 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, Variants } from "framer-motion"
 import { styles } from "../../constants/styles"
 import { Link } from "react-router-dom"
 import img1 from "../../assets/muse-one.png"
@@ -23,7 +23,7 @@ const museums = [
   },
 ]
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -33,7 +33,7 @@ const containerVariants = {
   },
 }
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
@@ -64,27 +64,26 @@ export function MuseumsSection() {
               variants={itemVariants}
               whileHover={{ scale: 1.02 }}
               className={`relative rounded-2xl sm:rounded-3xl overflow-hidden cursor-pointer group 
-                ${
-                  index === 0
-                    ? "mb-6 sm:mb-8 md:mb-0 md:absolute md:left-0 md:top-0 md:w-[calc(50%-12px)]"
-                    : "md:absolute md:right-0 md:top-32 md:w-[calc(50%-12px)]"
+                ${index === 0
+                  ? "mb-6 sm:mb-8 md:mb-0 md:absolute md:left-0 md:top-0 md:w-[calc(50%-12px)]"
+                  : "md:absolute md:right-0 md:top-32 md:w-[calc(50%-12px)]"
                 }
               `}
             >
               <Link to="/virtual-tour" className="block">
-              <div className="aspect-[4/3]">
-                <img
-                  src={museum.image || "/placeholder.svg"}
-                  alt={museum.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
-                <div className="absolute bottom-0 left-0 p-4 sm:p-6">
-                  <h3 className="text-white text-xl sm:text-2xl md:text-3xl font-medium mb-2">{museum.name}</h3>
-                  <p className="text-white/80 text-xs sm:text-sm max-w-xl font-light">{museum.description}</p>
+                <div className="aspect-[4/3]">
+                  <img
+                    src={museum.image || "/placeholder.svg"}
+                    alt={museum.name}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-              </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+                  <div className="absolute bottom-0 left-0 p-4 sm:p-6">
+                    <h3 className="text-white text-xl sm:text-2xl md:text-3xl font-medium mb-2">{museum.name}</h3>
+                    <p className="text-white/80 text-xs sm:text-sm max-w-xl font-light">{museum.description}</p>
+                  </div>
+                </div>
               </Link>
             </motion.div>
           ))}

@@ -1,6 +1,6 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, Variants } from "framer-motion"
 import { useNavigate } from "react-router-dom"
 import { styles } from "../../constants/styles"
 import img1 from "../../assets/firstone.png"
@@ -43,7 +43,7 @@ const festivals = [
   },
 ]
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -53,7 +53,7 @@ const containerVariants = {
   },
 }
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
@@ -98,9 +98,8 @@ export function FestivalsSection() {
               key={festival.id}
               variants={itemVariants}
               onClick={() => handleFestivalClick(festival.id)}
-              className={`flex flex-col md:flex-row gap-6 sm:gap-8 md:gap-16 ${
-                festival.imagePosition === "right" ? "md:flex-row-reverse" : ""
-              } ${festival.id === 4 ? "cursor-pointer" : ""} group`}
+              className={`flex flex-col md:flex-row gap-6 sm:gap-8 md:gap-16 ${festival.imagePosition === "right" ? "md:flex-row-reverse" : ""
+                } ${festival.id === 4 ? "cursor-pointer" : ""} group`}
               whileHover={festival.id === 4 ? { scale: 1.02 } : {}}
               transition={{ duration: 0.3 }}
             >
@@ -110,9 +109,8 @@ export function FestivalsSection() {
                     <img
                       src={festival.image || "/placeholder.svg"}
                       alt={festival.name}
-                      className={`w-full h-full object-cover md:p-8 transition-transform duration-500 ${
-                        festival.id === 4 ? "group-hover:scale-105" : ""
-                      }`}
+                      className={`w-full h-full object-cover md:p-8 transition-transform duration-500 ${festival.id === 4 ? "group-hover:scale-105" : ""
+                        }`}
                     />
                     {festival.id === 4 && (
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
@@ -126,9 +124,8 @@ export function FestivalsSection() {
               </div>
               <div className="w-full md:w-1/2 space-y-3 sm:space-y-4 md:p-12">
                 <h3
-                  className={`text-xl sm:text-2xl font-semibold transition-colors duration-300 ${
-                    festival.id === 4 ? "text-[#97E12B] group-hover:text-white" : "text-[#97E12B]"
-                  }`}
+                  className={`text-xl sm:text-2xl font-semibold transition-colors duration-300 ${festival.id === 4 ? "text-[#97E12B] group-hover:text-white" : "text-[#97E12B]"
+                    }`}
                 >
                   {festival.name}
                 </h3>

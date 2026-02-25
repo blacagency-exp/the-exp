@@ -2,7 +2,7 @@
 
 import { styles } from "../../constants/styles"
 import { useNavigate } from "react-router-dom"
-import { motion, useInView } from "framer-motion"
+import { motion, useInView, Variants } from "framer-motion"
 import { useRef } from "react"
 import { Clock } from "lucide-react"
 import { previewTours } from "../../data/tour-data"
@@ -10,16 +10,16 @@ import img1 from "../../assets/wildlife.jpg"
 
 // Define the tags for each preview tour
 const tourTags = {
-  2: [ "Wildlife", "Nature"],
-  3: [ "Mountains", "Hiking"],
-  5: [ "Waterfall", "Nature"], // Updated ID for Assop Falls preview
-  6: [ "Museum", "Culture"], // Added Jos Museum
+  2: ["Wildlife", "Nature"],
+  3: ["Mountains", "Hiking"],
+  5: ["Waterfall", "Nature"], // Updated ID for Assop Falls preview
+  6: ["Museum", "Culture"], // Added Jos Museum
   7: ["Coming Soon", "Rock Formation", "Geology"],
 }
 
 // Define the preview images for each tour
 const tourImages = {
-  2:img1,
+  2: img1,
   3: img1,
   5: img1, // Updated ID for Assop Falls preview
   6: img1,
@@ -37,7 +37,7 @@ export function ComingSoonTours() {
   }
 
   // Animation variants
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -48,7 +48,7 @@ export function ComingSoonTours() {
     },
   }
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { y: 50, opacity: 0 },
     visible: {
       y: 0,
@@ -57,7 +57,7 @@ export function ComingSoonTours() {
     },
   }
 
-  const cardVariants = {
+  const cardVariants: Variants = {
     hidden: { y: 80, opacity: 0 },
     visible: {
       y: 0,
@@ -70,7 +70,7 @@ export function ComingSoonTours() {
     },
   }
 
-  const tagContainerVariants = {
+  const tagContainerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -81,7 +81,7 @@ export function ComingSoonTours() {
     },
   }
 
-  const tagVariants = {
+  const tagVariants: Variants = {
     hidden: { scale: 0, opacity: 0 },
     visible: {
       scale: 1,
@@ -146,16 +146,15 @@ export function ComingSoonTours() {
                   </div>
                 </div>
                 <div className="absolute top-4 right-4">
-                 
+
                 </div>
               </div>
               <motion.div className="flex flex-wrap gap-2" variants={tagContainerVariants}>
                 {tourTags[tour.id as keyof typeof tourTags].map((tag) => (
                   <motion.span
                     key={tag}
-                    className={`px-3 py-1 text-xs md:text-sm rounded-full ${
-                      tag === "Coming Soon" ? "bg-[#FF9800] text-white" : "bg-[#97E12B] text-[#1A2E0D]"
-                    }`}
+                    className={`px-3 py-1 text-xs md:text-sm rounded-full ${tag === "Coming Soon" ? "bg-[#FF9800] text-white" : "bg-[#97E12B] text-[#1A2E0D]"
+                      }`}
                     variants={tagVariants}
                     whileHover={{
                       y: -5,

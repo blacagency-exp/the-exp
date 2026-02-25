@@ -2,11 +2,11 @@
 
 import { useRef } from "react"
 import { Link } from "react-router-dom"
-import { motion, useInView } from "framer-motion"
+import { motion, useInView, Variants } from "framer-motion"
 import { Instagram } from "lucide-react"
 import logo from "../../assets/logo_white.png"
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -17,7 +17,7 @@ const containerVariants = {
   },
 }
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { y: 20, opacity: 0 },
   visible: {
     y: 0,
@@ -30,11 +30,11 @@ const itemVariants = {
   },
 }
 
-const linkVariants = {
+const linkVariants: Variants = {
   hover: { scale: 1.05, x: 10, transition: { type: "spring", stiffness: 400, damping: 10 } },
 }
 
-const socialLinkVariants = {
+const socialLinkVariants: Variants = {
   hover: {
     scale: 1.2,
     backgroundColor: "rgba(255, 255, 255, 0.2)",

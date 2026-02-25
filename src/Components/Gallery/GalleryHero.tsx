@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-import { motion, useAnimation, useScroll, useTransform } from "framer-motion"
+import { motion, useAnimation, useScroll, useTransform, Variants } from "framer-motion"
 import { Camera, Sparkles } from "lucide-react"
 
 export function GalleryHero() {
@@ -19,7 +19,7 @@ export function GalleryHero() {
     controls.start("visible")
   }, [controls])
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -30,7 +30,7 @@ export function GalleryHero() {
     },
   }
 
-  const textVariants = {
+  const textVariants: Variants = {
     hidden: { y: 100, opacity: 0 },
     visible: {
       y: 0,
@@ -43,7 +43,7 @@ export function GalleryHero() {
     },
   }
 
-  const iconVariants = {
+  const iconVariants: Variants = {
     hidden: { scale: 0, rotate: -180 },
     visible: {
       scale: 1,
