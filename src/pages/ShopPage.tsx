@@ -56,13 +56,32 @@ export function ShopPage() {
         )}
 
         <section className="flex flex-col md:flex-row w-full bg-[#141E03] mt-16 lg:mt-20">
-          <div onClick={() => document.getElementById('shop-now')?.scrollIntoView({ behavior: 'smooth' })} className="flex-1 flex flex-col items-center h-full justify-end relative cursor-pointer max-h-[85vh] overflow-hidden">
-            <img src={ShopNow1Image} alt="Shop Now" className="w_full h-full object-cover" />
-            <h3 className="text-[32px] text-white font-normal absolute bottom-8">Shop Now</h3>
+          <div
+            onClick={() => document.getElementById('shop-now')?.scrollIntoView({ behavior: 'smooth' })}
+            className="flex-1 relative cursor-pointer h-[85vh] lg:h-[860px] overflow-hidden"
+          >
+            <img
+              src={ShopNow1Image}
+              alt="Shop Now"
+              className="w-full h-full object-cover object-top"
+            />
+            <h3 className="text-[32px] text-white font-normal absolute bottom-8 left-1/2 -translate-x-1/2">
+              Shop Now
+            </h3>
           </div>
-          <div onClick={() => document.getElementById('shop-now')?.scrollIntoView({ behavior: 'smooth' })} className="flex-1 flex flex-col items-center h-full justify-end relative cursor-pointer max-h-[85vh] overflow-hidden">
-            <img src={ShopNow2Image} alt="Shop Now" className="w-full h-full object-cover" />
-            <h3 className="text-[32px] text-white font-normal absolute bottom-8">Shop Now</h3>
+
+          <div
+            onClick={() => document.getElementById('shop-now')?.scrollIntoView({ behavior: 'smooth' })}
+            className="flex-1 relative cursor-pointer h-[85vh] lg:h-[860px] overflow-hidden"
+          >
+            <img
+              src={ShopNow2Image}
+              alt="Shop Now"
+              className="w-full h-full object-cover object-top"
+            />
+            <h3 className="text-[32px] text-white font-normal absolute bottom-8 left-1/2 -translate-x-1/2">
+              Shop Now
+            </h3>
           </div>
         </section>
 
