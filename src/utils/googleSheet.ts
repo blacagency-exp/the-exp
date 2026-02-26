@@ -62,9 +62,9 @@ export async function fetchCreatorLeaderboardData(sheetId: string): Promise<Crea
         continue
       }
 
-      // Parse followers - handle k/m suffixes and commas
+      // Parse followers - handle k/m suffixes and commas (column 7 in new mapping)
       let followers = 0
-      const followersStr = cells[6]?.replace(/,/g, "").trim() || "0"
+      const followersStr = cells[7]?.replace(/,/g, "").trim() || "0"
       if (followersStr.toLowerCase().includes("k")) {
         followers = Number.parseFloat(followersStr.replace(/k/gi, "")) * 1000
       } else if (followersStr.toLowerCase().includes("m")) {
@@ -82,8 +82,11 @@ export async function fetchCreatorLeaderboardData(sheetId: string): Promise<Crea
         continue
       }
 
-      // Create a unique ID combining creatorId and platform to capture same creator on different platforms
-      const platform = cells[3]?.trim() || ""
+      // New column mapping:
+      // 0: Creator ID, 1: Creator Name, 2: Primary Handle, 3: Other Handles
+      // 4: Platform(s), 5: Niche/Category, 6: LGA/Location, 7: Baseline Followers
+      // 8: Baseline Engagement Rate (%), 9: Initial Quality Score (1-10)
+      const platform = cells[4]?.trim() || ""
       const baseCreatorId = cells[0]?.trim() || ""
       const uniqueId = `${baseCreatorId}-${platform.toLowerCase().replace(/\s+/g, "")}`
 
@@ -92,15 +95,15 @@ export async function fetchCreatorLeaderboardData(sheetId: string): Promise<Crea
         creatorName: cells[1]?.trim() || "",
         primaryHandle: cells[2]?.trim() || "",
         platform: platform,
-        niche: cells[4]?.trim() || "",
-        location: cells[5]?.trim() || "Jos",
+        niche: cells[5]?.trim() || "",
+        location: cells[6]?.trim() || "Jos",
         baselineFollowers: followers,
-        engagementRate: Number.parseFloat(cells[7] || "0"),
-        qualityScore: Number.parseFloat(cells[8] || "0"),
-        performanceScore: performanceScore,
-        tier: (cells[10]?.trim() as "Elite" | "Pro" | "Rookie") || "Rookie",
+        engagementRate: Number.parseFloat(cells[8] || "0"),
+        qualityScore: Number.parseFloat(cells[9] || "0"),
+        performanceScore: Number.parseFloat(cells[9] || "0"), // Using quality score as performance score for now
+        tier: "Rookie" as "Elite" | "Pro" | "Rookie",
         profilePicture: generateProfilePicture(cells[1]?.trim() || ""),
-        badge: getBadgeForTier((cells[10]?.trim() as "Elite" | "Pro" | "Rookie") || "Rookie"),
+        badge: getBadgeForTier("Rookie"),
       }
 
       console.log(`Parsed creator ${i}:`, creator.creatorName, "Score:", creator.performanceScore)

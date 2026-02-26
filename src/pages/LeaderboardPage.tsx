@@ -9,7 +9,7 @@ import { fetchCreatorLeaderboardData, type CreatorData } from "../utils/googleSh
 import { Trophy, TrendingUp, Users, RefreshCw, Loader2, Sparkles } from "lucide-react"
 import { useRef } from "react"
 
-const REGULAR_SHEET_ID = "1BFbiM7PjifV8H9nf7GAQpYUJSE-OW-uj7CUtDjUd2Ms"
+const REGULAR_SHEET_ID = "1Wvav-yaVf5wgLky4g2_FHKOTjeTfZdUaGIk6VaY4dCg"
 const CHRISTMAS_SHEET_ID = "1vEwKkugn6MFSh65iSlewu9HWT2a_TDCWy6CXNaSnafI"
 
 type LeaderboardTab = "regular" | "christmas"
