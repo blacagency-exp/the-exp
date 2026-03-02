@@ -179,7 +179,7 @@ export const ProductDetailPage: React.FC = () => {
                         </div>
 
                         {/* Main Product Image */}
-                        <div className="w-full md:w-[445px] border border-[#EAEFE1] h-[548px] bg-[#EAEFE1] rounded-[13px] flex items-center justify-center relative overflow-hidden group">
+                        <div className="w-full md:w-[445px] border border-[#EAEFE1] h-[548px] bg-[#EAEFE1] rounded-[13px] flex items-center justify-center relative overflow-hidden group p-4">
                             {product.images && product.images[activeImage] ? (
                                 <img
                                     src={urlFor(product.images[activeImage]).url()}
@@ -201,6 +201,12 @@ export const ProductDetailPage: React.FC = () => {
                         <p className="text-[24px] font-bold leading-[28px] text-[#55534D] mb-[21px]">
                             ₦{product.price}
                         </p>
+
+                        {product.description && (
+                            <p className="text-[16px] font-normal leading-relaxed text-[#55534D] mb-[26px] max-w-[500px]">
+                                {product.description}
+                            </p>
+                        )}
 
                         {/* Colour Selector */}
                         {product.colors && product.colors.length > 0 && (
@@ -298,7 +304,7 @@ export const ProductDetailPage: React.FC = () => {
                                 name: p.name,
                                 price: p.price,
                                 slug: { current: p.id as string }, // Fallback
-                                images: p.image ? [{ _type: 'image', asset: { _ref: p.image } }] : [] // Simplified image handle
+                                images: p.image ? [p.image] : []
                             })) as any}
                         />
                     )}

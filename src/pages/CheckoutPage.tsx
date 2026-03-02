@@ -7,6 +7,10 @@ import { ActivityIndicator } from '@/Components/ui/ActivityIndicator';
 import toast from 'react-hot-toast';
 
 
+const NIGERIAN_STATES = [
+    "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue", "Borno", "Cross River", "Delta", "Ebonyi", "Edo", "Ekiti", "Enugu", "FCT - Abuja", "Gombe", "Imo", "Jigawa", "Kaduna", "Kano", "Katsina", "Kebbi", "Kogi", "Kwara", "Lagos", "Nasarawa", "Niger", "Ogun", "Ondo", "Osun", "Oyo", "Rivers", "Sokoto", "Plateau", "Taraba", "Yobe", "Zamfara"
+].sort();
+
 export function CheckoutPage() {
     const { cart } = useShop();
     const [loading, setLoading] = useState(false);
@@ -17,6 +21,8 @@ export function CheckoutPage() {
     const [lastName, setLastName] = useState('');
     const [phone, setPhone] = useState('');
     const [discountCode, setDiscountCode] = useState('');
+    const [selectedState, setSelectedState] = useState('');
+    const [isJos, setIsJos] = useState(false);
     const [deliveryAddress, setDeliveryAddress] = useState('');
 
     const subtotal = cart.reduce((sum, item) => {
@@ -24,12 +30,25 @@ export function CheckoutPage() {
         return sum + (priceValue * item.quantity);
     }, 0);
 
-    // Frontend calculation (for display only - backend re-verifies)
-    const discountAmount = discountCode.length === 5 ? subtotal * 0.1 : 0;
-    const total = subtotal - discountAmount;
+    // Delivery Price Logic
+    let deliveryFee = 0;
+    if (selectedState) {
+        if (isJos) {
+            deliveryFee = 1500;
+        } else if (selectedState === "Plateau") {
+            deliveryFee = 3000;
+        } else {
+            deliveryFee = 5000;
+        }
+    }
+
+    // Discount code validation: 2 letters + 3 numbers (e.g. AB123)
+    const isDiscountValid = /^[a-zA-Z]{2}\d{3}$/.test(discountCode);
+    const discountAmount = isDiscountValid ? subtotal * 0.1 : 0;
+    const total = subtotal - discountAmount + deliveryFee;
 
     const handlePayNow = async () => {
-        if (!email || !firstName || !lastName || !phone || !deliveryAddress) {
+        if (!email || !firstName || !lastName || !phone || !selectedState || !deliveryAddress) {
             toast.error('Please fill in all contact and delivery information');
             return;
         }
@@ -54,7 +73,10 @@ export function CheckoutPage() {
                         size: item.size,
                         color: item.color
                     })),
-                    deliveryAddress,
+                    deliveryAddress: `${deliveryAddress}, ${isJos ? 'Jos, ' : ''}${selectedState} State, Nigeria`,
+                    selectedState,
+                    isJos,
+                    deliveryFee,
                     discountCode: discountCode,
                     callbackUrl: `${window.location.origin}/shop/checkout/success`
                 }),
@@ -146,10 +168,42 @@ export function CheckoutPage() {
 
                             {/* Delivery Section */}
                             <section className="mb-10">
-                                <h2 className="text-[20px] text-[#141E03] font-normal mb-4">Delivery Address</h2>
+                                <h2 className="text-[20px] text-[#141E03] font-normal mb-4">Delivery Details</h2>
+                                <div className="flex flex-col gap-4 mb-4">
+                                    <select
+                                        value={selectedState}
+                                        onChange={(e) => {
+                                            setSelectedState(e.target.value);
+                                            if (e.target.value !== 'Plateau') setIsJos(false);
+                                        }}
+                                        className="w-full h-[48px] border border-black rounded-[5px] px-4 text-[13px] focus:outline-none bg-white font-medium"
+                                        required
+                                    >
+                                        <option value="" disabled>Select State</option>
+                                        {NIGERIAN_STATES.map(state => (
+                                            <option key={state} value={state}>{state}</option>
+                                        ))}
+                                    </select>
+
+                                    {selectedState === 'Plateau' && (
+                                        <div className="flex items-center gap-2 p-3 bg-[#f8f8f8] rounded-[5px] border border-gray-200">
+                                            <input
+                                                type="checkbox"
+                                                id="isJos"
+                                                checked={isJos}
+                                                onChange={(e) => setIsJos(e.target.checked)}
+                                                className="w-4 h-4 accent-[#141E03]"
+                                            />
+                                            <label htmlFor="isJos" className="text-[13px] text-[#141E03] cursor-pointer">
+                                                My delivery address is within Jos city
+                                            </label>
+                                        </div>
+                                    )}
+                                </div>
+
                                 <div className="relative">
                                     <textarea
-                                        placeholder="Enter your full delivery address"
+                                        placeholder="Street address, Apartment, Suite, etc."
                                         value={deliveryAddress}
                                         onChange={(e) => setDeliveryAddress(e.target.value)}
                                         className="w-full h-[100px] border border-black rounded-[5px] px-4 py-3 text-[13px] focus:outline-none resize-none"
@@ -228,10 +282,10 @@ export function CheckoutPage() {
                                     placeholder="Discount code"
                                     value={discountCode}
                                     onChange={(e) => setDiscountCode(e.target.value)}
-                                    className="flex-1 h-[49px] border border-[#DEDEDE] rounded-[9px] px-4 text-[14px] focus:outline-none"
+                                    className={`flex-1 h-[49px] border rounded-[9px] px-4 text-[14px] focus:outline-none transition-colors ${discountCode && !isDiscountValid ? 'border-red-300' : 'border-[#DEDEDE]'}`}
                                 />
-                                <div className="w-[80px] h-[49px] bg-[#F6F6F6] border border-[#DEDEDE] rounded-[9px] text-[14px] text-[#707070] flex items-center justify-center">
-                                    {'Apply'}
+                                <div className={`w-[80px] h-[49px] rounded-[9px] text-[14px] flex items-center justify-center border ${isDiscountValid ? 'bg-[#EAEFE1] border-[#141E03] text-[#141E03] font-medium' : 'bg-[#F6F6F6] border-[#DEDEDE] text-[#707070]'}`}>
+                                    {isDiscountValid ? 'Applied' : 'Apply'}
                                 </div>
                             </div>
 
@@ -241,18 +295,26 @@ export function CheckoutPage() {
                                     <span>Subtotal</span>
                                     <span>₦{subtotal.toLocaleString()}</span>
                                 </div>
+
+                                {deliveryFee > 0 && (
+                                    <div className="flex justify-between">
+                                        <span>Shipping</span>
+                                        <span>₦{deliveryFee.toLocaleString()}</span>
+                                    </div>
+                                )}
+
                                 {discountAmount > 0 && (
-                                    <div className="flex justify-between text-green-600">
+                                    <div className="flex justify-between text-[#89D618]">
                                         <span>Discount (10%)</span>
                                         <span>-₦{discountAmount.toLocaleString()}</span>
                                     </div>
                                 )}
 
-                                <div className="flex justify-between items-center pt-2 mt-2">
-                                    <span className="text-[16px] font-normal">Total</span>
+                                <div className="flex justify-between items-center pt-2 mt-2 border-t border-gray-100">
+                                    <span className="text-[16px] font-semibold">Total</span>
                                     <div className="flex items-center gap-2">
                                         <span className="text-[12px] text-[#707070]">NGN</span>
-                                        <span className="text-[16px] font-normal">₦{total.toLocaleString()}</span>
+                                        <span className="text-[18px] font-bold">₦{total.toLocaleString()}</span>
                                     </div>
                                 </div>
                             </div>

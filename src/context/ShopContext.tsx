@@ -48,7 +48,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         localStorage.setItem('recently_viewed', JSON.stringify(recentlyViewed));
     }, [recentlyViewed]);
 
-    const addToCart = (item: CartItem) => {
+    const addToCart = React.useCallback((item: CartItem) => {
         setCart(prev => {
             const existingItemIndex = prev.findIndex(i => i.id === item.id && i.size === item.size && i.color === item.color);
             if (existingItemIndex > -1) {
@@ -58,31 +58,31 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
             return [...prev, item];
         });
-    };
+    }, []);
 
-    const removeFromCart = (productId: string | number, size: string, color: string) => {
+    const removeFromCart = React.useCallback((productId: string | number, size: string, color: string) => {
         setCart(prev => prev.filter(item => !(item.id === productId && item.size === size && item.color === color)));
-    };
+    }, []);
 
-    const updateQuantity = (productId: string | number, size: string, color: string, quantity: number) => {
+    const updateQuantity = React.useCallback((productId: string | number, size: string, color: string, quantity: number) => {
         if (quantity < 1) return;
         setCart(prev => prev.map(item =>
             (item.id === productId && item.size === size && item.color === color) ? { ...item, quantity } : item
         ));
-    };
+    }, []);
 
-    const clearCart = () => {
+    const clearCart = React.useCallback(() => {
         setCart([]);
-    };
+    }, []);
 
-    const addToRecentlyViewed = (product: Product) => {
+    const addToRecentlyViewed = React.useCallback((product: Product) => {
         setRecentlyViewed(prev => {
             // Remove if exists to move to top
             const filtered = prev.filter(p => p.id !== product.id);
             const updated = [product, ...filtered].slice(0, 10); // Keep last 10
             return updated;
         });
-    };
+    }, []);
 
     return (
         <ShopContext.Provider value={{
