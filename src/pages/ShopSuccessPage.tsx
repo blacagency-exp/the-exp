@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { BaseLayout } from '../Components/layout/BaseLayout';
 import { CheckCircle2, XCircle } from 'lucide-react';
@@ -13,36 +13,47 @@ export function ShopSuccessPage() {
     const [orderData, setOrderData] = useState<any>(null);
     const { clearCart } = useShop();
 
-    useEffect(() => {
-        const verifyOrder = async () => {
-            if (!reference) {
-                setStatus('error');
-                return;
+    const verifyOrder = useCallback(async () => {
+        if (!reference) {
+            setStatus('error');
+            return;
+        }
+
+        setStatus('loading');
+        try {
+            const response = await fetch(`${API_URL}/api/shop/verify-payment/${reference}`);
+
+            if (!response.ok) {
+                throw new Error('Verification request failed');
             }
 
-            try {
-                const response = await fetch(`${API_URL}/api/shop/verify-payment/${reference}`);
-                const data = await response.json();
+            const data = await response.json();
 
-                if (data.status === 'completed') {
-                    setStatus('success');
-                    setOrderData(data.paymentDetails);
-                    clearCart();
-                } else {
-                    setStatus('error');
-                }
-            } catch (error) {
-                console.error('Verification error:', error);
+            if (data.status === 'completed') {
+                setStatus('success');
+                setOrderData(data.paymentDetails);
+                clearCart();
+            } else {
                 setStatus('error');
             }
-        };
-
-        verifyOrder();
+        } catch (error) {
+            console.error('Verification error:', error);
+            setStatus('error');
+        }
     }, [reference, clearCart]);
+
+    useEffect(() => {
+        verifyOrder();
+    }, [verifyOrder]);
 
     return (
         <BaseLayout>
-            <div className="min-h-[70vh] flex items-center justify-center p-4">
+            <div className="min-h-[70vh] flex-col flex items-center justify-center p-4">
+                {status === 'error' && (
+                    <Link to="/shop" className="text-[16px] text-[#141E03] hover:underline my-5 ml-auto">
+                        Continue shopping
+                    </Link>
+                )}
                 <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center border border-gray-100">
                     {status === 'loading' && (
                         <ActivityIndicator
@@ -85,19 +96,27 @@ export function ShopSuccessPage() {
                     )}
 
                     {status === 'error' && (
+
                         <div>
                             <XCircle className="w-20 h-20 text-red-500 mx-auto mb-6" />
                             <h2 className="text-2xl font-bold text-[#141E03] mb-2">Something went wrong</h2>
                             <p className="text-gray-600 mb-8">
                                 We couldn't verify your payment. If you've been debited, please contact support with your reference: <strong>{reference || 'N/A'}</strong>
                             </p>
-                            <Link
-                                to="/checkout"
+                            <button
+                                onClick={() => { verifyOrder(); }}
                                 className="inline-block w-full bg-[#141E03] text-white py-4 rounded-xl font-bold"
                             >
                                 Try Again
+                            </button>
+                            <Link
+                                to="/contact"
+                                className="inline-block w-full border border-[#141E03] text-[#141E03] bg-transparent mt-2 py-4 rounded-xl font-bold"
+                            >
+                                Contact Support
                             </Link>
                         </div>
+
                     )}
                 </div>
             </div>
