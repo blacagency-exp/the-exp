@@ -169,7 +169,7 @@ export const ProductDetailPage: React.FC = () => {
                                     className={`w-[88px] h-[108px] bg-[#EAEFE1] rounded-[9px] border box-border transition-colors flex items-center justify-center overflow-hidden
                     ${activeImage === i ? 'border-[#141E03]' : 'border-transparent'}`}
                                 >
-                                    <img src={urlFor(img).width(88).height(108).url()} alt={`Thumbnail ${i}`} className="w-full h-full object-cover" />
+                                    <img src={urlFor(img).url()} alt={`Thumbnail ${i}`} className="w-full h-full object-contain" />
                                 </button>
                             )) || (
                                     <div className="w-[88px] h-[108px] bg-[#EAEFE1] rounded-[9px] border border-transparent flex items-center justify-center">
@@ -184,7 +184,7 @@ export const ProductDetailPage: React.FC = () => {
                                 <img
                                     src={urlFor(product.images[activeImage]).url()}
                                     alt={product.name}
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-contain"
                                 />
                             ) : <div className="w-full h-full flex items-center justify-center text-gray-400">
                                 No image
