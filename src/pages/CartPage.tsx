@@ -42,7 +42,7 @@ export function CartPage() {
                                     <div key={`${item.id}-${item.size}-${item.color}`} className="flex flex-col md:flex-row items-center gap-6 md:gap-10">
                                         <div className="w-[142px] h-[99px] bg-[#EAEFE1] rounded-[19px] overflow-hidden flex items-center justify-center">
                                             {item.image ? (
-                                                <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                                <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
                                             ) : (
                                                 <div className="w-16 h-20 bg-[#1a1a1a] rounded-t-lg shadow-lg relative translate-y-2">
                                                     <div className="absolute top-4 right-4 text-[#89D618] font-black text-[6px]">GWOTE</div>

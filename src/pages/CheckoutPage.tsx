@@ -253,7 +253,7 @@ export function CheckoutPage() {
                                         <div className="relative w-[62px] h-[62px] bg-white rounded-[11px] shadow-sm flex items-center justify-center border border-gray-100">
                                             <div className="w-[58px] h-[58px] bg-[#EAEFE1] rounded-[10px] overflow-hidden flex items-center justify-center">
                                                 {item.image ? (
-                                                    <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                                    <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
                                                 ) : (
                                                     <div className="w-8 h-10 bg-[#1a1a1a] rounded-t-sm shadow-sm relative translate-y-2">
                                                         <div className="absolute top-2 right-2 text-[#89D618] font-black text-[3px]">GWOTE</div>

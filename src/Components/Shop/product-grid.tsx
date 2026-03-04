@@ -87,14 +87,14 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ title, products, title
                       <img
                         src={urlFor(product.images[0]).url()}
                         alt={product.name}
-                        className={`w-full h-full rounded-[10px] object-cover transition-all duration-500 
+                        className={`w-full h-full rounded-[10px] object-contain transition-all duration-500 
                           ${product.images.length > 1 ? 'group-hover:opacity-0 group-hover:scale-105' : 'group-hover:scale-110'}`}
                       />
                       {product.images[1] && (
                         <img
                           src={urlFor(product.images[1]).url()}
                           alt={`${product.name} - variant`}
-                          className="absolute inset-4 w-[calc(100%-32px)] h-[calc(100%-32px)] rounded-[10px] object-cover opacity-0 group-hover:opacity-100 transition-all duration-500 scale-105"
+                          className="absolute inset-4 w-[calc(100%-32px)] h-[calc(100%-32px)] rounded-[10px] object-contain opacity-0 group-hover:opacity-100 transition-all duration-500 scale-105"
                         />
                       )}
                     </>
