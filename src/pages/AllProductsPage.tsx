@@ -130,7 +130,7 @@ export function AllProductsPage() {
                                             <img
                                                 src={urlFor(product.images[0]).url()}
                                                 alt={product.name}
-                                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.1]"
+                                                className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-[1.1]"
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center text-gray-400">

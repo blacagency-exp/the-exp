@@ -29,7 +29,7 @@ export function ShopPage() {
     fetchProducts();
   }, []);
 
-  const newArrivals = products.slice(0, 4);
+  const newArrivals = products.slice(0, 6);
 
   return (
     <BaseLayout>
