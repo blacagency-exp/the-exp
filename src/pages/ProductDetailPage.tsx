@@ -203,7 +203,7 @@ export const ProductDetailPage: React.FC = () => {
                         </p>
 
                         {product.description && (
-                            <p className="text-[16px] font-normal leading-relaxed text-[#55534D] mb-[26px] max-w-[500px]">
+                            <p className="text-[16px] font-normal leading-relaxed text-[#55534D] mb-[26px] max-w-[500px] whitespace-pre-wrap">
                                 {product.description}
                             </p>
                         )}
