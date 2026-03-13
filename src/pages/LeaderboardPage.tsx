@@ -6,8 +6,9 @@ import { BaseLayout } from "../Components/layout/BaseLayout"
 import { LeaderboardCard } from "../Components/Leaderboard/LeaderboardCard"
 import { LeaderboardTable } from "../Components/Leaderboard/LeaderboardTable"
 import { fetchCreatorLeaderboardData, type CreatorData } from "../utils/googleSheet"
-import { Trophy, TrendingUp, Users, RefreshCw, Loader2, Sparkles } from "lucide-react"
+import { Trophy, TrendingUp, Users, RefreshCw, Loader2, Sparkles,Bell } from "lucide-react"
 import { useRef } from "react"
+import { LeaderboardSignupModal } from "../Components/Leaderboard/LeaderboardSignupModal"
 
 const REGULAR_SHEET_ID = "1Wvav-yaVf5wgLky4g2_FHKOTjeTfZdUaGIk6VaY4dCg"
 const CHRISTMAS_SHEET_ID = "1vEwKkugn6MFSh65iSlewu9HWT2a_TDCWy6CXNaSnafI"
@@ -19,6 +20,7 @@ export function LeaderboardPage() {
   const [creators, setCreators] = useState<CreatorData[]>([])
   const [loading, setLoading] = useState(true)
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date())
+  const [signupModalOpen, setSignupModalOpen] = useState(false)
   const heroRef = useRef<HTMLDivElement>(null)
   const isHeroInView = useInView(heroRef, { once: true, amount: 0.3 })
 
@@ -64,6 +66,7 @@ export function LeaderboardPage() {
 
   return (
     <BaseLayout>
+      <LeaderboardSignupModal isOpen={signupModalOpen} onClose={() => setSignupModalOpen(false)} />
       {/* Hero Section with Dynamic Background */}
       <div
         ref={heroRef}
@@ -224,7 +227,7 @@ export function LeaderboardPage() {
               >
                 <div className="flex items-center gap-2">
                   <Trophy className="w-5 h-5" />
-                  Creator Leaderboard
+                  Regular Leaderboard
                 </div>
                 {activeTab === "regular" && (
                   <motion.div
@@ -308,30 +311,42 @@ export function LeaderboardPage() {
             </motion.div>
 
             {/* Refresh Button */}
-            <motion.button
+            <motion.div
               initial={{ opacity: 0 }}
               animate={isHeroInView ? { opacity: 1 } : { opacity: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              onClick={loadLeaderboardData}
-              disabled={loading}
-              className={`inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed ${
-                isChristmas
-                  ? "bg-gradient-to-r from-red-500 to-green-600 text-white hover:from-red-600 hover:to-green-700"
-                  : "bg-[#97E12B] text-[#141E03] hover:bg-[#7BC91D]"
-              }`}
+              className="inline-flex items-center gap-3"
             >
-              {loading ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  Loading...
-                </>
-              ) : (
-                <>
-                  <RefreshCw className="w-5 h-5" />
-                  Refresh Data
-                </>
-              )}
-            </motion.button>
+              <button
+                onClick={loadLeaderboardData}
+                disabled={loading}
+                className={`inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed ${
+                  isChristmas
+                    ? "bg-gradient-to-r from-red-500 to-green-600 text-white hover:from-red-600 hover:to-green-700"
+                    : "bg-[#97E12B] text-[#141E03] hover:bg-[#7BC91D]"
+                }`}
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Loading...
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw className="w-5 h-5" />
+                    Refresh Data
+                  </>
+                )}
+              </button>
+
+              <button
+                onClick={() => setSignupModalOpen(true)}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold bg-white/10 text-white hover:bg-white/20 transition-all shadow-lg border border-white/20"
+              >
+                <Bell className="w-5 h-5" />
+                Stay Updated
+              </button>
+            </motion.div>
 
             <p className={`text-sm mt-4 ${isChristmas ? "text-gray-300" : "text-gray-400"}`}>
               Last updated: {lastUpdated.toLocaleTimeString()}
