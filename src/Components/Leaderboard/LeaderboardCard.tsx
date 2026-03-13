@@ -19,11 +19,11 @@ export function LeaderboardCard({ creator, index, isChristmas = false }: Leaderb
     3: isChristmas ? "from-orange-400 to-orange-600" : "from-orange-400 to-orange-600",
   }
 
-  const tierColors = {
-    Elite: isChristmas ? "bg-red-500" : "bg-[#97E12B]",
-    Pro: isChristmas ? "bg-green-600" : "bg-blue-500",
-    Rookie: isChristmas ? "bg-yellow-500" : "bg-gray-500",
-  }
+  // const tierColors = {
+  //   Elite: isChristmas ? "bg-red-500" : "bg-[#97E12B]",
+  //   Pro: isChristmas ? "bg-green-600" : "bg-blue-500",
+  //   Rookie: isChristmas ? "bg-yellow-500" : "bg-gray-500",
+  // }
 
   return (
     <motion.div
@@ -66,7 +66,7 @@ export function LeaderboardCard({ creator, index, isChristmas = false }: Leaderb
         )}
 
         {/* Tier Badge */}
-        <div className="absolute top-4 right-4 z-10">
+        {/* <div className="absolute top-4 right-4 z-10">
           <motion.div
             initial={{ scale: 0, rotate: -180 }}
             animate={{ scale: 1, rotate: 0 }}
@@ -75,7 +75,7 @@ export function LeaderboardCard({ creator, index, isChristmas = false }: Leaderb
           >
             {creator.tier}
           </motion.div>
-        </div>
+        </div> */}
 
         <div className="p-6">
           {/* Profile Section */}

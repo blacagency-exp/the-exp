@@ -11,11 +11,11 @@ interface LeaderboardTableProps {
 }
 
 export function LeaderboardTable({ creators, isChristmas = false }: LeaderboardTableProps) {
-  const tierColors = {
-    Elite: isChristmas ? "bg-red-100 text-red-700" : "bg-[#97E12B]/20 text-[#141E03]",
-    Pro: isChristmas ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700",
-    Rookie: isChristmas ? "bg-yellow-100 text-yellow-700" : "bg-gray-100 text-gray-700",
-  }
+  // const tierColors = {
+  //   Elite: isChristmas ? "bg-red-100 text-red-700" : "bg-[#97E12B]/20 text-[#141E03]",
+  //   Pro: isChristmas ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700",
+  //   Rookie: isChristmas ? "bg-yellow-100 text-yellow-700" : "bg-gray-100 text-gray-700",
+  // }
 
   return (
     <div className="w-full overflow-hidden bg-white rounded-2xl shadow-xl border-2 border-gray-100">
@@ -28,7 +28,7 @@ export function LeaderboardTable({ creators, isChristmas = false }: LeaderboardT
               <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Creator
               </th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tier</th>
+              {/* <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tier</th> */}
               <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 <div className="flex items-center justify-center gap-1">
                   <Users className="w-4 h-4" />
@@ -97,13 +97,13 @@ export function LeaderboardTable({ creators, isChristmas = false }: LeaderboardT
                 </td>
 
                 {/* Tier */}
-                <td className="px-6 py-4 whitespace-nowrap">
+                {/* <td className="px-6 py-4 whitespace-nowrap">
                   <span
                     className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${tierColors[creator.tier]}`}
                   >
                     {creator.tier}
                   </span>
-                </td>
+                </td> */}
 
                 {/* Followers */}
                 <td className="px-6 py-4 whitespace-nowrap text-center">

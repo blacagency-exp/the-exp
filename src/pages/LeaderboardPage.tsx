@@ -344,7 +344,7 @@ export function LeaderboardPage() {
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold bg-white/10 text-white hover:bg-white/20 transition-all shadow-lg border border-white/20"
               >
                 <Bell className="w-5 h-5" />
-                Stay Updated
+                Join Our Community
               </button>
             </motion.div>
 
