@@ -1,8 +1,9 @@
 import React from 'react';
-import ShopHeroImage from "@/assets/shop-hero.png";
+
+const ShopHeroImage = "https://res.cloudinary.com/dxlrjy8ad/image/upload/v1781885113/IMG_7730_syouc5.jpg";
+const ShopHeroVideo = "https://res.cloudinary.com/dxlrjy8ad/video/upload/v1781885974/VOU_mv01ej.mp4";
 
 export const ShopHero: React.FC = () => {
-  const ShopHeroVideo = "https://7r7nzzm7jnvxfgbi.public.blob.vercel-storage.com/MERCH.MP4";
   return (
     <section className="relative w-full h-[calc(100vh-64px)] lg:h-[calc(100vh-80px)] bg-[#141E03] flex flex-col items-center justify-end text-white">
       <div className="absolute inset-0 z-0 opacity-80">

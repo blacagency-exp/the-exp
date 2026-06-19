@@ -25,54 +25,50 @@ export function HeroUpdate() {
 
   useEffect(() => {
     const video = videoRef.current
-    if (video) {
-      const playVideo = () => {
-        video.play().catch((error) => {
-          console.error("Autoplay was prevented:", error)
-        })
-      }
+    if (!video) return
 
-      const handleCanPlay = () => {
-        setIsVideoLoading(false)
-        playVideo()
+    const markReady = () => {
+      setIsVideoLoading(false)
+      setTimeout(() => setIsVideoReady(true), 500)
+    }
 
-        setTimeout(() => {
-          setIsVideoReady(true)
-        }, 500)
-      }
+    const playVideo = () => {
+      video.play().catch((error) => {
+        console.error("Autoplay was prevented:", error)
+      })
+    }
 
-      const handleProgress = () => {
-        if (video.readyState >= 3) {
-          setIsVideoLoading(false)
+    const handleCanPlay = () => {
+      markReady()
+      playVideo()
+    }
 
-          setTimeout(() => {
-            setIsVideoReady(true)
-          }, 500)
-        }
-      }
+    const handleProgress = () => {
+      if (video.readyState >= 3) markReady()
+    }
 
-      video.addEventListener("loadedmetadata", handleProgress)
-      video.addEventListener("canplay", handleCanPlay)
-      video.addEventListener("progress", handleProgress)
+    const handleError = () => {
+      console.error("Video failed to load")
+      markReady()
+    }
 
-      if (video.preload !== "auto") {
-        video.preload = "auto"
-      }
+    // Fallback: show content after 8s regardless
+    const fallbackTimer = setTimeout(markReady, 8000)
 
-      if (video.readyState >= 3) {
-        setIsVideoLoading(false)
-        playVideo()
+    video.addEventListener("canplay", handleCanPlay)
+    video.addEventListener("progress", handleProgress)
+    video.addEventListener("error", handleError)
 
-        setTimeout(() => {
-          setIsVideoReady(true)
-        }, 500)
-      }
+    if (video.readyState >= 3) {
+      markReady()
+      playVideo()
+    }
 
-      return () => {
-        video.removeEventListener("loadedmetadata", handleProgress)
-        video.removeEventListener("canplay", handleCanPlay)
-        video.removeEventListener("progress", handleProgress)
-      }
+    return () => {
+      clearTimeout(fallbackTimer)
+      video.removeEventListener("canplay", handleCanPlay)
+      video.removeEventListener("progress", handleProgress)
+      video.removeEventListener("error", handleError)
     }
   }, [])
 
