@@ -3,9 +3,8 @@
 import type React from "react"
 import { useEffect, useState } from "react"
 import { GuideSelector } from "./GuideSelector"
-import axios from "axios"
-import { API_URL } from "../../config/api"
-import { CheckCircle, Loader2, Globe } from "lucide-react"
+import { PaystackButton } from "./PaystackButton"
+import { Globe } from "lucide-react"
 import { useCurrency } from "../../hooks/useCurrency"
 import {
   getBasePrice,
@@ -33,10 +32,6 @@ export const BookingRequestForm: React.FC<BookingRequestFormProps> = ({ selected
   const [formComplete, setFormComplete] = useState(false)
   const [specificRequests, setSpecificRequests] = useState("")
   const [selectedGuideId, setSelectedGuideId] = useState<number | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitSuccess, setSubmitSuccess] = useState(false)
-  const [submitError, setSubmitError] = useState<string | null>(null)
-
   const { currency, setCurrency} = useCurrency()
 
   useEffect(() => {
@@ -68,78 +63,6 @@ export const BookingRequestForm: React.FC<BookingRequestFormProps> = ({ selected
     )
   }, [firstName, lastName, email, phoneNumber, packageType, travelDate, selectedGuideId])
 
-  const handleSubmitRequest = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    setSubmitError(null)
-
-    try {
-      const amountInNGN = convertToNGN(totalAmount, currency)
-
-      const requestData = {
-        firstName,
-        lastName,
-        email,
-        phoneNumber,
-        packageType,
-        travelerType,
-        groupSize: travelerType === "group" ? groupSize : 1,
-        travelDate,
-        specificRequests: specificRequests || "None",
-        selectedGuideId,
-        totalAmount: amountInNGN,
-        displayCurrency: currency,
-        displayAmount: totalAmount,
-      }
-
-      const response = await axios.post(`${API_URL}/api/booking-requests`, requestData)
-
-      if (response.data.success) {
-        setSubmitSuccess(true)
-        setTimeout(() => {
-          setFirstName("")
-          setLastName("")
-          setEmail("")
-          setPhoneNumber("")
-          setPackageType("")
-          setTravelDate("")
-          setSpecificRequests("")
-          setSelectedGuideId(null)
-          setSubmitSuccess(false)
-        }, 5000)
-      }
-    } catch (error) {
-      console.error("Error submitting booking request:", error)
-      setSubmitError("Failed to submit booking request. Please try again.")
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  if (submitSuccess) {
-    return (
-      <section className="bg-[#141E03] py-12 md:py-24">
-        <div className="container mx-auto px-4 max-w-4xl">
-          <div className="bg-white rounded-2xl p-8 md:p-12 text-center">
-            <div className="flex justify-center mb-6">
-              <div className="bg-green-100 p-4 rounded-full">
-                <CheckCircle className="w-16 h-16 text-green-600" />
-              </div>
-            </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Booking Request Submitted!</h2>
-            <p className="text-gray-600 text-lg mb-4">
-              Thank you for your booking request. Our team will review your request and check availability.
-            </p>
-            <p className="text-gray-600">
-              You will receive an email confirmation within 24-48 hours with next steps. If your booking is approved,
-              we'll send you a payment link.
-            </p>
-            <p className="text-sm text-gray-500 mt-6">Reference: {email}</p>
-          </div>
-        </div>
-      </section>
-    )
-  }
 
   return (
     <section className="bg-[#141E03] py-8 sm:py-12 md:py-16 lg:py-24">
@@ -147,10 +70,10 @@ export const BookingRequestForm: React.FC<BookingRequestFormProps> = ({ selected
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12 lg:gap-16 items-start lg:items-center">
           <div className="space-y-4 sm:space-y-6 order-2 lg:order-1 lg:mt-0 lg:-mt-32 xl:-mt-56">
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[7.5rem] leading-tight sm:leading-none font-semibold text-[#97E12B] text-center lg:text-left">
-              Request a Trip
+              Book a Trip
             </h2>
             <p className="text-[#FDFFFB] text-sm sm:text-base md:text-lg max-w-xl font-light leading-relaxed text-center lg:text-left mx-auto lg:mx-0">
-              Submit your booking request and our team will confirm availability before you pay.
+              Fill in your details and pay securely to confirm your booking instantly.
             </p>
           </div>
 
@@ -173,7 +96,7 @@ export const BookingRequestForm: React.FC<BookingRequestFormProps> = ({ selected
               </select>
             </div>
 
-            <form onSubmit={handleSubmitRequest} className="space-y-4 sm:space-y-5 md:space-y-6">
+            <form onSubmit={(e) => e.preventDefault()} className="space-y-4 sm:space-y-5 md:space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div className="space-y-2">
                   <label className="block text-xs sm:text-sm font-normal text-[#666666]">First Name</label>
@@ -327,30 +250,24 @@ export const BookingRequestForm: React.FC<BookingRequestFormProps> = ({ selected
                     ≈ ₦{convertToNGN(totalAmount, currency).toLocaleString()} NGN (Paystack processes in NGN)
                   </div>
                 )}
-                <p className="text-xs text-gray-500 mt-2">Payment required only after approval</p>
+                <p className="text-xs text-gray-500 mt-2">You will receive a confirmation email after payment</p>
               </div>
 
-              {submitError && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
-                  {submitError}
-                </div>
-              )}
-
               <div className="pt-2 sm:pt-4">
-                <button
-                  type="submit"
-                  disabled={!formComplete || isSubmitting}
-                  className="w-full px-8 py-3 bg-[#5A8E00] text-white rounded-md hover:bg-[#4A7500] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      Submitting Request...
-                    </>
-                  ) : (
-                    "Submit Booking Request"
-                  )}
-                </button>
+                <PaystackButton
+                  amount={convertToNGN(totalAmount, currency)}
+                  email={email}
+                  firstName={firstName}
+                  lastName={lastName}
+                  phoneNumber={phoneNumber}
+                  packageType={packageType}
+                  travelerType={travelerType}
+                  groupSize={groupSize}
+                  specificRequests={specificRequests}
+                  selectedGuideId={selectedGuideId}
+                  travelDate={travelDate}
+                  disabled={!formComplete}
+                />
               </div>
             </form>
           </div>
