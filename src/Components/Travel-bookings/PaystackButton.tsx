@@ -19,7 +19,7 @@ interface PaystackButtonProps {
   groupSize?: number
   specificRequests: string
   selectedGuideId: number | null
-  travelDate: string
+  travelDate?: string
   disabled: boolean
 }
 
@@ -66,6 +66,7 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
     }
 
     try {
+      const travelDateStr: string = travelDate ?? ""
       const metadata = {
         full_name: `${firstName} ${lastName}`,
         phone_number: phoneNumber,
@@ -74,7 +75,7 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
         group_size: groupSize,
         specific_requests: specificRequests,
         guide_id: selectedGuideId,
-        travel_date: travelDate,
+        travel_date: travelDateStr,
         custom_fields: [
           {
             display_name: "Full Name",
@@ -94,7 +95,7 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
           {
             display_name: "Travel Date",
             variable_name: "travel_date",
-            value: travelDate,
+            value: travelDateStr,
           },
           {
             display_name: "Traveler Type",
