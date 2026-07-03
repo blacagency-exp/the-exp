@@ -47,7 +47,7 @@ export const BookingRequestForm: React.FC<BookingRequestFormProps> = ({ selected
       basePrice *= groupSize
     }
 
-    const priceInUserCurrency = convertCurrency(basePrice, "USD", currency)
+    const priceInUserCurrency = convertCurrency(basePrice, "NGN", currency)
     setTotalAmount(priceInUserCurrency)
   }, [packageType, travelerType, groupSize, currency])
 
