@@ -18,7 +18,8 @@ interface PaystackButtonProps {
   travelerType: string
   groupSize?: number
   specificRequests: string
-  selectedGuideId: number | null // Add this line
+  selectedGuideId: number | null
+  travelDate: string
   disabled: boolean
 }
 
@@ -37,6 +38,7 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
   groupSize,
   specificRequests,
   selectedGuideId,
+  travelDate,
   disabled,
 }) => {
   const [isScriptLoaded, setIsScriptLoaded] = useState(false)
@@ -72,6 +74,7 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
         group_size: groupSize,
         specific_requests: specificRequests,
         guide_id: selectedGuideId,
+        travel_date: travelDate,
         custom_fields: [
           {
             display_name: "Full Name",
@@ -87,6 +90,11 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
             display_name: "Package Type",
             variable_name: "package_type",
             value: packageType,
+          },
+          {
+            display_name: "Travel Date",
+            variable_name: "travel_date",
+            value: travelDate,
           },
           {
             display_name: "Traveler Type",
@@ -188,10 +196,10 @@ export const PaystackButton: React.FC<PaystackButtonProps> = ({
       <button
         type="button"
         onClick={initializePayment}
-        className="px-8 py-2 bg-[#5A8E00] text-white rounded-md hover:bg-[#4A7500] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full px-8 py-3 bg-[#5A8E00] text-white rounded-md hover:bg-[#4A7500] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         disabled={disabled || !isScriptLoaded}
       >
-        Book Now
+        Book & Pay Now
       </button>
       {error && <p className="text-red-500 mt-2">{error}</p>}
 
