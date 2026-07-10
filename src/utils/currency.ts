@@ -104,11 +104,11 @@ export function formatCurrency(amount: number, currency: CurrencyCode): string {
 export function getBasePrice(packageType: string): number {
   switch (packageType) {
     case "Discoverer":
-      return 100 // ₦100 NGN (test price — revert to: 100 USD)
+      return 100
     case "Explorer":
-      return 100 // ₦100 NGN (test price — revert to: 200 USD)
+      return 200
     case "Adventurer":
-      return 100 // ₦100 NGN (test price — revert to: 400 USD)
+      return 400
     default:
       return 0
   }
