@@ -23,7 +23,7 @@ import { CartPage } from "./pages/CartPage"
 import { CheckoutPage } from "./pages/CheckoutPage"
 import { AllProductsPage } from "./pages/AllProductsPage"
 import { ShopSuccessPage } from "./pages/ShopSuccessPage"
-
+import { PlateauUnitedPage } from "./pages/PlateauUnitedPage"
 
 import { ShopProvider } from "./context/ShopContext"
 
@@ -62,6 +62,7 @@ function App() {
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/count" element={<HomePage />} />
           <Route path="/shop" element={<ShopPage />} />
+          <Route path="/plateau-united" element={<PlateauUnitedPage />} />
           <Route path="/shop/all" element={<AllProductsPage />} />
           <Route path="/shop/:productId" element={<ProductDetailPage />} />
           <Route path="/cart" element={<CartPage />} />
