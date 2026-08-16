@@ -48,7 +48,7 @@ const PRODUCTS: Product[] = [
     bgColor: "#F7D000",
     textColor: "#1A6B2C",
     description: "The iconic yellow & green. Wear the colours of Plateau United on matchday.",
-    image: "",
+    image: "https://cdn.sanity.io/images/252rx5c8/production/23d1d5252b0c466edae5b150548807a5cca05fd2-900x1200-jpg",
   },
   {
     id: "away-kit",
@@ -59,7 +59,7 @@ const PRODUCTS: Product[] = [
     bgColor: "#f0f0f0",
     textColor: "#1A6B2C",
     description: "The away strip — clean white, built for the road and the faithful who travel.",
-    image: "",
+    image: "https://cdn.sanity.io/images/252rx5c8/production/3f834e7125278af9e4a2902d23c9f47e749d74f2-900x1200-jpg",
   },
   {
     id: "alternate-kit",
@@ -70,7 +70,7 @@ const PRODUCTS: Product[] = [
     bgColor: "#2a1a0a",
     textColor: "#FFFFFF",
     description: "The cultural strip — bold stripes inspired by the diversity of Plateau State.",
-    image: "",
+    image: "https://cdn.sanity.io/images/252rx5c8/production/e2d92c3d9779d37b8b38b8fd677532462422b3cc-900x1200-jpg",
   },
   {
     id: "training-kit-1",
@@ -81,7 +81,7 @@ const PRODUCTS: Product[] = [
     bgColor: "#1a6b6b",
     textColor: "#F7D000",
     description: "Train like a Tin City Soldier. Official Plateau United training kit by Galaxy.",
-    image: "",
+    image: "https://cdn.sanity.io/images/252rx5c8/production/c30125fe52917e35f26d22b986da23e85e8ffc57-900x1200-jpg",
   },
   {
     id: "training-kit-2",
@@ -92,7 +92,7 @@ const PRODUCTS: Product[] = [
     bgColor: "#f0f0f0",
     textColor: "#1A6B2C",
     description: "Second colourway of the official PU training range — lightweight, performance-ready.",
-    image: "",
+    image: "https://cdn.sanity.io/images/252rx5c8/production/af1bc68097e1ed62395e0fb518d0b6338de90e85-900x1200-jpg",
   },
   {
     id: "training-kit-3",
@@ -103,7 +103,7 @@ const PRODUCTS: Product[] = [
     bgColor: "#0d4a3a",
     textColor: "#7EFFD4",
     description: "Third colourway — mint and teal, built for the pitch and the gym.",
-    image: "",
+    image: "https://cdn.sanity.io/images/252rx5c8/production/fa51c05688db0133bca37472ccc23c363ce40eb8-900x1200-jpg",
   },
   {
     id: "hoodie",
@@ -114,7 +114,7 @@ const PRODUCTS: Product[] = [
     bgColor: "#7FE000",
     textColor: "#FFFFFF",
     description: "Premium PU hoodie — lime green feather print for the stands, the streets, and everything in between.",
-    image: "",
+    image: "https://cdn.sanity.io/images/252rx5c8/production/9c47ecc1cdb73813a87d83105d9aef4119776596-900x1200-jpg",
   },
   {
     id: "tracksuit",
@@ -125,7 +125,7 @@ const PRODUCTS: Product[] = [
     bgColor: "#f5f5f5",
     textColor: "#1A6B2C",
     description: "Full Plateau United tracksuit. Travel in style, arrive representing the Pride.",
-    image: "",
+    image: "https://cdn.sanity.io/images/252rx5c8/production/1ac52ff4175e1868f6c9a716c917cfd7678565fa-900x1200-jpg",
   },
 ]
 
