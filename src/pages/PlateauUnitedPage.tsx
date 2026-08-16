@@ -4,6 +4,7 @@ import { Newsletter } from "@/Components/Shop/newsletter"
 import axios from "axios"
 import { API_URL } from "@/config/api"
 
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface Product {
@@ -15,6 +16,7 @@ interface Product {
   bgColor: string
   textColor: string
   description: string
+  image?: string
 }
 
 interface DeliveryZone {
@@ -43,9 +45,10 @@ const PRODUCTS: Product[] = [
     category: "kits",
     price: 20,
     promoPrice: 10,
-    bgColor: "#1A6B2C",
-    textColor: "#F7D000",
-    description: "The iconic green & yellow. Wear the colours of Plateau United on matchday.",
+    bgColor: "#F7D000",
+    textColor: "#1A6B2C",
+    description: "The iconic yellow & green. Wear the colours of Plateau United on matchday.",
+    image: "",
   },
   {
     id: "away-kit",
@@ -53,9 +56,10 @@ const PRODUCTS: Product[] = [
     category: "kits",
     price: 20,
     promoPrice: 10,
-    bgColor: "#F7D000",
+    bgColor: "#f0f0f0",
     textColor: "#1A6B2C",
-    description: "The away strip — bold yellow, built for the road and the faithful who travel.",
+    description: "The away strip — clean white, built for the road and the faithful who travel.",
+    image: "",
   },
   {
     id: "alternate-kit",
@@ -63,19 +67,43 @@ const PRODUCTS: Product[] = [
     category: "kits",
     price: 20,
     promoPrice: 10,
-    bgColor: "#111111",
+    bgColor: "#2a1a0a",
     textColor: "#FFFFFF",
-    description: "The third kit — a darker edge for those who represent PU on every front.",
+    description: "The cultural strip — bold stripes inspired by the diversity of Plateau State.",
+    image: "",
   },
   {
-    id: "training-kit",
-    name: "Training Kit",
+    id: "training-kit-1",
+    name: "Training Kit I",
     category: "training",
     price: 10,
     promoPrice: null,
-    bgColor: "#1A6B2C",
+    bgColor: "#1a6b6b",
     textColor: "#F7D000",
     description: "Train like a Tin City Soldier. Official Plateau United training kit by Galaxy.",
+    image: "",
+  },
+  {
+    id: "training-kit-2",
+    name: "Training Kit II",
+    category: "training",
+    price: 10,
+    promoPrice: null,
+    bgColor: "#f0f0f0",
+    textColor: "#1A6B2C",
+    description: "Second colourway of the official PU training range — lightweight, performance-ready.",
+    image: "",
+  },
+  {
+    id: "training-kit-3",
+    name: "Training Kit III",
+    category: "training",
+    price: 10,
+    promoPrice: null,
+    bgColor: "#0d4a3a",
+    textColor: "#7EFFD4",
+    description: "Third colourway — mint and teal, built for the pitch and the gym.",
+    image: "",
   },
   {
     id: "hoodie",
@@ -83,9 +111,10 @@ const PRODUCTS: Product[] = [
     category: "hoodies",
     price: 10,
     promoPrice: null,
-    bgColor: "#111111",
+    bgColor: "#7FE000",
     textColor: "#FFFFFF",
-    description: "Premium PU hoodie — for the stands, the streets, and everything in between.",
+    description: "Premium PU hoodie — lime green feather print for the stands, the streets, and everything in between.",
+    image: "",
   },
   {
     id: "tracksuit",
@@ -93,9 +122,10 @@ const PRODUCTS: Product[] = [
     category: "tracksuits",
     price: 10,
     promoPrice: null,
-    bgColor: "#F7D000",
+    bgColor: "#f5f5f5",
     textColor: "#1A6B2C",
     description: "Full Plateau United tracksuit. Travel in style, arrive representing the Pride.",
+    image: "",
   },
 ]
 
@@ -755,23 +785,23 @@ export function PlateauUnitedPage() {
                       Save ₦5,000
                     </span>
                   )}
-                  <span
-                    style={{ ...condensed, color: product.textColor, opacity: 0.08, fontSize: "clamp(120px,18vw,200px)" }}
-                    className="absolute -bottom-4 -right-4 leading-none select-none"
-                  >
-                    PU
-                  </span>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <svg
-                      width="120" height="120" viewBox="0 0 80 80" fill="none"
-                      className="transition-transform duration-500 group-hover:scale-110"
-                    >
-                      <path
-                        d="M20 12 L10 28 L22 30 L22 68 L58 68 L58 30 L70 28 L60 12 L50 18 C50 18 46 22 40 22 C34 22 30 18 30 18 Z"
-                        fill={product.textColor} opacity="0.7" strokeLinejoin="round"
-                      />
-                    </svg>
-                  </div>
+                  {product.image ? (
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <svg width="120" height="120" viewBox="0 0 80 80" fill="none"
+                        className="transition-transform duration-500 group-hover:scale-110">
+                        <path
+                          d="M20 12 L10 28 L22 30 L22 68 L58 68 L58 30 L70 28 L60 12 L50 18 C50 18 46 22 40 22 C34 22 30 18 30 18 Z"
+                          fill={product.textColor} opacity="0.7" strokeLinejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  )}
                 </div>
 
                 <div className="px-5 py-5 border-t border-gray-100">
