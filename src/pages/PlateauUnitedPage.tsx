@@ -43,8 +43,8 @@ const PRODUCTS: Product[] = [
     id: "home-kit",
     name: "Home Kit",
     category: "kits",
-    price: 20,
-    promoPrice: 10,
+    price: 15000,
+    promoPrice: null,
     bgColor: "#F7D000",
     textColor: "#1A6B2C",
     description: "The iconic yellow & green. Wear the colours of Plateau United on matchday.",
@@ -54,8 +54,8 @@ const PRODUCTS: Product[] = [
     id: "away-kit",
     name: "Away Kit",
     category: "kits",
-    price: 20,
-    promoPrice: 10,
+    price: 15000,
+    promoPrice: null,
     bgColor: "#f0f0f0",
     textColor: "#1A6B2C",
     description: "The away strip — clean white, built for the road and the faithful who travel.",
@@ -65,8 +65,8 @@ const PRODUCTS: Product[] = [
     id: "alternate-kit",
     name: "Alternate Kit",
     category: "kits",
-    price: 20,
-    promoPrice: 10,
+    price: 15000,
+    promoPrice: null,
     bgColor: "#2a1a0a",
     textColor: "#FFFFFF",
     description: "The cultural strip — bold stripes inspired by the diversity of Plateau State.",
@@ -76,7 +76,7 @@ const PRODUCTS: Product[] = [
     id: "training-kit-1",
     name: "Training Kit I",
     category: "training",
-    price: 10,
+    price: 17000,
     promoPrice: null,
     bgColor: "#1a6b6b",
     textColor: "#F7D000",
@@ -87,7 +87,7 @@ const PRODUCTS: Product[] = [
     id: "training-kit-2",
     name: "Training Kit II",
     category: "training",
-    price: 10,
+    price: 17000,
     promoPrice: null,
     bgColor: "#f0f0f0",
     textColor: "#1A6B2C",
@@ -98,7 +98,7 @@ const PRODUCTS: Product[] = [
     id: "training-kit-3",
     name: "Training Kit III",
     category: "training",
-    price: 10,
+    price: 17000,
     promoPrice: null,
     bgColor: "#0d4a3a",
     textColor: "#7EFFD4",
@@ -109,7 +109,7 @@ const PRODUCTS: Product[] = [
     id: "hoodie",
     name: "Hoodie",
     category: "hoodies",
-    price: 10,
+    price: 35000,
     promoPrice: null,
     bgColor: "#7FE000",
     textColor: "#FFFFFF",
@@ -120,7 +120,7 @@ const PRODUCTS: Product[] = [
     id: "tracksuit",
     name: "Tracksuit",
     category: "tracksuits",
-    price: 10,
+    price: 35000,
     promoPrice: null,
     bgColor: "#f5f5f5",
     textColor: "#1A6B2C",
@@ -133,88 +133,50 @@ const DELIVERY_ZONES: DeliveryZone[] = [
   {
     zone: "A",
     label: "Zone A — Rayfield Core",
-    price: 10,
+    price: 1500,
     areas: ["Rayfield", "GRA Jos", "Dogon Dutse", "Kwarrarafa"],
   },
   {
     zone: "B",
     label: "Zone B — Near Town",
-    price: 10,
+    price: 2000,
     areas: ["Terminus", "Jos Main Market", "Ahmadu Bello Way", "Bukuru Road (near town)", "Anglo Jos", "Yan Trailer", "Congo Russia"],
   },
   {
     zone: "C",
     label: "Zone C — Mid Jos",
-    price: 10,
+    price: 2500,
     areas: ["Farin Gada", "Gada Biyu", "Katako Market", "Jenta", "Laranto", "Tudun Wada", "Rikkos", "Nasarawa Gwom"],
   },
   {
     zone: "D",
     label: "Zone D — Outer Jos",
-    price: 10,
+    price: 3000,
     areas: ["Bauchi Road", "Zaria Road", "Angwan Rukuba", "Naraguta (UNIJOS)", "Old Airport Road", "Kabong", "Angwan Rimi"],
   },
   {
     zone: "E",
     label: "Zone E — Extended/Satellite",
-    price: 10,
+    price: 3750,
     areas: ["Bukuru Town", "Vom", "Miango Road", "Barkin Ladi"],
   },
+]
+
+const HERO_IMAGES = [
+  "https://cdn.sanity.io/images/252rx5c8/production/dbd0eabca62e9d59504bdafd3719afd8af91b6f2-5760x3240.jpg",
+  "https://cdn.sanity.io/images/252rx5c8/production/714e0b7b7cad614f4d1333b981c1cd4ed24d3164-5760x3240.jpg",
 ]
 
 const SIZES = ["S", "M", "L", "XL", "XXL"]
 const CATEGORIES = ["All", "Kits", "Training", "Hoodies", "Tracksuits"] as const
 
-const condensed: React.CSSProperties = {
-  fontFamily: "'Barlow Condensed', sans-serif",
-  fontWeight: 900,
-  textTransform: "uppercase",
-  letterSpacing: "-0.01em",
-  lineHeight: 1,
-}
+
 
 function formatNGN(n: number) {
   return `₦${n.toLocaleString()}`
 }
 
 // ─── Partner Strip ─────────────────────────────────────────────────────────────
-
-function PartnerStrip() {
-  return (
-    <div className="border-y border-gray-100 py-3 px-4 bg-white">
-      <div className="max-w-7xl mx-auto flex items-center justify-center gap-3 sm:gap-8 flex-wrap">
-        {/* Galaxy */}
-        <div className="flex items-center gap-2">
-          <div className="w-5 h-5 bg-[#111] rounded-sm flex items-center justify-center">
-            <span className="text-white text-[8px] font-black">G</span>
-          </div>
-          <span className="text-[10px] sm:text-xs tracking-widest uppercase text-gray-500 font-semibold">Galaxy</span>
-        </div>
-        <span className="text-gray-300 text-xs">×</span>
-        {/* Experience Plateau */}
-        <div className="flex items-center gap-2">
-          <div className="w-5 h-5 bg-[#1A6B2C] rounded-sm flex items-center justify-center">
-            <span className="text-white text-[8px] font-black">EP</span>
-          </div>
-          <span className="text-[10px] sm:text-xs tracking-widest uppercase text-gray-500 font-semibold">
-            Experience Plateau
-          </span>
-          <span className="hidden sm:inline text-[9px] border border-[#1A6B2C] text-[#1A6B2C] px-1.5 py-0.5 tracking-wider uppercase font-bold">
-            Verified Vendor
-          </span>
-        </div>
-        <span className="text-gray-300 text-xs">×</span>
-        {/* Plateau United */}
-        <div className="flex items-center gap-2">
-          <div className="w-5 h-5 bg-[#F7D000] rounded-sm flex items-center justify-center">
-            <span className="text-[#111] text-[8px] font-black">PU</span>
-          </div>
-          <span className="text-[10px] sm:text-xs tracking-widest uppercase text-gray-500 font-semibold">Plateau United FC</span>
-        </div>
-      </div>
-    </div>
-  )
-}
 
 // ─── Bank Transfer Screen ──────────────────────────────────────────────────────
 
@@ -253,7 +215,7 @@ function BankTransferScreen({
     <div className="px-6 py-6 space-y-5">
       <div className="text-center">
         <p className="text-xs tracking-widest uppercase text-gray-400 mb-1">Transfer exactly</p>
-        <p style={condensed} className="text-4xl text-[#111]">{formatNGN(details.amount)}</p>
+        <p className="text-4xl text-[#111]">{formatNGN(details.amount)}</p>
         <p className="text-xs text-gray-400 mt-1">to the account below</p>
       </div>
 
@@ -433,7 +395,7 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
               </button>
             )}
             <div>
-              <p style={condensed} className="text-xl text-[#111]">{product.name}</p>
+              <p className="text-xl text-[#111]">{product.name}</p>
               <p className="text-[10px] tracking-widest uppercase text-gray-400">
                 {step === 1 ? "Select Size" : step === 2 ? "Your Details" : step === 3 ? "Bank Transfer" : "Confirmed"}
               </p>
@@ -486,7 +448,7 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
             <div className="bg-gray-50 p-4 flex justify-between items-center">
               <div>
                 <p className="text-xs text-gray-400 tracking-wider uppercase">Subtotal</p>
-                <p style={condensed} className="text-2xl text-[#111]">
+                <p className="text-2xl text-[#111]">
                   {formatNGN(unitPrice * quantity)}
                 </p>
               </div>
@@ -614,8 +576,8 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
                 </div>
               )}
               <div className="flex justify-between border-t border-gray-200 pt-2 mt-2">
-                <span style={condensed} className="text-base">Total</span>
-                <span style={condensed} className="text-base">{formatNGN(total)}</span>
+                <span className="text-base">Total</span>
+                <span className="text-base">{formatNGN(total)}</span>
               </div>
             </div>
 
@@ -655,7 +617,7 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
                 <path d="M5 13l4 4L19 7" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
-            <p style={condensed} className="text-3xl text-[#111]">Order Confirmed</p>
+            <p className="text-3xl text-[#111]">Order Confirmed</p>
             {isInterstate && (
               <div className="bg-amber-50 border border-amber-200 p-3 text-xs text-amber-800 text-left leading-relaxed">
                 ⭐ <strong>Manual Dispatch</strong> — Our team will contact you on WhatsApp ({whatsapp}) to arrange interstate delivery.
@@ -687,6 +649,14 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
 export function PlateauUnitedPage() {
   const [activeCategory, setActiveCategory] = useState<string>("All")
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+  const [heroIndex, setHeroIndex] = useState(0)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setHeroIndex((i) => (i + 1) % HERO_IMAGES.length)
+    }, 10000)
+    return () => clearInterval(interval)
+  }, [])
 
   const filtered = PRODUCTS.filter(
     (p) => activeCategory === "All" || p.category === activeCategory.toLowerCase()
@@ -696,59 +666,72 @@ export function PlateauUnitedPage() {
     <BaseLayout>
       <div className="flex flex-col bg-white">
 
-        {/* Partner strip */}
-        <PartnerStrip />
-
         {/* ── Hero ──────────────────────────────────────── */}
-        <section className="w-full min-h-[90vh] flex flex-col lg:flex-row">
-          <div className="flex-1 flex flex-col justify-end px-8 md:px-14 pb-12 pt-20 bg-white">
-            <p className="text-xs tracking-[0.25em] uppercase text-[#1A6B2C] mb-5">
-              Official Store · Manufactured by Galaxy · Verified by Experience Plateau
-            </p>
-            <h1 style={condensed} className="text-[clamp(64px,12vw,160px)] text-[#111] mb-5 leading-none">
-              Plateau<br />
-              <span className="text-[#1A6B2C]">United</span>
+        <section className="w-full h-[calc(100vh-64px)] relative overflow-hidden">
+          {/* Slideshow images */}
+          {HERO_IMAGES.map((src, i) => (
+            <img
+              key={src}
+              src={src}
+              alt="Plateau United"
+              className="absolute inset-0 w-full h-full object-cover object-[center_35%] transition-opacity duration-1000"
+              style={{ opacity: i === heroIndex ? 1 : 0 }}
+            />
+          ))}
+
+
+          {/* Text — bottom left */}
+          <div className="absolute bottom-12 left-8 md:left-12 z-10 max-w-lg">
+            <h1 className="text-xl md:text-2xl font-bold text-white uppercase tracking-tight mb-2 leading-tight whitespace-nowrap [text-shadow:0_1px_8px_rgba(0,0,0,0.5)]">
+              The Peace Boys. Official Collection.
             </h1>
-            <p className="text-gray-500 text-base max-w-xs mb-10 leading-relaxed">
-              Official kits, training gear and apparel for the Pride of Plateau.
+            <p className="text-white/70 text-sm mb-5 leading-relaxed">
+              Official kits, training gear and apparel for Plateau United FC.
             </p>
-            <div className="flex gap-3 flex-wrap">
-              <button
-                onClick={() => document.getElementById("collection")?.scrollIntoView({ behavior: "smooth" })}
-                className="border border-[#111] px-8 py-3.5 text-xs tracking-widest uppercase text-[#111] hover:bg-[#111] hover:text-white transition-colors"
-              >
-                Shop the Collection
-              </button>
-              <button
-                onClick={() => document.getElementById("delivery")?.scrollIntoView({ behavior: "smooth" })}
-                className="px-8 py-3.5 text-xs tracking-widest uppercase text-gray-400 hover:text-[#111] transition-colors"
-              >
-                Delivery Info
-              </button>
-            </div>
+            <button
+              onClick={() => document.getElementById("collection")?.scrollIntoView({ behavior: "smooth" })}
+              className="border border-white px-5 py-2.5 text-xs tracking-widest uppercase text-white hover:bg-white hover:text-[#111] transition-colors"
+            >
+              Shop the Collection
+            </button>
           </div>
 
-          <div className="lg:w-[45%] min-h-[50vh] lg:min-h-0 bg-[#1A6B2C] flex items-center justify-center relative overflow-hidden">
-            <span
-              style={{ ...condensed, fontSize: "clamp(120px,22vw,320px)" }}
-              className="text-white/10 select-none absolute"
-            >
-              PU
-            </span>
-            <svg width="160" height="160" viewBox="0 0 80 80" fill="none" className="relative z-10 opacity-70">
-              <path d="M20 12 L10 28 L22 30 L22 68 L58 68 L58 30 L70 28 L60 12 L50 18 C50 18 46 22 40 22 C34 22 30 18 30 18 Z"
-                fill="#F7D000" strokeLinejoin="round" />
-            </svg>
-            <div className="absolute bottom-8 left-8 bg-[#F7D000] px-4 py-2">
-              <p style={condensed} className="text-[#111] text-lg">5K Off Match Kits</p>
-            </div>
+          {/* Left / Right arrows */}
+          <button
+            onClick={() => setHeroIndex((heroIndex - 1 + HERO_IMAGES.length) % HERO_IMAGES.length)}
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-10 text-white/70 hover:text-white transition-colors"
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <button
+            onClick={() => setHeroIndex((heroIndex + 1) % HERO_IMAGES.length)}
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-10 text-white/70 hover:text-white transition-colors"
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+
+          {/* Dots — bottom center */}
+          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+            {HERO_IMAGES.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setHeroIndex(i)}
+                className="transition-all duration-300 rounded-full"
+                style={{
+                  width: i === heroIndex ? "20px" : "8px",
+                  height: "8px",
+                  borderRadius: "4px",
+                  background: i === heroIndex ? "#fff" : "rgba(255,255,255,0.4)",
+                }}
+              />
+            ))}
           </div>
         </section>
 
         {/* ── Collection ────────────────────────────────── */}
         <section id="collection" className="px-8 md:px-14 pt-14">
           <div className="flex items-end justify-between mb-6">
-            <p style={condensed} className="text-[clamp(36px,5vw,72px)] text-[#111]">The Collection</p>
+            <p className="text-[clamp(36px,5vw,72px)] text-[#111]">The Collection</p>
             <p className="text-gray-400 text-sm tracking-widest uppercase hidden md:block">{filtered.length} Products</p>
           </div>
 
@@ -807,17 +790,17 @@ export function PlateauUnitedPage() {
                 <div className="px-5 py-5 border-t border-gray-100">
                   <div className="flex items-start justify-between mb-4">
                     <div>
-                      <p style={condensed} className="text-[22px] text-[#111]">{product.name}</p>
+                      <p className="text-[22px] text-[#111]">{product.name}</p>
                       <p className="text-xs text-gray-400 tracking-widest uppercase mt-0.5">Plateau United FC</p>
                     </div>
                     <div className="text-right">
                       {product.promoPrice ? (
                         <>
-                          <p style={condensed} className="text-xl text-[#1A6B2C]">{formatNGN(product.promoPrice)}</p>
+                          <p className="text-xl text-[#1A6B2C]">{formatNGN(product.promoPrice)}</p>
                           <p className="text-xs text-gray-400 line-through">{formatNGN(product.price)}</p>
                         </>
                       ) : (
-                        <p style={condensed} className="text-xl text-[#111]">{formatNGN(product.price)}</p>
+                        <p className="text-xl text-[#111]">{formatNGN(product.price)}</p>
                       )}
                     </div>
                   </div>
@@ -836,20 +819,20 @@ export function PlateauUnitedPage() {
         {/* ── Delivery Info ─────────────────────────────── */}
         <section id="delivery" className="px-8 md:px-14 py-16 border-t border-gray-100">
           <div className="max-w-7xl mx-auto">
-            <p style={condensed} className="text-[clamp(28px,4vw,56px)] text-[#111] mb-8">Delivery Zones — Jos</p>
+            <p className="text-[clamp(28px,4vw,56px)] text-[#111] mb-8">Delivery Zones — Jos</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
               {DELIVERY_ZONES.map((z) => (
                 <div key={z.zone} className="border border-gray-100 p-4">
                   <div className="flex justify-between items-start mb-2">
-                    <p style={condensed} className="text-lg text-[#111]">{z.label}</p>
-                    <p style={condensed} className="text-lg text-[#1A6B2C]">{formatNGN(z.price)}</p>
+                    <p className="text-lg text-[#111]">{z.label}</p>
+                    <p className="text-lg text-[#1A6B2C]">{formatNGN(z.price)}</p>
                   </div>
                   <p className="text-xs text-gray-400 leading-relaxed">{z.areas.join(" · ")}</p>
                 </div>
               ))}
               <div className="border border-amber-200 bg-amber-50 p-4">
                 <div className="flex justify-between items-start mb-2">
-                  <p style={condensed} className="text-lg text-[#111]">Interstate ⭐</p>
+                  <p className="text-lg text-[#111]">Interstate ⭐</p>
                   <p className="text-xs text-amber-700 font-semibold">Manual</p>
                 </div>
                 <p className="text-xs text-amber-700 leading-relaxed">
@@ -867,11 +850,9 @@ export function PlateauUnitedPage() {
         <div className="bg-[#111] py-8 px-8 md:px-14">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-6 flex-wrap justify-center sm:justify-start">
-              <span className="text-white/40 text-xs tracking-widest uppercase">Galaxy</span>
+              <span className="text-white/40 text-xs uppercase">Experience Plateau</span>
               <span className="text-white/20">×</span>
-              <span className="text-white/40 text-xs tracking-widest uppercase">Experience Plateau</span>
-              <span className="text-white/20">×</span>
-              <span className="text-white/40 text-xs tracking-widest uppercase">Plateau United FC</span>
+              <span className="text-white/40 text-xs uppercase">Plateau United FC</span>
             </div>
             <p className="text-white/30 text-[10px] tracking-widest uppercase">Official Merchandise 2026</p>
           </div>
