@@ -165,13 +165,7 @@ const DELIVERY_ZONES: DeliveryZone[] = [
 const SIZES = ["S", "M", "L", "XL", "XXL"]
 const CATEGORIES = ["All", "Kits", "Training", "Hoodies", "Tracksuits"] as const
 
-const condensed: React.CSSProperties = {
-  fontFamily: "'Barlow Condensed', sans-serif",
-  fontWeight: 900,
-  textTransform: "uppercase",
-  letterSpacing: "-0.01em",
-  lineHeight: 1,
-}
+
 
 function formatNGN(n: number) {
   return `₦${n.toLocaleString()}`
@@ -216,7 +210,7 @@ function BankTransferScreen({
     <div className="px-6 py-6 space-y-5">
       <div className="text-center">
         <p className="text-xs tracking-widest uppercase text-gray-400 mb-1">Transfer exactly</p>
-        <p style={condensed} className="text-4xl text-[#111]">{formatNGN(details.amount)}</p>
+        <p className="text-4xl text-[#111]">{formatNGN(details.amount)}</p>
         <p className="text-xs text-gray-400 mt-1">to the account below</p>
       </div>
 
@@ -396,7 +390,7 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
               </button>
             )}
             <div>
-              <p style={condensed} className="text-xl text-[#111]">{product.name}</p>
+              <p className="text-xl text-[#111]">{product.name}</p>
               <p className="text-[10px] tracking-widest uppercase text-gray-400">
                 {step === 1 ? "Select Size" : step === 2 ? "Your Details" : step === 3 ? "Bank Transfer" : "Confirmed"}
               </p>
@@ -449,7 +443,7 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
             <div className="bg-gray-50 p-4 flex justify-between items-center">
               <div>
                 <p className="text-xs text-gray-400 tracking-wider uppercase">Subtotal</p>
-                <p style={condensed} className="text-2xl text-[#111]">
+                <p className="text-2xl text-[#111]">
                   {formatNGN(unitPrice * quantity)}
                 </p>
               </div>
@@ -577,8 +571,8 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
                 </div>
               )}
               <div className="flex justify-between border-t border-gray-200 pt-2 mt-2">
-                <span style={condensed} className="text-base">Total</span>
-                <span style={condensed} className="text-base">{formatNGN(total)}</span>
+                <span className="text-base">Total</span>
+                <span className="text-base">{formatNGN(total)}</span>
               </div>
             </div>
 
@@ -618,7 +612,7 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
                 <path d="M5 13l4 4L19 7" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
-            <p style={condensed} className="text-3xl text-[#111]">Order Confirmed</p>
+            <p className="text-3xl text-[#111]">Order Confirmed</p>
             {isInterstate && (
               <div className="bg-amber-50 border border-amber-200 p-3 text-xs text-amber-800 text-left leading-relaxed">
                 ⭐ <strong>Manual Dispatch</strong> — Our team will contact you on WhatsApp ({whatsapp}) to arrange interstate delivery.
@@ -665,7 +659,7 @@ export function PlateauUnitedPage() {
             <p className="text-xs tracking-[0.25em] uppercase text-[#1A6B2C] mb-5">
               Official Store · Manufactured by Galaxy · Verified by Experience Plateau
             </p>
-            <h1 style={condensed} className="text-[clamp(64px,12vw,160px)] text-[#111] mb-5 leading-none">
+            <h1 className="text-[clamp(64px,12vw,160px)] text-[#111] mb-5 leading-none">
               Plateau<br />
               <span className="text-[#1A6B2C]">United</span>
             </h1>
@@ -690,7 +684,7 @@ export function PlateauUnitedPage() {
 
           <div className="lg:w-[45%] min-h-[50vh] lg:min-h-0 bg-[#1A6B2C] flex items-center justify-center relative overflow-hidden">
             <span
-              style={{ ...condensed, fontSize: "clamp(120px,22vw,320px)" }}
+              style={{ fontSize: "clamp(120px,22vw,320px)" }}
               className="text-white/10 select-none absolute"
             >
               PU
@@ -700,7 +694,7 @@ export function PlateauUnitedPage() {
                 fill="#F7D000" strokeLinejoin="round" />
             </svg>
             <div className="absolute bottom-8 left-8 bg-[#F7D000] px-4 py-2">
-              <p style={condensed} className="text-[#111] text-lg">5K Off Match Kits</p>
+              <p className="text-[#111] text-lg">5K Off Match Kits</p>
             </div>
           </div>
         </section>
@@ -708,7 +702,7 @@ export function PlateauUnitedPage() {
         {/* ── Collection ────────────────────────────────── */}
         <section id="collection" className="px-8 md:px-14 pt-14">
           <div className="flex items-end justify-between mb-6">
-            <p style={condensed} className="text-[clamp(36px,5vw,72px)] text-[#111]">The Collection</p>
+            <p className="text-[clamp(36px,5vw,72px)] text-[#111]">The Collection</p>
             <p className="text-gray-400 text-sm tracking-widest uppercase hidden md:block">{filtered.length} Products</p>
           </div>
 
@@ -767,17 +761,17 @@ export function PlateauUnitedPage() {
                 <div className="px-5 py-5 border-t border-gray-100">
                   <div className="flex items-start justify-between mb-4">
                     <div>
-                      <p style={condensed} className="text-[22px] text-[#111]">{product.name}</p>
+                      <p className="text-[22px] text-[#111]">{product.name}</p>
                       <p className="text-xs text-gray-400 tracking-widest uppercase mt-0.5">Plateau United FC</p>
                     </div>
                     <div className="text-right">
                       {product.promoPrice ? (
                         <>
-                          <p style={condensed} className="text-xl text-[#1A6B2C]">{formatNGN(product.promoPrice)}</p>
+                          <p className="text-xl text-[#1A6B2C]">{formatNGN(product.promoPrice)}</p>
                           <p className="text-xs text-gray-400 line-through">{formatNGN(product.price)}</p>
                         </>
                       ) : (
-                        <p style={condensed} className="text-xl text-[#111]">{formatNGN(product.price)}</p>
+                        <p className="text-xl text-[#111]">{formatNGN(product.price)}</p>
                       )}
                     </div>
                   </div>
@@ -796,20 +790,20 @@ export function PlateauUnitedPage() {
         {/* ── Delivery Info ─────────────────────────────── */}
         <section id="delivery" className="px-8 md:px-14 py-16 border-t border-gray-100">
           <div className="max-w-7xl mx-auto">
-            <p style={condensed} className="text-[clamp(28px,4vw,56px)] text-[#111] mb-8">Delivery Zones — Jos</p>
+            <p className="text-[clamp(28px,4vw,56px)] text-[#111] mb-8">Delivery Zones — Jos</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
               {DELIVERY_ZONES.map((z) => (
                 <div key={z.zone} className="border border-gray-100 p-4">
                   <div className="flex justify-between items-start mb-2">
-                    <p style={condensed} className="text-lg text-[#111]">{z.label}</p>
-                    <p style={condensed} className="text-lg text-[#1A6B2C]">{formatNGN(z.price)}</p>
+                    <p className="text-lg text-[#111]">{z.label}</p>
+                    <p className="text-lg text-[#1A6B2C]">{formatNGN(z.price)}</p>
                   </div>
                   <p className="text-xs text-gray-400 leading-relaxed">{z.areas.join(" · ")}</p>
                 </div>
               ))}
               <div className="border border-amber-200 bg-amber-50 p-4">
                 <div className="flex justify-between items-start mb-2">
-                  <p style={condensed} className="text-lg text-[#111]">Interstate ⭐</p>
+                  <p className="text-lg text-[#111]">Interstate ⭐</p>
                   <p className="text-xs text-amber-700 font-semibold">Manual</p>
                 </div>
                 <p className="text-xs text-amber-700 leading-relaxed">
@@ -826,7 +820,7 @@ export function PlateauUnitedPage() {
         {/* ── Partner strip footer ──────────────────────── */}
         <div className="bg-[#111] py-8 px-8 md:px-14">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-6 flex-wrap justify-center sm:justify-start" style={{ fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: "0.15em" }}>
+            <div className="flex items-center gap-6 flex-wrap justify-center sm:justify-start">
               <span className="text-white/40 text-xs uppercase">Experience Plateau</span>
               <span className="text-white/20">×</span>
               <span className="text-white/40 text-xs uppercase">Plateau United FC</span>
