@@ -43,8 +43,8 @@ const PRODUCTS: Product[] = [
     id: "home-kit",
     name: "Home Kit",
     category: "kits",
-    price: 20,
-    promoPrice: 10,
+    price: 15000,
+    promoPrice: null,
     bgColor: "#F7D000",
     textColor: "#1A6B2C",
     description: "The iconic yellow & green. Wear the colours of Plateau United on matchday.",
@@ -54,8 +54,8 @@ const PRODUCTS: Product[] = [
     id: "away-kit",
     name: "Away Kit",
     category: "kits",
-    price: 20,
-    promoPrice: 10,
+    price: 15000,
+    promoPrice: null,
     bgColor: "#f0f0f0",
     textColor: "#1A6B2C",
     description: "The away strip — clean white, built for the road and the faithful who travel.",
@@ -65,8 +65,8 @@ const PRODUCTS: Product[] = [
     id: "alternate-kit",
     name: "Alternate Kit",
     category: "kits",
-    price: 20,
-    promoPrice: 10,
+    price: 15000,
+    promoPrice: null,
     bgColor: "#2a1a0a",
     textColor: "#FFFFFF",
     description: "The cultural strip — bold stripes inspired by the diversity of Plateau State.",
@@ -76,7 +76,7 @@ const PRODUCTS: Product[] = [
     id: "training-kit-1",
     name: "Training Kit I",
     category: "training",
-    price: 10,
+    price: 17000,
     promoPrice: null,
     bgColor: "#1a6b6b",
     textColor: "#F7D000",
@@ -87,7 +87,7 @@ const PRODUCTS: Product[] = [
     id: "training-kit-2",
     name: "Training Kit II",
     category: "training",
-    price: 10,
+    price: 17000,
     promoPrice: null,
     bgColor: "#f0f0f0",
     textColor: "#1A6B2C",
@@ -98,7 +98,7 @@ const PRODUCTS: Product[] = [
     id: "training-kit-3",
     name: "Training Kit III",
     category: "training",
-    price: 10,
+    price: 17000,
     promoPrice: null,
     bgColor: "#0d4a3a",
     textColor: "#7EFFD4",
@@ -109,7 +109,7 @@ const PRODUCTS: Product[] = [
     id: "hoodie",
     name: "Hoodie",
     category: "hoodies",
-    price: 10,
+    price: 35000,
     promoPrice: null,
     bgColor: "#7FE000",
     textColor: "#FFFFFF",
@@ -120,7 +120,7 @@ const PRODUCTS: Product[] = [
     id: "tracksuit",
     name: "Tracksuit",
     category: "tracksuits",
-    price: 10,
+    price: 35000,
     promoPrice: null,
     bgColor: "#f5f5f5",
     textColor: "#1A6B2C",
@@ -133,31 +133,31 @@ const DELIVERY_ZONES: DeliveryZone[] = [
   {
     zone: "A",
     label: "Zone A — Rayfield Core",
-    price: 10,
+    price: 1500,
     areas: ["Rayfield", "GRA Jos", "Dogon Dutse", "Kwarrarafa"],
   },
   {
     zone: "B",
     label: "Zone B — Near Town",
-    price: 10,
+    price: 2000,
     areas: ["Terminus", "Jos Main Market", "Ahmadu Bello Way", "Bukuru Road (near town)", "Anglo Jos", "Yan Trailer", "Congo Russia"],
   },
   {
     zone: "C",
     label: "Zone C — Mid Jos",
-    price: 10,
+    price: 2500,
     areas: ["Farin Gada", "Gada Biyu", "Katako Market", "Jenta", "Laranto", "Tudun Wada", "Rikkos", "Nasarawa Gwom"],
   },
   {
     zone: "D",
     label: "Zone D — Outer Jos",
-    price: 10,
+    price: 3000,
     areas: ["Bauchi Road", "Zaria Road", "Angwan Rukuba", "Naraguta (UNIJOS)", "Old Airport Road", "Kabong", "Angwan Rimi"],
   },
   {
     zone: "E",
     label: "Zone E — Extended/Satellite",
-    price: 10,
+    price: 3750,
     areas: ["Bukuru Town", "Vom", "Miango Road", "Barkin Ladi"],
   },
 ]
@@ -667,7 +667,7 @@ export function PlateauUnitedPage() {
       <div className="flex flex-col bg-white">
 
         {/* ── Hero ──────────────────────────────────────── */}
-        <section className="w-full h-screen relative overflow-hidden">
+        <section className="w-full h-[calc(100vh-64px)] relative overflow-hidden">
           {/* Slideshow images */}
           {HERO_IMAGES.map((src, i) => (
             <img
@@ -679,46 +679,51 @@ export function PlateauUnitedPage() {
             />
           ))}
 
-          {/* Left gradient so text is readable */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent" />
+          {/* Subtle gradient only at bottom-left where text sits */}
+          <div className="absolute bottom-0 left-0 w-[480px] h-64 bg-gradient-to-t from-black/60 to-transparent" />
 
-          {/* Text content */}
-          <div className="absolute inset-0 flex flex-col justify-center px-8 md:px-16 z-10 max-w-2xl">
-            <h1 className="text-[clamp(56px,9vw,130px)] text-white mb-4 leading-none font-bold">
-              Plateau<br />
-              <span className="text-[#F7D000]">United</span>
+          {/* Text — bottom left */}
+          <div className="absolute bottom-12 left-8 md:left-12 z-10 max-w-xs">
+            <h1 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-tight mb-2 leading-tight">
+              The Peace Boys.<br />Official Collection.
             </h1>
-            <p className="text-white/70 text-base max-w-xs mb-10 leading-relaxed">
-              Official kits, training gear and apparel for the peace boys
+            <p className="text-white/70 text-sm mb-5 leading-relaxed">
+              Official kits, training gear and apparel for Plateau United FC.
             </p>
-            <div className="flex gap-3 flex-wrap">
-              <button
-                onClick={() => document.getElementById("collection")?.scrollIntoView({ behavior: "smooth" })}
-                className="border border-white px-8 py-3.5 text-xs tracking-widest uppercase text-white hover:bg-white hover:text-[#111] transition-colors"
-              >
-                Shop the Collection
-              </button>
-              <button
-                onClick={() => document.getElementById("delivery")?.scrollIntoView({ behavior: "smooth" })}
-                className="px-8 py-3.5 text-xs tracking-widest uppercase text-white/60 hover:text-white transition-colors"
-              >
-                Delivery Info
-              </button>
-            </div>
+            <button
+              onClick={() => document.getElementById("collection")?.scrollIntoView({ behavior: "smooth" })}
+              className="border border-white px-5 py-2.5 text-xs tracking-widest uppercase text-white hover:bg-white hover:text-[#111] transition-colors"
+            >
+              Shop the Collection
+            </button>
           </div>
 
-          {/* Slide indicators */}
-          <div className="absolute bottom-6 right-8 flex gap-2 z-10">
+          {/* Left / Right arrows */}
+          <button
+            onClick={() => setHeroIndex((heroIndex - 1 + HERO_IMAGES.length) % HERO_IMAGES.length)}
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-10 text-white/70 hover:text-white transition-colors"
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <button
+            onClick={() => setHeroIndex((heroIndex + 1) % HERO_IMAGES.length)}
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-10 text-white/70 hover:text-white transition-colors"
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+
+          {/* Dots — bottom center */}
+          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2 z-10">
             {HERO_IMAGES.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setHeroIndex(i)}
-                className="transition-all duration-300"
+                className="transition-all duration-300 rounded-full"
                 style={{
-                  width: i === heroIndex ? "24px" : "8px",
+                  width: i === heroIndex ? "20px" : "8px",
                   height: "8px",
                   borderRadius: "4px",
-                  background: i === heroIndex ? "#F7D000" : "rgba(255,255,255,0.4)",
+                  background: i === heroIndex ? "#fff" : "rgba(255,255,255,0.4)",
                 }}
               />
             ))}
