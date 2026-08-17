@@ -179,36 +179,6 @@ function formatNGN(n: number) {
 
 // ─── Partner Strip ─────────────────────────────────────────────────────────────
 
-function PartnerStrip() {
-  const bc: React.CSSProperties = { fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: "0.15em" }
-  return (
-    <div className="border-y border-gray-100 py-3 px-4 bg-white">
-      <div className="max-w-7xl mx-auto flex items-center justify-center gap-6 sm:gap-10 flex-wrap">
-        {/* Experience Plateau */}
-        <div className="flex items-center gap-2">
-          <div className="w-5 h-5 bg-[#1A6B2C] rounded-sm flex items-center justify-center">
-            <span className="text-white text-[8px] font-black">EP</span>
-          </div>
-          <span style={bc} className="text-[11px] sm:text-sm uppercase text-gray-500 font-semibold">
-            Experience Plateau
-          </span>
-          <span style={bc} className="hidden sm:inline text-[9px] border border-[#1A6B2C] text-[#1A6B2C] px-1.5 py-0.5 tracking-wider uppercase font-bold">
-            Verified Vendor
-          </span>
-        </div>
-        <span className="text-gray-300 text-xs">×</span>
-        {/* Plateau United */}
-        <div className="flex items-center gap-2">
-          <div className="w-5 h-5 bg-[#F7D000] rounded-sm flex items-center justify-center">
-            <span className="text-[#111] text-[8px] font-black">PU</span>
-          </div>
-          <span style={bc} className="text-[11px] sm:text-sm uppercase text-gray-500 font-semibold">Plateau United FC</span>
-        </div>
-      </div>
-    </div>
-  )
-}
-
 // ─── Bank Transfer Screen ──────────────────────────────────────────────────────
 
 function BankTransferScreen({
@@ -688,9 +658,6 @@ export function PlateauUnitedPage() {
   return (
     <BaseLayout>
       <div className="flex flex-col bg-white">
-
-        {/* Partner strip */}
-        <PartnerStrip />
 
         {/* ── Hero ──────────────────────────────────────── */}
         <section className="w-full min-h-[90vh] flex flex-col lg:flex-row">
