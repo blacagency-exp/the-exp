@@ -162,6 +162,11 @@ const DELIVERY_ZONES: DeliveryZone[] = [
   },
 ]
 
+const HERO_IMAGES = [
+  "https://cdn.sanity.io/images/252rx5c8/production/dbd0eabca62e9d59504bdafd3719afd8af91b6f2-5760x3240.jpg",
+  "https://cdn.sanity.io/images/252rx5c8/production/714e0b7b7cad614f4d1333b981c1cd4ed24d3164-5760x3240.jpg",
+]
+
 const SIZES = ["S", "M", "L", "XL", "XXL"]
 const CATEGORIES = ["All", "Kits", "Training", "Hoodies", "Tracksuits"] as const
 
@@ -644,6 +649,14 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
 export function PlateauUnitedPage() {
   const [activeCategory, setActiveCategory] = useState<string>("All")
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+  const [heroIndex, setHeroIndex] = useState(0)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setHeroIndex((i) => (i + 1) % HERO_IMAGES.length)
+    }, 10000)
+    return () => clearInterval(interval)
+  }, [])
 
   const filtered = PRODUCTS.filter(
     (p) => activeCategory === "All" || p.category === activeCategory.toLowerCase()
@@ -654,20 +667,24 @@ export function PlateauUnitedPage() {
       <div className="flex flex-col bg-white">
 
         {/* ── Hero ──────────────────────────────────────── */}
-        <section className="w-full min-h-[90vh] relative flex items-end overflow-hidden">
-          {/* Background image */}
-          <div className="absolute inset-0">
+        <section className="w-full h-screen relative overflow-hidden">
+          {/* Slideshow images */}
+          {HERO_IMAGES.map((src, i) => (
             <img
-              src={PRODUCTS[0].image}
+              key={src}
+              src={src}
               alt="Plateau United"
-              className="w-full h-full object-cover object-center"
+              className="absolute inset-0 w-full h-full object-cover object-[center_35%] transition-opacity duration-1000"
+              style={{ opacity: i === heroIndex ? 1 : 0 }}
             />
-            <div className="absolute inset-0 bg-black/40" />
-          </div>
+          ))}
 
-          {/* Text overlay */}
-          <div className="relative z-10 px-8 md:px-14 pb-14 pt-20 w-full lg:w-1/2">
-            <h1 className="text-[clamp(56px,10vw,140px)] text-white mb-5 leading-none font-bold">
+          {/* Left gradient so text is readable */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent" />
+
+          {/* Text content */}
+          <div className="absolute inset-0 flex flex-col justify-center px-8 md:px-16 z-10 max-w-2xl">
+            <h1 className="text-[clamp(56px,9vw,130px)] text-white mb-4 leading-none font-bold">
               Plateau<br />
               <span className="text-[#F7D000]">United</span>
             </h1>
@@ -688,6 +705,23 @@ export function PlateauUnitedPage() {
                 Delivery Info
               </button>
             </div>
+          </div>
+
+          {/* Slide indicators */}
+          <div className="absolute bottom-6 right-8 flex gap-2 z-10">
+            {HERO_IMAGES.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setHeroIndex(i)}
+                className="transition-all duration-300"
+                style={{
+                  width: i === heroIndex ? "24px" : "8px",
+                  height: "8px",
+                  borderRadius: "4px",
+                  background: i === heroIndex ? "#F7D000" : "rgba(255,255,255,0.4)",
+                }}
+              />
+            ))}
           </div>
         </section>
 
