@@ -660,9 +660,9 @@ export function PlateauUnitedPage() {
             <img
               src={PRODUCTS[0].image}
               alt="Plateau United"
-              className="w-full h-full object-cover object-top"
+              className="w-full h-full object-cover object-center"
             />
-            <div className="absolute inset-0 bg-black/50" />
+            <div className="absolute inset-0 bg-black/40" />
           </div>
 
           {/* Text overlay */}
