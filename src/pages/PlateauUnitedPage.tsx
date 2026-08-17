@@ -681,16 +681,16 @@ export function PlateauUnitedPage() {
 
 
           {/* Text — bottom left */}
-          <div className="absolute bottom-12 left-8 md:left-12 z-10 max-w-lg">
-            <h1 className="text-xl md:text-2xl font-bold text-white uppercase tracking-tight mb-2 leading-tight whitespace-nowrap [text-shadow:0_1px_8px_rgba(0,0,0,0.5)]">
+          <div className="absolute bottom-8 md:bottom-12 left-4 md:left-12 z-10 max-w-[calc(100vw-32px)] md:max-w-lg pr-10 md:pr-0">
+            <h1 className="text-base sm:text-lg md:text-2xl font-bold text-white uppercase tracking-tight mb-2 leading-tight [text-shadow:0_1px_8px_rgba(0,0,0,0.5)]">
               The Peace Boys. Official Collection.
             </h1>
-            <p className="text-white/70 text-sm mb-5 leading-relaxed">
+            <p className="text-white/70 text-xs sm:text-sm mb-4 md:mb-5 leading-relaxed">
               Official kits, training gear and apparel for Plateau United FC.
             </p>
             <button
               onClick={() => document.getElementById("collection")?.scrollIntoView({ behavior: "smooth" })}
-              className="border border-white px-5 py-2.5 text-xs tracking-widest uppercase text-white hover:bg-white hover:text-[#111] transition-colors"
+              className="border border-white px-4 md:px-5 py-2 md:py-2.5 text-xs tracking-widest uppercase text-white hover:bg-white hover:text-[#111] transition-colors"
             >
               Shop the Collection
             </button>
@@ -729,8 +729,8 @@ export function PlateauUnitedPage() {
         </section>
 
         {/* ── Collection ────────────────────────────────── */}
-        <section id="collection" className="px-8 md:px-14 pt-14">
-          <div className="flex items-end justify-between mb-6">
+        <section id="collection" className="px-4 md:px-8 lg:px-14 pt-10 md:pt-14">
+          <div className="flex items-end justify-between mb-4 md:mb-6">
             <p className="text-[clamp(36px,5vw,72px)] text-[#111]">The Collection</p>
             <p className="text-gray-400 text-sm tracking-widest uppercase hidden md:block">{filtered.length} Products</p>
           </div>
@@ -754,7 +754,7 @@ export function PlateauUnitedPage() {
         </section>
 
         {/* Product grid */}
-        <section className="px-8 md:px-14 pb-20">
+        <section className="px-4 md:px-8 lg:px-14 pb-16 md:pb-20">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-gray-100">
             {filtered.map((product) => (
               <div key={product.id} className="bg-white group">
@@ -790,7 +790,7 @@ export function PlateauUnitedPage() {
                 <div className="px-5 py-5 border-t border-gray-100">
                   <div className="flex items-start justify-between mb-4">
                     <div>
-                      <p className="text-[22px] text-[#111]">{product.name}</p>
+                      <p className="text-lg md:text-[22px] text-[#111]">{product.name}</p>
                       <p className="text-xs text-gray-400 tracking-widest uppercase mt-0.5">Plateau United FC</p>
                     </div>
                     <div className="text-right">
@@ -817,7 +817,7 @@ export function PlateauUnitedPage() {
         </section>
 
         {/* ── Delivery Info ─────────────────────────────── */}
-        <section id="delivery" className="px-8 md:px-14 py-16 border-t border-gray-100">
+        <section id="delivery" className="px-4 md:px-8 lg:px-14 py-12 md:py-16 border-t border-gray-100">
           <div className="max-w-7xl mx-auto">
             <p className="text-[clamp(28px,4vw,56px)] text-[#111] mb-8">Delivery Zones — Jos</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
@@ -847,7 +847,7 @@ export function PlateauUnitedPage() {
         </section>
 
         {/* ── Partner strip footer ──────────────────────── */}
-        <div className="bg-[#111] py-8 px-8 md:px-14">
+        <div className="bg-[#111] py-6 md:py-8 px-4 md:px-8 lg:px-14">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-6 flex-wrap justify-center sm:justify-start">
               <span className="text-white/40 text-xs uppercase">Experience Plateau</span>
