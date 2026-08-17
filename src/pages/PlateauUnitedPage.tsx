@@ -679,13 +679,11 @@ export function PlateauUnitedPage() {
             />
           ))}
 
-          {/* Subtle gradient only at bottom-left where text sits */}
-          <div className="absolute bottom-0 left-0 w-[480px] h-64 bg-gradient-to-t from-black/60 to-transparent" />
 
           {/* Text — bottom left */}
-          <div className="absolute bottom-12 left-8 md:left-12 z-10 max-w-xs">
-            <h1 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-tight mb-2 leading-tight">
-              The Peace Boys.<br />Official Collection.
+          <div className="absolute bottom-12 left-8 md:left-12 z-10 max-w-lg">
+            <h1 className="text-xl md:text-2xl font-bold text-white uppercase tracking-tight mb-2 leading-tight whitespace-nowrap [text-shadow:0_1px_8px_rgba(0,0,0,0.5)]">
+              The Peace Boys. Official Collection.
             </h1>
             <p className="text-white/70 text-sm mb-5 leading-relaxed">
               Official kits, training gear and apparel for Plateau United FC.
