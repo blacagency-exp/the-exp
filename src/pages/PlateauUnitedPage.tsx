@@ -654,44 +654,39 @@ export function PlateauUnitedPage() {
       <div className="flex flex-col bg-white">
 
         {/* ── Hero ──────────────────────────────────────── */}
-        <section className="w-full min-h-[90vh] flex flex-col lg:flex-row">
-          <div className="flex-1 flex flex-col justify-end px-8 md:px-14 pb-12 pt-20 bg-white">
-            <h1 className="text-[clamp(64px,12vw,160px)] text-[#111] mb-5 leading-none">
+        <section className="w-full min-h-[90vh] relative flex items-end overflow-hidden">
+          {/* Background image */}
+          <div className="absolute inset-0">
+            <img
+              src={PRODUCTS[0].image}
+              alt="Plateau United"
+              className="w-full h-full object-cover object-top"
+            />
+            <div className="absolute inset-0 bg-black/50" />
+          </div>
+
+          {/* Text overlay */}
+          <div className="relative z-10 px-8 md:px-14 pb-14 pt-20 w-full lg:w-1/2">
+            <h1 className="text-[clamp(56px,10vw,140px)] text-white mb-5 leading-none font-bold">
               Plateau<br />
-              <span className="text-[#1A6B2C]">United</span>
+              <span className="text-[#F7D000]">United</span>
             </h1>
-            <p className="text-gray-500 text-base max-w-xs mb-10 leading-relaxed">
+            <p className="text-white/70 text-base max-w-xs mb-10 leading-relaxed">
               Official kits, training gear and apparel for the peace boys
             </p>
             <div className="flex gap-3 flex-wrap">
               <button
                 onClick={() => document.getElementById("collection")?.scrollIntoView({ behavior: "smooth" })}
-                className="border border-[#111] px-8 py-3.5 text-xs tracking-widest uppercase text-[#111] hover:bg-[#111] hover:text-white transition-colors"
+                className="border border-white px-8 py-3.5 text-xs tracking-widest uppercase text-white hover:bg-white hover:text-[#111] transition-colors"
               >
                 Shop the Collection
               </button>
               <button
                 onClick={() => document.getElementById("delivery")?.scrollIntoView({ behavior: "smooth" })}
-                className="px-8 py-3.5 text-xs tracking-widest uppercase text-gray-400 hover:text-[#111] transition-colors"
+                className="px-8 py-3.5 text-xs tracking-widest uppercase text-white/60 hover:text-white transition-colors"
               >
                 Delivery Info
               </button>
-            </div>
-          </div>
-
-          <div className="lg:w-[45%] min-h-[50vh] lg:min-h-0 bg-[#1A6B2C] flex items-center justify-center relative overflow-hidden">
-            <span
-              style={{ fontSize: "clamp(120px,22vw,320px)" }}
-              className="text-white/10 select-none absolute"
-            >
-              PU
-            </span>
-            <svg width="160" height="160" viewBox="0 0 80 80" fill="none" className="relative z-10 opacity-70">
-              <path d="M20 12 L10 28 L22 30 L22 68 L58 68 L58 30 L70 28 L60 12 L50 18 C50 18 46 22 40 22 C34 22 30 18 30 18 Z"
-                fill="#F7D000" strokeLinejoin="round" />
-            </svg>
-            <div className="absolute bottom-8 left-8 bg-[#F7D000] px-4 py-2">
-              <p className="text-[#111] text-lg">5K Off Match Kits</p>
             </div>
           </div>
         </section>
