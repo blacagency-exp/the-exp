@@ -180,26 +180,19 @@ function formatNGN(n: number) {
 // ─── Partner Strip ─────────────────────────────────────────────────────────────
 
 function PartnerStrip() {
+  const bc: React.CSSProperties = { fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: "0.15em" }
   return (
     <div className="border-y border-gray-100 py-3 px-4 bg-white">
-      <div className="max-w-7xl mx-auto flex items-center justify-center gap-3 sm:gap-8 flex-wrap">
-        {/* Galaxy */}
-        <div className="flex items-center gap-2">
-          <div className="w-5 h-5 bg-[#111] rounded-sm flex items-center justify-center">
-            <span className="text-white text-[8px] font-black">G</span>
-          </div>
-          <span className="text-[10px] sm:text-xs tracking-widest uppercase text-gray-500 font-semibold">Galaxy</span>
-        </div>
-        <span className="text-gray-300 text-xs">×</span>
+      <div className="max-w-7xl mx-auto flex items-center justify-center gap-6 sm:gap-10 flex-wrap">
         {/* Experience Plateau */}
         <div className="flex items-center gap-2">
           <div className="w-5 h-5 bg-[#1A6B2C] rounded-sm flex items-center justify-center">
             <span className="text-white text-[8px] font-black">EP</span>
           </div>
-          <span className="text-[10px] sm:text-xs tracking-widest uppercase text-gray-500 font-semibold">
+          <span style={bc} className="text-[11px] sm:text-sm uppercase text-gray-500 font-semibold">
             Experience Plateau
           </span>
-          <span className="hidden sm:inline text-[9px] border border-[#1A6B2C] text-[#1A6B2C] px-1.5 py-0.5 tracking-wider uppercase font-bold">
+          <span style={bc} className="hidden sm:inline text-[9px] border border-[#1A6B2C] text-[#1A6B2C] px-1.5 py-0.5 tracking-wider uppercase font-bold">
             Verified Vendor
           </span>
         </div>
@@ -209,7 +202,7 @@ function PartnerStrip() {
           <div className="w-5 h-5 bg-[#F7D000] rounded-sm flex items-center justify-center">
             <span className="text-[#111] text-[8px] font-black">PU</span>
           </div>
-          <span className="text-[10px] sm:text-xs tracking-widest uppercase text-gray-500 font-semibold">Plateau United FC</span>
+          <span style={bc} className="text-[11px] sm:text-sm uppercase text-gray-500 font-semibold">Plateau United FC</span>
         </div>
       </div>
     </div>
@@ -866,12 +859,10 @@ export function PlateauUnitedPage() {
         {/* ── Partner strip footer ──────────────────────── */}
         <div className="bg-[#111] py-8 px-8 md:px-14">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-6 flex-wrap justify-center sm:justify-start">
-              <span className="text-white/40 text-xs tracking-widest uppercase">Galaxy</span>
+            <div className="flex items-center gap-6 flex-wrap justify-center sm:justify-start" style={{ fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: "0.15em" }}>
+              <span className="text-white/40 text-xs uppercase">Experience Plateau</span>
               <span className="text-white/20">×</span>
-              <span className="text-white/40 text-xs tracking-widest uppercase">Experience Plateau</span>
-              <span className="text-white/20">×</span>
-              <span className="text-white/40 text-xs tracking-widest uppercase">Plateau United FC</span>
+              <span className="text-white/40 text-xs uppercase">Plateau United FC</span>
             </div>
             <p className="text-white/30 text-[10px] tracking-widest uppercase">Official Merchandise 2026</p>
           </div>
