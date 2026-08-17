@@ -212,10 +212,10 @@ function BankTransferScreen({
   }
 
   return (
-    <div className="px-6 py-6 space-y-5">
+    <div className="px-4 md:px-6 py-5 md:py-6 space-y-4 md:space-y-5">
       <div className="text-center">
         <p className="text-xs tracking-widest uppercase text-gray-400 mb-1">Transfer exactly</p>
-        <p className="text-4xl text-[#111]">{formatNGN(details.amount)}</p>
+        <p className="text-3xl md:text-4xl text-[#111]">{formatNGN(details.amount)}</p>
         <p className="text-xs text-gray-400 mt-1">to the account below</p>
       </div>
 
@@ -229,7 +229,7 @@ function BankTransferScreen({
         <div className="flex justify-between items-center">
           <div>
             <p className="text-xs text-gray-400 tracking-wider uppercase">Account Number</p>
-            <p style={{ fontFamily: "monospace" }} className="text-2xl font-bold text-[#111] tracking-wider">
+            <p style={{ fontFamily: "monospace" }} className="text-xl md:text-2xl font-bold text-[#111] tracking-wider">
               {details.accountNumber}
             </p>
           </div>
@@ -384,18 +384,18 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 sticky top-0 bg-white z-10">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-gray-100 sticky top-0 bg-white z-10">
+          <div className="flex items-center gap-3 min-w-0">
             {step > 1 && step < 4 && (
               <button
                 onClick={() => setStep((s) => Math.max(1, s - 1) as 1 | 2 | 3 | 4)}
-                className="text-gray-400 hover:text-black text-sm"
+                className="text-gray-400 hover:text-black text-sm shrink-0"
               >
                 ←
               </button>
             )}
-            <div>
-              <p className="text-xl text-[#111]">{product.name}</p>
+            <div className="min-w-0">
+              <p className="text-base md:text-xl text-[#111] truncate">{product.name}</p>
               <p className="text-[10px] tracking-widest uppercase text-gray-400">
                 {step === 1 ? "Select Size" : step === 2 ? "Your Details" : step === 3 ? "Bank Transfer" : "Confirmed"}
               </p>
@@ -418,7 +418,7 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
 
         {/* ── Step 1: Size + Qty ────────────────────────── */}
         {step === 1 && (
-          <div className="px-6 py-6 space-y-6">
+          <div className="px-4 md:px-6 py-5 md:py-6 space-y-5 md:space-y-6">
             <div>
               <p className="text-xs tracking-widest uppercase text-gray-400 mb-3">Size</p>
               <div className="flex gap-2 flex-wrap">
@@ -474,7 +474,7 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
 
         {/* ── Step 2: Details + Delivery ───────────────── */}
         {step === 2 && (
-          <div className="px-6 py-6 space-y-4">
+          <div className="px-4 md:px-6 py-5 md:py-6 space-y-4">
             <div className="grid grid-cols-2 gap-3">
               {[
                 { label: "First Name", value: firstName, set: setFirstName, placeholder: "First" },
@@ -588,7 +588,7 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
               disabled={!step2Complete || loading}
               className="w-full bg-[#1A6B2C] text-white py-4 text-xs tracking-widest uppercase hover:bg-[#145422] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             >
-              {loading ? "Generating account..." : `Pay ${formatNGN(total)} via Bank Transfer`}
+              {loading ? "Generating account..." : <><span className="block sm:hidden">Pay {formatNGN(total)}</span><span className="hidden sm:block">Pay {formatNGN(total)} via Bank Transfer</span></>}
             </button>
 
             <p className="text-[10px] text-gray-400 text-center tracking-wide">
@@ -628,7 +628,7 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
               {!isInterstate && selectedZone && ` Delivery to ${selectedZone.label} — expect your order within 1–3 days.`}
             </p>
             <div className="pt-4 border-t border-gray-100 space-y-1 text-xs text-gray-400">
-              <p>Reference: <span className="font-mono">{bankDetails?.reference}</span></p>
+              <p className="break-all">Reference: <span className="font-mono">{bankDetails?.reference}</span></p>
               <p>Kit: {product.name} · Size {size} · Qty {quantity}</p>
             </div>
             <button
@@ -681,16 +681,16 @@ export function PlateauUnitedPage() {
 
 
           {/* Text — bottom left */}
-          <div className="absolute bottom-12 left-8 md:left-12 z-10 max-w-lg">
-            <h1 className="text-xl md:text-2xl font-bold text-white uppercase tracking-tight mb-2 leading-tight whitespace-nowrap [text-shadow:0_1px_8px_rgba(0,0,0,0.5)]">
+          <div className="absolute bottom-8 md:bottom-12 left-4 md:left-12 z-10 max-w-[calc(100vw-32px)] md:max-w-lg pr-10 md:pr-0">
+            <h1 className="text-base sm:text-lg md:text-2xl font-bold text-white uppercase tracking-tight mb-2 leading-tight [text-shadow:0_1px_8px_rgba(0,0,0,0.5)]">
               The Peace Boys. Official Collection.
             </h1>
-            <p className="text-white/70 text-sm mb-5 leading-relaxed">
+            <p className="text-white/70 text-xs sm:text-sm mb-4 md:mb-5 leading-relaxed">
               Official kits, training gear and apparel for Plateau United FC.
             </p>
             <button
               onClick={() => document.getElementById("collection")?.scrollIntoView({ behavior: "smooth" })}
-              className="border border-white px-5 py-2.5 text-xs tracking-widest uppercase text-white hover:bg-white hover:text-[#111] transition-colors"
+              className="border border-white px-4 md:px-5 py-2 md:py-2.5 text-xs tracking-widest uppercase text-white hover:bg-white hover:text-[#111] transition-colors"
             >
               Shop the Collection
             </button>
@@ -729,9 +729,9 @@ export function PlateauUnitedPage() {
         </section>
 
         {/* ── Collection ────────────────────────────────── */}
-        <section id="collection" className="px-8 md:px-14 pt-14">
-          <div className="flex items-end justify-between mb-6">
-            <p className="text-[clamp(36px,5vw,72px)] text-[#111]">The Collection</p>
+        <section id="collection" className="px-4 md:px-8 lg:px-14 pt-8 md:pt-14">
+          <div className="flex items-end justify-between mb-4 md:mb-6">
+            <p className="text-[clamp(26px,7vw,72px)] text-[#111]">The Collection</p>
             <p className="text-gray-400 text-sm tracking-widest uppercase hidden md:block">{filtered.length} Products</p>
           </div>
 
@@ -754,7 +754,7 @@ export function PlateauUnitedPage() {
         </section>
 
         {/* Product grid */}
-        <section className="px-8 md:px-14 pb-20">
+        <section className="px-4 md:px-8 lg:px-14 pb-16 md:pb-20">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-gray-100">
             {filtered.map((product) => (
               <div key={product.id} className="bg-white group">
@@ -787,26 +787,26 @@ export function PlateauUnitedPage() {
                   )}
                 </div>
 
-                <div className="px-5 py-5 border-t border-gray-100">
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <p className="text-[22px] text-[#111]">{product.name}</p>
-                      <p className="text-xs text-gray-400 tracking-widest uppercase mt-0.5">Plateau United FC</p>
+                <div className="px-4 py-4 md:px-5 md:py-5 border-t border-gray-100">
+                  <div className="flex items-start justify-between mb-3 md:mb-4 gap-2">
+                    <div className="min-w-0">
+                      <p className="text-base md:text-[22px] text-[#111] truncate">{product.name}</p>
+                      <p className="text-[10px] text-gray-400 tracking-widest uppercase mt-0.5">Plateau United FC</p>
                     </div>
-                    <div className="text-right">
+                    <div className="text-right shrink-0">
                       {product.promoPrice ? (
                         <>
-                          <p className="text-xl text-[#1A6B2C]">{formatNGN(product.promoPrice)}</p>
+                          <p className="text-base md:text-xl text-[#1A6B2C]">{formatNGN(product.promoPrice)}</p>
                           <p className="text-xs text-gray-400 line-through">{formatNGN(product.price)}</p>
                         </>
                       ) : (
-                        <p className="text-xl text-[#111]">{formatNGN(product.price)}</p>
+                        <p className="text-base md:text-xl text-[#111]">{formatNGN(product.price)}</p>
                       )}
                     </div>
                   </div>
                   <button
                     onClick={() => setSelectedProduct(product)}
-                    className="w-full border border-[#111] py-3 text-xs tracking-widest uppercase text-[#111] hover:bg-[#111] hover:text-white transition-colors"
+                    className="w-full border border-[#111] py-3 text-[10px] md:text-xs tracking-wide md:tracking-widest uppercase text-[#111] hover:bg-[#111] hover:text-white transition-colors"
                   >
                     Select & Order
                   </button>
@@ -817,23 +817,23 @@ export function PlateauUnitedPage() {
         </section>
 
         {/* ── Delivery Info ─────────────────────────────── */}
-        <section id="delivery" className="px-8 md:px-14 py-16 border-t border-gray-100">
+        <section id="delivery" className="px-4 md:px-8 lg:px-14 py-12 md:py-16 border-t border-gray-100">
           <div className="max-w-7xl mx-auto">
-            <p className="text-[clamp(28px,4vw,56px)] text-[#111] mb-8">Delivery Zones — Jos</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+            <p className="text-[clamp(22px,4vw,56px)] text-[#111] mb-5 md:mb-8">Delivery Zones — Jos</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
               {DELIVERY_ZONES.map((z) => (
-                <div key={z.zone} className="border border-gray-100 p-4">
-                  <div className="flex justify-between items-start mb-2">
-                    <p className="text-lg text-[#111]">{z.label}</p>
-                    <p className="text-lg text-[#1A6B2C]">{formatNGN(z.price)}</p>
+                <div key={z.zone} className="border border-gray-100 p-3 md:p-4">
+                  <div className="flex justify-between items-start mb-2 gap-2">
+                    <p className="text-sm md:text-base text-[#111]">{z.label}</p>
+                    <p className="text-sm md:text-base text-[#1A6B2C] shrink-0">{formatNGN(z.price)}</p>
                   </div>
                   <p className="text-xs text-gray-400 leading-relaxed">{z.areas.join(" · ")}</p>
                 </div>
               ))}
-              <div className="border border-amber-200 bg-amber-50 p-4">
-                <div className="flex justify-between items-start mb-2">
-                  <p className="text-lg text-[#111]">Interstate ⭐</p>
-                  <p className="text-xs text-amber-700 font-semibold">Manual</p>
+              <div className="border border-amber-200 bg-amber-50 p-3 md:p-4">
+                <div className="flex justify-between items-start mb-2 gap-2">
+                  <p className="text-sm md:text-base text-[#111]">Interstate ⭐</p>
+                  <p className="text-xs text-amber-700 font-semibold shrink-0">Manual</p>
                 </div>
                 <p className="text-xs text-amber-700 leading-relaxed">
                   Outside Jos/Plateau State — our team contacts you via WhatsApp to arrange delivery after payment.
@@ -847,7 +847,7 @@ export function PlateauUnitedPage() {
         </section>
 
         {/* ── Partner strip footer ──────────────────────── */}
-        <div className="bg-[#111] py-8 px-8 md:px-14">
+        <div className="bg-[#111] py-6 md:py-8 px-4 md:px-8 lg:px-14">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-6 flex-wrap justify-center sm:justify-start">
               <span className="text-white/40 text-xs uppercase">Experience Plateau</span>
