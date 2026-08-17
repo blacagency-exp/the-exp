@@ -656,15 +656,12 @@ export function PlateauUnitedPage() {
         {/* ── Hero ──────────────────────────────────────── */}
         <section className="w-full min-h-[90vh] flex flex-col lg:flex-row">
           <div className="flex-1 flex flex-col justify-end px-8 md:px-14 pb-12 pt-20 bg-white">
-            <p className="text-xs tracking-[0.25em] uppercase text-[#1A6B2C] mb-5">
-              Official Store · Manufactured by Galaxy · Verified by Experience Plateau
-            </p>
             <h1 className="text-[clamp(64px,12vw,160px)] text-[#111] mb-5 leading-none">
               Plateau<br />
               <span className="text-[#1A6B2C]">United</span>
             </h1>
             <p className="text-gray-500 text-base max-w-xs mb-10 leading-relaxed">
-              Official kits, training gear and apparel for the Pride of Plateau.
+              Official kits, training gear and apparel for the peace boys
             </p>
             <div className="flex gap-3 flex-wrap">
               <button
