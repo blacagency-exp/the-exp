@@ -680,6 +680,9 @@ export function PlateauUnitedPage() {
           ))}
 
 
+          {/* Full-width bottom gradient — ensures text is readable on both slides */}
+          <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-black/60 to-transparent z-[1] pointer-events-none" />
+
           {/* Text — bottom left */}
           <div className="absolute bottom-8 md:bottom-12 left-4 md:left-12 z-10 max-w-[calc(100vw-32px)] md:max-w-lg pr-10 md:pr-0">
             <h1 className="text-base sm:text-lg md:text-2xl font-bold uppercase tracking-tight mb-2 leading-tight [text-shadow:0_2px_12px_rgba(0,0,0,0.6)]" style={{ color: "#F7D000" }}>
