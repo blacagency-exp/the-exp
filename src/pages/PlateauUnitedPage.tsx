@@ -74,7 +74,7 @@ const PRODUCTS: Product[] = [
   },
   {
     id: "training-kit-1",
-    name: "Training Kit I",
+    name: "Fwavei",
     category: "training",
     price: 17000,
     promoPrice: null,
@@ -85,7 +85,7 @@ const PRODUCTS: Product[] = [
   },
   {
     id: "training-kit-2",
-    name: "Training Kit II",
+    name: "Farin Gada",
     category: "training",
     price: 17000,
     promoPrice: null,
@@ -96,7 +96,7 @@ const PRODUCTS: Product[] = [
   },
   {
     id: "training-kit-3",
-    name: "Training Kit III",
+    name: "Terminus",
     category: "training",
     price: 17000,
     promoPrice: null,
