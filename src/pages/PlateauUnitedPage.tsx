@@ -74,7 +74,7 @@ const PRODUCTS: Product[] = [
   },
   {
     id: "training-kit-1",
-    name: "Training Kit I",
+    name: "Fwavei",
     category: "training",
     price: 17000,
     promoPrice: null,
@@ -85,7 +85,7 @@ const PRODUCTS: Product[] = [
   },
   {
     id: "training-kit-2",
-    name: "Training Kit II",
+    name: "Farin Gada",
     category: "training",
     price: 17000,
     promoPrice: null,
@@ -96,7 +96,7 @@ const PRODUCTS: Product[] = [
   },
   {
     id: "training-kit-3",
-    name: "Training Kit III",
+    name: "Terminus",
     category: "training",
     price: 17000,
     promoPrice: null,
@@ -680,17 +680,23 @@ export function PlateauUnitedPage() {
           ))}
 
 
+          {/* Full-width bottom gradient — ensures text is readable on both slides */}
+          <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-black/60 to-transparent z-[1] pointer-events-none" />
+
           {/* Text — bottom left */}
           <div className="absolute bottom-8 md:bottom-12 left-4 md:left-12 z-10 max-w-[calc(100vw-32px)] md:max-w-lg pr-10 md:pr-0">
-            <h1 className="text-base sm:text-lg md:text-2xl font-bold text-white uppercase tracking-tight mb-2 leading-tight [text-shadow:0_1px_8px_rgba(0,0,0,0.5)]">
+            <h1 className="text-base sm:text-lg md:text-2xl font-bold uppercase tracking-tight mb-2 leading-tight [text-shadow:0_2px_12px_rgba(0,0,0,0.6)]" style={{ color: "#F7D000" }}>
               The Peace Boys. Official Collection.
             </h1>
-            <p className="text-white/70 text-xs sm:text-sm mb-4 md:mb-5 leading-relaxed">
+            <p className="text-white/90 text-xs sm:text-sm mb-4 md:mb-5 leading-relaxed [text-shadow:0_1px_6px_rgba(0,0,0,0.5)]">
               Official kits, training gear and apparel for Plateau United FC.
             </p>
             <button
               onClick={() => document.getElementById("collection")?.scrollIntoView({ behavior: "smooth" })}
-              className="border border-white px-4 md:px-5 py-2 md:py-2.5 text-xs tracking-widest uppercase text-white hover:bg-white hover:text-[#111] transition-colors"
+              className="border px-4 md:px-5 py-2 md:py-2.5 text-xs tracking-widest uppercase transition-colors hover:text-[#111]"
+              style={{ borderColor: "#F7D000", color: "#F7D000", backgroundColor: "transparent" }}
+              onMouseEnter={e => (e.currentTarget.style.backgroundColor = "#F7D000")}
+              onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")}
             >
               Shop the Collection
             </button>
