@@ -65,7 +65,7 @@ const navLinks = [
   { to: "/virtual-tour", label: "Virtual Tours" },
   { to: "/travel-booking", label: "Travel Booking" },
   { to: "/culture", label: "Cultural Heritage" },
-  { to: "/contact", label: "Contact Us" },
+  { to: "/plateau-united", label: "Plateau United" },
   { to: "/leaderboard", label: "Leaderboard" },
   { to: "/shop", label: "Shop" },
 ]
@@ -82,7 +82,7 @@ const rightNavLinks = [
   { to: "/travel-booking", label: "Travel Booking" },
   { to: "/culture", label: "Cultural Heritage" },
   { to: "/leaderboard", label: "Leaderboard" },
-  { to: "/contact", label: "Contact Us" },
+  { to: "/plateau-united", label: "Plateau United" },
 ]
 
 export function HomeHeader() {
