@@ -64,7 +64,7 @@ const navLinks = [
   { to: "/blog", label: "Blogs" },
   { to: "/bookings", label: "Travel bookings" },
   { to: "/cultural", label: "Cultural Heritage" },
-  { to: "/plateau-united", label: "Contact Us" },
+  { to: "/plateau-united", label: "Plateau United" },
 ]
 
 export function Header() {
