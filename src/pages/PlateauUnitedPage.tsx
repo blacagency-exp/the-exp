@@ -668,13 +668,20 @@ export function PlateauUnitedPage() {
 
         {/* ── Hero ──────────────────────────────────────── */}
         <section className="w-full h-[calc(100vh-64px)] relative overflow-hidden">
-          {/* Slideshow images */}
+          {/* Mobile hero — Home Kit portrait image */}
+          <img
+            src="https://cdn.sanity.io/images/252rx5c8/production/23d1d5252b0c466edae5b150548807a5cca05fd2-900x1200.jpg"
+            alt="Plateau United Home Kit"
+            className="md:hidden absolute inset-0 w-full h-full object-cover object-top"
+          />
+
+          {/* Desktop slideshow */}
           {HERO_IMAGES.map((src, i) => (
             <img
               key={src}
               src={src}
               alt="Plateau United"
-              className="absolute inset-0 w-full h-full object-cover object-center md:object-[center_35%] transition-opacity duration-1000"
+              className="hidden md:block absolute inset-0 w-full h-full object-cover object-[center_35%] transition-opacity duration-1000"
               style={{ opacity: i === heroIndex ? 1 : 0 }}
             />
           ))}
