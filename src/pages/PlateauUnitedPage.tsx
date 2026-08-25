@@ -76,7 +76,7 @@ const PRODUCTS: Product[] = [
     id: "training-kit-1",
     name: "Fwavei",
     category: "training",
-    price: 17000,
+    price: 30000,
     promoPrice: null,
     bgColor: "#1a6b6b",
     textColor: "#F7D000",
@@ -87,7 +87,7 @@ const PRODUCTS: Product[] = [
     id: "training-kit-2",
     name: "Farin Gada",
     category: "training",
-    price: 17000,
+    price: 30000,
     promoPrice: null,
     bgColor: "#f0f0f0",
     textColor: "#1A6B2C",
@@ -98,7 +98,7 @@ const PRODUCTS: Product[] = [
     id: "training-kit-3",
     name: "Terminus",
     category: "training",
-    price: 17000,
+    price: 30000,
     promoPrice: null,
     bgColor: "#0d4a3a",
     textColor: "#7EFFD4",
@@ -674,7 +674,7 @@ export function PlateauUnitedPage() {
               key={src}
               src={src}
               alt="Plateau United"
-              className="absolute inset-0 w-full h-full object-cover object-[center_35%] transition-opacity duration-1000"
+              className="absolute inset-0 w-full h-full object-cover object-center md:object-[center_35%] transition-opacity duration-1000"
               style={{ opacity: i === heroIndex ? 1 : 0 }}
             />
           ))}
