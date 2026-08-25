@@ -709,22 +709,22 @@ export function PlateauUnitedPage() {
             </button>
           </div>
 
-          {/* Left / Right arrows */}
+          {/* Left / Right arrows — desktop only */}
           <button
             onClick={() => setHeroIndex((heroIndex - 1 + HERO_IMAGES.length) % HERO_IMAGES.length)}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-10 text-white/70 hover:text-white transition-colors"
+            className="hidden md:block absolute left-4 top-1/2 -translate-y-1/2 z-10 text-white/70 hover:text-white transition-colors"
           >
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M15 18l-6-6 6-6"/></svg>
           </button>
           <button
             onClick={() => setHeroIndex((heroIndex + 1) % HERO_IMAGES.length)}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-10 text-white/70 hover:text-white transition-colors"
+            className="hidden md:block absolute right-4 top-1/2 -translate-y-1/2 z-10 text-white/70 hover:text-white transition-colors"
           >
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 18l6-6-6-6"/></svg>
           </button>
 
-          {/* Dots — bottom center */}
-          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+          {/* Dots — desktop only */}
+          <div className="hidden md:flex absolute bottom-5 left-1/2 -translate-x-1/2 gap-2 z-10">
             {HERO_IMAGES.map((_, i) => (
               <button
                 key={i}
