@@ -40,36 +40,69 @@ interface BankTransferDetails {
 
 const PRODUCTS: Product[] = [
   {
-    id: "home-kit",
-    name: "Home Kit",
+    id: "home-kit-fan",
+    name: "Home Kit — Fan",
     category: "kits",
     price: 15000,
     promoPrice: null,
     bgColor: "#F7D000",
     textColor: "#1A6B2C",
-    description: "The iconic yellow & green. Wear the colours of Plateau United on matchday.",
+    description: "The iconic yellow & green. Fan edition — wear the colours of Plateau United on matchday.",
     image: "https://cdn.sanity.io/images/252rx5c8/production/23d1d5252b0c466edae5b150548807a5cca05fd2-900x1200.jpg",
   },
   {
-    id: "away-kit",
-    name: "Away Kit",
+    id: "home-kit-player",
+    name: "Home Kit — Player",
+    category: "kits",
+    price: 15000,
+    promoPrice: null,
+    bgColor: "#F7D000",
+    textColor: "#1A6B2C",
+    description: "The iconic yellow & green. Player edition — same cut worn on the pitch by the Peace Boys.",
+    image: "https://cdn.sanity.io/images/252rx5c8/production/23d1d5252b0c466edae5b150548807a5cca05fd2-900x1200.jpg",
+  },
+  {
+    id: "away-kit-fan",
+    name: "Away Kit — Fan",
     category: "kits",
     price: 15000,
     promoPrice: null,
     bgColor: "#f0f0f0",
     textColor: "#1A6B2C",
-    description: "The away strip — clean white, built for the road and the faithful who travel.",
+    description: "The away strip — fan edition. Clean white, built for the road and the faithful who travel.",
     image: "https://cdn.sanity.io/images/252rx5c8/production/3f834e7125278af9e4a2902d23c9f47e749d74f2-900x1200.jpg",
   },
   {
-    id: "alternate-kit",
-    name: "Alternate Kit",
+    id: "away-kit-player",
+    name: "Away Kit — Player",
+    category: "kits",
+    price: 15000,
+    promoPrice: null,
+    bgColor: "#f0f0f0",
+    textColor: "#1A6B2C",
+    description: "The away strip — player edition. Same fit and feel as the squad wears on the road.",
+    image: "https://cdn.sanity.io/images/252rx5c8/production/3f834e7125278af9e4a2902d23c9f47e749d74f2-900x1200.jpg",
+  },
+  {
+    id: "alternate-kit-fan",
+    name: "Alternate Kit — Fan",
     category: "kits",
     price: 15000,
     promoPrice: null,
     bgColor: "#2a1a0a",
     textColor: "#FFFFFF",
-    description: "The cultural strip — bold stripes inspired by the diversity of Plateau State.",
+    description: "The cultural strip — fan edition. Bold stripes inspired by the diversity of Plateau State.",
+    image: "https://cdn.sanity.io/images/252rx5c8/production/e2d92c3d9779d37b8b38b8fd677532462422b3cc-900x1200.jpg",
+  },
+  {
+    id: "alternate-kit-player",
+    name: "Alternate Kit — Player",
+    category: "kits",
+    price: 15000,
+    promoPrice: null,
+    bgColor: "#2a1a0a",
+    textColor: "#FFFFFF",
+    description: "The cultural strip — player edition. The same cut worn by the Peace Boys on matchday.",
     image: "https://cdn.sanity.io/images/252rx5c8/production/e2d92c3d9779d37b8b38b8fd677532462422b3cc-900x1200.jpg",
   },
   {
@@ -668,13 +701,20 @@ export function PlateauUnitedPage() {
 
         {/* ── Hero ──────────────────────────────────────── */}
         <section className="w-full h-[calc(100vh-64px)] relative overflow-hidden">
-          {/* Slideshow images */}
+          {/* Mobile hero — Home Kit portrait image */}
+          <img
+            src="https://cdn.sanity.io/images/252rx5c8/production/23d1d5252b0c466edae5b150548807a5cca05fd2-900x1200.jpg"
+            alt="Plateau United Home Kit"
+            className="md:hidden absolute inset-0 w-full h-full object-cover object-top"
+          />
+
+          {/* Desktop slideshow */}
           {HERO_IMAGES.map((src, i) => (
             <img
               key={src}
               src={src}
               alt="Plateau United"
-              className="absolute inset-0 w-full h-full object-cover object-center md:object-[center_35%] transition-opacity duration-1000"
+              className="hidden md:block absolute inset-0 w-full h-full object-cover object-[center_35%] transition-opacity duration-1000"
               style={{ opacity: i === heroIndex ? 1 : 0 }}
             />
           ))}
@@ -702,22 +742,22 @@ export function PlateauUnitedPage() {
             </button>
           </div>
 
-          {/* Left / Right arrows */}
+          {/* Left / Right arrows — desktop only */}
           <button
             onClick={() => setHeroIndex((heroIndex - 1 + HERO_IMAGES.length) % HERO_IMAGES.length)}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-10 text-white/70 hover:text-white transition-colors"
+            className="hidden md:block absolute left-4 top-1/2 -translate-y-1/2 z-10 text-white/70 hover:text-white transition-colors"
           >
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M15 18l-6-6 6-6"/></svg>
           </button>
           <button
             onClick={() => setHeroIndex((heroIndex + 1) % HERO_IMAGES.length)}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-10 text-white/70 hover:text-white transition-colors"
+            className="hidden md:block absolute right-4 top-1/2 -translate-y-1/2 z-10 text-white/70 hover:text-white transition-colors"
           >
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 18l6-6-6-6"/></svg>
           </button>
 
-          {/* Dots — bottom center */}
-          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+          {/* Dots — desktop only */}
+          <div className="hidden md:flex absolute bottom-5 left-1/2 -translate-x-1/2 gap-2 z-10">
             {HERO_IMAGES.map((_, i) => (
               <button
                 key={i}
