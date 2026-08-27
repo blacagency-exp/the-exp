@@ -19,7 +19,7 @@ export function AllProductsPage() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const query = `*[_type == "product"] | order(_createdAt desc)`;
+                const query = `*[_type == "product" && !(slug.current match "plateau-united-*")] | order(_createdAt desc)`;
                 const data = await client.fetch(query);
                 setProducts(data);
                 setFilteredProducts(data);
