@@ -306,7 +306,9 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
   const [error, setError] = useState<string | null>(null)
   const [verifying, setVerifying] = useState(false)
 
-  const unitPrice = product.promoPrice ?? product.price
+  const unitPrice = isKit
+    ? (quality === "Player grade" ? 30000 : 15000)
+    : (product.promoPrice ?? product.price)
   const deliveryFee = isInterstate ? 0 : (selectedZone?.price ?? 0)
   const total = unitPrice * quantity + deliveryFee
 
