@@ -40,69 +40,36 @@ interface BankTransferDetails {
 
 const PRODUCTS: Product[] = [
   {
-    id: "home-kit-fan",
-    name: "Home Kit — Fan",
+    id: "home-kit",
+    name: "Home Kit",
     category: "kits",
     price: 15000,
     promoPrice: null,
     bgColor: "#F7D000",
     textColor: "#1A6B2C",
-    description: "The iconic yellow & green. Fan edition — wear the colours of Plateau United on matchday.",
+    description: "The iconic yellow & green. Wear the colours of Plateau United on matchday.",
     image: "https://cdn.sanity.io/images/252rx5c8/production/23d1d5252b0c466edae5b150548807a5cca05fd2-900x1200.jpg",
   },
   {
-    id: "home-kit-player",
-    name: "Home Kit — Player",
-    category: "kits",
-    price: 15000,
-    promoPrice: null,
-    bgColor: "#F7D000",
-    textColor: "#1A6B2C",
-    description: "The iconic yellow & green. Player edition — same cut worn on the pitch by the Peace Boys.",
-    image: "https://cdn.sanity.io/images/252rx5c8/production/23d1d5252b0c466edae5b150548807a5cca05fd2-900x1200.jpg",
-  },
-  {
-    id: "away-kit-fan",
-    name: "Away Kit — Fan",
+    id: "away-kit",
+    name: "Away Kit",
     category: "kits",
     price: 15000,
     promoPrice: null,
     bgColor: "#f0f0f0",
     textColor: "#1A6B2C",
-    description: "The away strip — fan edition. Clean white, built for the road and the faithful who travel.",
+    description: "The away strip — clean white, built for the road and the faithful who travel.",
     image: "https://cdn.sanity.io/images/252rx5c8/production/3f834e7125278af9e4a2902d23c9f47e749d74f2-900x1200.jpg",
   },
   {
-    id: "away-kit-player",
-    name: "Away Kit — Player",
-    category: "kits",
-    price: 15000,
-    promoPrice: null,
-    bgColor: "#f0f0f0",
-    textColor: "#1A6B2C",
-    description: "The away strip — player edition. Same fit and feel as the squad wears on the road.",
-    image: "https://cdn.sanity.io/images/252rx5c8/production/3f834e7125278af9e4a2902d23c9f47e749d74f2-900x1200.jpg",
-  },
-  {
-    id: "alternate-kit-fan",
-    name: "Alternate Kit — Fan",
+    id: "alternate-kit",
+    name: "Alternate Kit",
     category: "kits",
     price: 15000,
     promoPrice: null,
     bgColor: "#2a1a0a",
     textColor: "#FFFFFF",
-    description: "The cultural strip — fan edition. Bold stripes inspired by the diversity of Plateau State.",
-    image: "https://cdn.sanity.io/images/252rx5c8/production/e2d92c3d9779d37b8b38b8fd677532462422b3cc-900x1200.jpg",
-  },
-  {
-    id: "alternate-kit-player",
-    name: "Alternate Kit — Player",
-    category: "kits",
-    price: 15000,
-    promoPrice: null,
-    bgColor: "#2a1a0a",
-    textColor: "#FFFFFF",
-    description: "The cultural strip — player edition. The same cut worn by the Peace Boys on matchday.",
+    description: "The cultural strip — bold stripes inspired by the diversity of Plateau State.",
     image: "https://cdn.sanity.io/images/252rx5c8/production/e2d92c3d9779d37b8b38b8fd677532462422b3cc-900x1200.jpg",
   },
   {
@@ -319,6 +286,10 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
   // Step 1
   const [size, setSize] = useState("")
   const [quantity, setQuantity] = useState(1)
+  const [gender, setGender] = useState("")
+  const [quality, setQuality] = useState("")
+
+  const isKit = product.category === "kits"
 
   // Step 2
   const [firstName, setFirstName] = useState("")
@@ -339,7 +310,7 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
   const deliveryFee = isInterstate ? 0 : (selectedZone?.price ?? 0)
   const total = unitPrice * quantity + deliveryFee
 
-  const step1Complete = !!size
+  const step1Complete = !!size && (!isKit || (!!gender && !!quality))
   const step2Complete = firstName && lastName && email && whatsapp && deliveryAddress && (isInterstate || selectedZone)
 
   const handleZoneChange = (value: string) => {
@@ -364,6 +335,8 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
         phone: whatsapp,
         kitName: product.name,
         size,
+        gender: isKit ? gender : undefined,
+        quality: isKit ? quality : undefined,
         quantity,
         deliveryAddress,
         deliveryZone: isInterstate ? "interstate" : selectedZone?.zone,
@@ -452,6 +425,51 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
         {/* ── Step 1: Size + Qty ────────────────────────── */}
         {step === 1 && (
           <div className="px-4 md:px-6 py-5 md:py-6 space-y-5 md:space-y-6">
+
+            {/* Gender — kits only */}
+            {isKit && (
+              <div>
+                <p className="text-xs tracking-widest uppercase text-gray-400 mb-3">Gender</p>
+                <div className="flex gap-6">
+                  {["Male", "Female"].map((g) => (
+                    <label key={g} className="flex items-center gap-2 cursor-pointer select-none">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value={g}
+                        checked={gender === g}
+                        onChange={() => setGender(g)}
+                        className="accent-[#1A6B2C] w-4 h-4"
+                      />
+                      <span className="text-sm text-[#111]">{g}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Jersey Quality — kits only */}
+            {isKit && (
+              <div>
+                <p className="text-xs tracking-widest uppercase text-gray-400 mb-3">Jersey Quality</p>
+                <div className="flex gap-6">
+                  {["Player grade", "Fan grade"].map((q) => (
+                    <label key={q} className="flex items-center gap-2 cursor-pointer select-none">
+                      <input
+                        type="radio"
+                        name="quality"
+                        value={q}
+                        checked={quality === q}
+                        onChange={() => setQuality(q)}
+                        className="accent-[#1A6B2C] w-4 h-4"
+                      />
+                      <span className="text-sm text-[#111]">{q}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div>
               <p className="text-xs tracking-widest uppercase text-gray-400 mb-3">Size</p>
               <div className="flex gap-2 flex-wrap">
