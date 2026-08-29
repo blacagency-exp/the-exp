@@ -462,7 +462,7 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
                         name="quality"
                         value={q}
                         checked={quality === q}
-                        onChange={() => setQuality(q)}
+                        onChange={() => { setQuality(q); if (q === "Player grade" && size === "XXL") setSize("") }}
                         className="accent-[#1A6B2C] w-4 h-4"
                       />
                       <span className="text-sm text-[#111]">{q}</span>
@@ -475,10 +475,10 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
             <div>
               <p className="text-xs tracking-widest uppercase text-gray-400 mb-3">Size</p>
               <div className="flex gap-2 flex-wrap">
-                {SIZES.map((s) => (
+                {SIZES.filter(s => !(isKit && quality === "Player grade" && s === "XXL")).map((s) => (
                   <button
                     key={s}
-                    onClick={() => setSize(s)}
+                    onClick={() => { setSize(s) }}
                     className={`w-12 h-10 text-sm border transition-colors ${
                       size === s ? "border-[#111] bg-[#111] text-white" : "border-gray-200 text-gray-600 hover:border-gray-400"
                     }`}
