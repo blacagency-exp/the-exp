@@ -167,6 +167,12 @@ const HERO_IMAGES = [
   "https://cdn.sanity.io/images/252rx5c8/production/714e0b7b7cad614f4d1333b981c1cd4ed24d3164-5760x3240.jpg",
 ]
 
+const MOBILE_HERO_IMAGES = [
+  "https://cdn.sanity.io/images/252rx5c8/production/c67b475b796d4a2f5ce6587dd357b8f029593862-2700x3600.jpg",
+  "https://cdn.sanity.io/images/252rx5c8/production/14d9061dfe6f338bf00a9d001205b8062f557f28-2700x3600.jpg",
+  "https://cdn.sanity.io/images/252rx5c8/production/bc170535390abeadc95ca977375533d1ebca1a1c-2700x3600.jpg",
+]
+
 const SIZES = ["S", "M", "L", "XL", "XXL"]
 const CATEGORIES = ["All", "Kits", "Training", "Hoodies", "Tracksuits"] as const
 
@@ -462,7 +468,7 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
                         name="quality"
                         value={q}
                         checked={quality === q}
-                        onChange={() => setQuality(q)}
+                        onChange={() => { setQuality(q); if (q === "Player grade" && size === "XXL") setSize("") }}
                         className="accent-[#1A6B2C] w-4 h-4"
                       />
                       <span className="text-sm text-[#111]">{q}</span>
@@ -475,10 +481,10 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
             <div>
               <p className="text-xs tracking-widest uppercase text-gray-400 mb-3">Size</p>
               <div className="flex gap-2 flex-wrap">
-                {SIZES.map((s) => (
+                {SIZES.filter(s => !(isKit && quality === "Player grade" && s === "XXL")).map((s) => (
                   <button
                     key={s}
-                    onClick={() => setSize(s)}
+                    onClick={() => { setSize(s) }}
                     className={`w-12 h-10 text-sm border transition-colors ${
                       size === s ? "border-[#111] bg-[#111] text-white" : "border-gray-200 text-gray-600 hover:border-gray-400"
                     }`}
@@ -703,10 +709,18 @@ export function PlateauUnitedPage() {
   const [activeCategory, setActiveCategory] = useState<string>("All")
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [heroIndex, setHeroIndex] = useState(0)
+  const [mobileHeroIndex, setMobileHeroIndex] = useState(0)
 
   useEffect(() => {
     const interval = setInterval(() => {
       setHeroIndex((i) => (i + 1) % HERO_IMAGES.length)
+    }, 10000)
+    return () => clearInterval(interval)
+  }, [])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMobileHeroIndex((i) => (i + 1) % MOBILE_HERO_IMAGES.length)
     }, 10000)
     return () => clearInterval(interval)
   }, [])
@@ -721,12 +735,16 @@ export function PlateauUnitedPage() {
 
         {/* ── Hero ──────────────────────────────────────── */}
         <section className="w-full h-[calc(100vh-64px)] relative overflow-hidden">
-          {/* Mobile hero — Home Kit portrait image */}
-          <img
-            src="https://cdn.sanity.io/images/252rx5c8/production/23d1d5252b0c466edae5b150548807a5cca05fd2-900x1200.jpg"
-            alt="Plateau United Home Kit"
-            className="md:hidden absolute inset-0 w-full h-full object-cover object-top"
-          />
+          {/* Mobile hero slideshow */}
+          {MOBILE_HERO_IMAGES.map((src, i) => (
+            <img
+              key={src}
+              src={src}
+              alt="Plateau United"
+              className="md:hidden absolute inset-0 w-full h-full object-cover object-top transition-opacity duration-1000"
+              style={{ opacity: i === mobileHeroIndex ? 1 : 0 }}
+            />
+          ))}
 
           {/* Desktop slideshow */}
           {HERO_IMAGES.map((src, i) => (
@@ -775,6 +793,23 @@ export function PlateauUnitedPage() {
           >
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 18l6-6-6-6"/></svg>
           </button>
+
+          {/* Dots — mobile only */}
+          <div className="md:hidden absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+            {MOBILE_HERO_IMAGES.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setMobileHeroIndex(i)}
+                className="transition-all duration-300 rounded-full"
+                style={{
+                  width: i === mobileHeroIndex ? "20px" : "8px",
+                  height: "8px",
+                  borderRadius: "4px",
+                  background: i === mobileHeroIndex ? "#F7D000" : "rgba(255,255,255,0.5)",
+                }}
+              />
+            ))}
+          </div>
 
           {/* Dots — desktop only */}
           <div className="hidden md:flex absolute bottom-5 left-1/2 -translate-x-1/2 gap-2 z-10">
