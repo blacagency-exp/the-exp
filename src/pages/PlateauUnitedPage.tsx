@@ -302,6 +302,7 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
   const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")
   const [whatsapp, setWhatsapp] = useState("")
+  const [fulfillmentType, setFulfillmentType] = useState<"delivery" | "pickup">("delivery")
   const [selectedZone, setSelectedZone] = useState<DeliveryZone | null>(null)
   const [isInterstate, setIsInterstate] = useState(false)
   const [deliveryAddress, setDeliveryAddress] = useState("")
@@ -315,11 +316,12 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
   const unitPrice = isKit
     ? (quality === "Player grade" ? 30000 : 15000)
     : (product.promoPrice ?? product.price)
-  const deliveryFee = isInterstate ? 0 : (selectedZone?.price ?? 0)
+  const deliveryFee = fulfillmentType === "pickup" ? 0 : (isInterstate ? 0 : (selectedZone?.price ?? 0))
   const total = unitPrice * quantity + deliveryFee
 
   const step1Complete = !!size && (!isKit || (!!gender && !!quality))
-  const step2Complete = firstName && lastName && email && whatsapp && deliveryAddress && (isInterstate || selectedZone)
+  const step2Complete = !!(firstName && lastName && email && whatsapp) &&
+    (fulfillmentType === "pickup" || !!(deliveryAddress && (isInterstate || selectedZone)))
 
   const handleZoneChange = (value: string) => {
     if (value === "interstate") {
@@ -346,10 +348,11 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
         gender: isKit ? gender : undefined,
         quality: isKit ? quality : undefined,
         quantity,
-        deliveryAddress,
-        deliveryZone: isInterstate ? "interstate" : selectedZone?.zone,
+        fulfillmentType,
+        deliveryAddress: fulfillmentType === "pickup" ? null : deliveryAddress,
+        deliveryZone: fulfillmentType === "pickup" ? null : (isInterstate ? "interstate" : selectedZone?.zone),
         deliveryFee,
-        isInterstate,
+        isInterstate: fulfillmentType === "pickup" ? false : isInterstate,
         totalAmount: total,
       })
 
@@ -574,47 +577,76 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
               <p className="text-[10px] text-gray-400 mt-1">We'll send order updates to this number</p>
             </div>
 
+            {/* Fulfillment toggle */}
             <div>
-              <p className="text-[10px] tracking-widest uppercase text-gray-400 mb-1.5">Delivery Area</p>
-              <select
-                onChange={(e) => handleZoneChange(e.target.value)}
-                defaultValue=""
-                className="w-full border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:border-[#111] bg-white"
-              >
-                <option value="" disabled>Select your area</option>
-                {DELIVERY_ZONES.map((z) => (
-                  <optgroup key={z.zone} label={`${z.label} — ${formatNGN(z.price)}`}>
-                    {z.areas.map((area) => (
-                      <option key={area} value={z.zone}>{area}</option>
-                    ))}
-                  </optgroup>
+              <p className="text-[10px] tracking-widest uppercase text-gray-400 mb-1.5">Fulfillment</p>
+              <div className="grid grid-cols-2 gap-2">
+                {(["delivery", "pickup"] as const).map((type) => (
+                  <button
+                    key={type}
+                    type="button"
+                    onClick={() => setFulfillmentType(type)}
+                    className={`py-2.5 text-xs tracking-widest uppercase border transition-colors ${
+                      fulfillmentType === type
+                        ? "bg-[#1A6B2C] text-white border-[#1A6B2C]"
+                        : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
+                    }`}
+                  >
+                    {type === "delivery" ? "🚚 Delivery" : "🏟 Pickup"}
+                  </button>
                 ))}
-                <option value="interstate">Outside Jos / Plateau State</option>
-              </select>
+              </div>
             </div>
 
-            {isInterstate && (
-              <div className="bg-amber-50 border border-amber-200 p-3 text-xs text-amber-800 leading-relaxed">
-                ⭐ <strong>Manual Dispatch Order</strong> — Interstate delivery is arranged manually. Our team will contact you via WhatsApp after payment to confirm delivery details and timeline.
+            {fulfillmentType === "pickup" ? (
+              <div className="bg-green-50 border border-green-200 p-3 text-xs text-green-800 leading-relaxed">
+                📍 <strong>Pickup Address:</strong> Contact us for pickup details — our team will reach out via WhatsApp ({whatsapp || "your number above"}) to arrange. No delivery fee applies.
               </div>
-            )}
+            ) : (
+              <>
+                <div>
+                  <p className="text-[10px] tracking-widest uppercase text-gray-400 mb-1.5">Delivery Area</p>
+                  <select
+                    onChange={(e) => handleZoneChange(e.target.value)}
+                    defaultValue=""
+                    className="w-full border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:border-[#111] bg-white"
+                  >
+                    <option value="" disabled>Select your area</option>
+                    {DELIVERY_ZONES.map((z) => (
+                      <optgroup key={z.zone} label={`${z.label} — ${formatNGN(z.price)}`}>
+                        {z.areas.map((area) => (
+                          <option key={area} value={z.zone}>{area}</option>
+                        ))}
+                      </optgroup>
+                    ))}
+                    <option value="interstate">Outside Jos / Plateau State</option>
+                  </select>
+                </div>
 
-            {selectedZone && (
-              <div className="bg-gray-50 border border-gray-100 p-3 text-xs text-gray-600">
-                📦 Delivery to <strong>{selectedZone.label}</strong> — {formatNGN(selectedZone.price)} via Bamjiye
-              </div>
-            )}
+                {isInterstate && (
+                  <div className="bg-amber-50 border border-amber-200 p-3 text-xs text-amber-800 leading-relaxed">
+                    ⭐ <strong>Manual Dispatch Order</strong> — Interstate delivery is arranged manually. Our team will contact you via WhatsApp after payment to confirm delivery details and timeline.
+                  </div>
+                )}
 
-            <div>
-              <p className="text-[10px] tracking-widest uppercase text-gray-400 mb-1.5">Full Delivery Address</p>
-              <textarea
-                value={deliveryAddress}
-                onChange={(e) => setDeliveryAddress(e.target.value)}
-                rows={2}
-                placeholder="House number, street, area..."
-                className="w-full border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:border-[#111] resize-none"
-              />
-            </div>
+                {selectedZone && (
+                  <div className="bg-gray-50 border border-gray-100 p-3 text-xs text-gray-600">
+                    📦 Delivery to <strong>{selectedZone.label}</strong> — {formatNGN(selectedZone.price)} via Bamjiye
+                  </div>
+                )}
+
+                <div>
+                  <p className="text-[10px] tracking-widest uppercase text-gray-400 mb-1.5">Full Delivery Address</p>
+                  <textarea
+                    value={deliveryAddress}
+                    onChange={(e) => setDeliveryAddress(e.target.value)}
+                    rows={2}
+                    placeholder="House number, street, area..."
+                    className="w-full border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:border-[#111] resize-none"
+                  />
+                </div>
+              </>
+            )}
 
             {/* Order summary */}
             <div className="bg-gray-50 p-4 space-y-1.5">
@@ -622,17 +654,26 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
                 <span className="text-gray-500">{product.name} × {quantity}</span>
                 <span>{formatNGN(unitPrice * quantity)}</span>
               </div>
-              {!isInterstate && selectedZone && (
+              {fulfillmentType === "pickup" ? (
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Delivery ({selectedZone.zone})</span>
-                  <span>{formatNGN(selectedZone.price)}</span>
+                  <span className="text-gray-500">Pickup</span>
+                  <span className="text-green-700">Free</span>
                 </div>
-              )}
-              {isInterstate && (
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Delivery</span>
-                  <span className="text-amber-600">Arranged manually</span>
-                </div>
+              ) : (
+                <>
+                  {!isInterstate && selectedZone && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">Delivery ({selectedZone.zone})</span>
+                      <span>{formatNGN(selectedZone.price)}</span>
+                    </div>
+                  )}
+                  {isInterstate && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">Delivery</span>
+                      <span className="text-amber-600">Arranged manually</span>
+                    </div>
+                  )}
+                </>
               )}
               <div className="flex justify-between border-t border-gray-200 pt-2 mt-2">
                 <span className="text-base">Total</span>
@@ -677,14 +718,18 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
               </svg>
             </div>
             <p className="text-3xl text-[#111]">Order Confirmed</p>
-            {isInterstate && (
+            {fulfillmentType === "pickup" ? (
+              <div className="bg-green-50 border border-green-200 p-3 text-xs text-green-800 text-left leading-relaxed">
+                🏟 <strong>Pickup Order</strong> — Our team will contact you on WhatsApp ({whatsapp}) with the pickup address and timing.
+              </div>
+            ) : isInterstate ? (
               <div className="bg-amber-50 border border-amber-200 p-3 text-xs text-amber-800 text-left leading-relaxed">
                 ⭐ <strong>Manual Dispatch</strong> — Our team will contact you on WhatsApp ({whatsapp}) to arrange interstate delivery.
               </div>
-            )}
+            ) : null}
             <p className="text-gray-500 text-sm leading-relaxed">
               A confirmation has been sent to <strong>{email}</strong>.
-              {!isInterstate && selectedZone && ` Delivery to ${selectedZone.label} — expect your order within 1–3 days.`}
+              {fulfillmentType === "delivery" && !isInterstate && selectedZone && ` Delivery to ${selectedZone.label} — expect your order within 1–3 days.`}
             </p>
             <div className="pt-4 border-t border-gray-100 space-y-1 text-xs text-gray-400">
               <p className="break-all">Reference: <span className="font-mono">{bankDetails?.reference}</span></p>
