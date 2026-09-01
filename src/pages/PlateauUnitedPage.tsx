@@ -600,7 +600,7 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
 
             {fulfillmentType === "pickup" ? (
               <div className="bg-green-50 border border-green-200 p-3 text-xs text-green-800 leading-relaxed">
-                📍 <strong>Pickup Address:</strong> Contact us for pickup details — our team will reach out via WhatsApp ({whatsapp || "your number above"}) to arrange. No delivery fee applies.
+                📍 <strong>Pickup Address:</strong> No. 6, Amazing Grace House, Shok Bature Street, off Peter Gyang Sha Road, from Rayfield Golf Club, Rayfield, Jos. No delivery fee applies.
               </div>
             ) : (
               <>
@@ -720,7 +720,7 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
             <p className="text-3xl text-[#111]">Order Confirmed</p>
             {fulfillmentType === "pickup" ? (
               <div className="bg-green-50 border border-green-200 p-3 text-xs text-green-800 text-left leading-relaxed">
-                🏟 <strong>Pickup Order</strong> — Our team will contact you on WhatsApp ({whatsapp}) with the pickup address and timing.
+                🏟 <strong>Pickup Address:</strong> No. 6, Amazing Grace House, Shok Bature Street, off Peter Gyang Sha Road, from Rayfield Golf Club, Rayfield, Jos. Our team will confirm timing via WhatsApp ({whatsapp}).
               </div>
             ) : isInterstate ? (
               <div className="bg-amber-50 border border-amber-200 p-3 text-xs text-amber-800 text-left leading-relaxed">
