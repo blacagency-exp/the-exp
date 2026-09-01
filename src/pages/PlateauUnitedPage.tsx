@@ -26,6 +26,15 @@ interface DeliveryZone {
   areas: string[]
 }
 
+interface CartItem {
+  product: Product
+  size: string
+  gender: string
+  quality: string
+  quantity: number
+  unitPrice: number
+}
+
 interface BankTransferDetails {
   accountId: string
   accountNumber: string
@@ -182,6 +191,11 @@ function formatNGN(n: number) {
   return `₦${n.toLocaleString()}`
 }
 
+function computeUnitPrice(product: Product, quality: string): number {
+  if (product.category === "kits") return quality === "Player grade" ? 30000 : 15000
+  return product.promoPrice ?? product.price
+}
+
 // ─── Partner Strip ─────────────────────────────────────────────────────────────
 
 // ─── Bank Transfer Screen ──────────────────────────────────────────────────────
@@ -280,6 +294,457 @@ function BankTransferScreen({
       <p className="text-xs text-gray-400 text-center">
         Payment not reflecting? Wait 2–3 minutes and try again.
       </p>
+    </div>
+  )
+}
+
+// ─── Add-to-Cart Picker ───────────────────────────────────────────────────────
+
+function AddToCartPicker({ product, onAdd, onClose }: {
+  product: Product
+  onAdd: (item: CartItem) => void
+  onClose: () => void
+}) {
+  const [size, setSize] = useState("")
+  const [gender, setGender] = useState("")
+  const [quality, setQuality] = useState("")
+  const [quantity, setQuantity] = useState(1)
+
+  const isKit = product.category === "kits"
+  const canAdd = !!size && (!isKit || (!!gender && !!quality))
+
+  const handleAdd = () => {
+    if (!canAdd) return
+    onAdd({ product, size, gender, quality, quantity, unitPrice: computeUnitPrice(product, quality) })
+    onClose()
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50" onClick={onClose}>
+      <div className="bg-white w-full sm:max-w-sm" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+          <div>
+            <p className="text-base text-[#111]">{product.name}</p>
+            <p className="text-[10px] text-gray-400 tracking-widest uppercase">Add to cart</p>
+          </div>
+          <button onClick={onClose} className="text-gray-400 hover:text-black text-xl">✕</button>
+        </div>
+        <div className="px-5 py-5 space-y-5">
+          {isKit && (
+            <div>
+              <p className="text-[10px] tracking-widest uppercase text-gray-400 mb-3">Gender</p>
+              <div className="flex gap-6">
+                {["Male", "Female"].map(g => (
+                  <label key={g} className="flex items-center gap-2 cursor-pointer select-none">
+                    <input type="radio" name="atp-gender" value={g} checked={gender === g}
+                      onChange={() => setGender(g)} className="accent-[#1A6B2C] w-4 h-4" />
+                    <span className="text-sm text-[#111]">{g}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+          {isKit && (
+            <div>
+              <p className="text-[10px] tracking-widest uppercase text-gray-400 mb-3">Jersey Quality</p>
+              <div className="space-y-2">
+                {(["Player grade", "Fan grade"] as const).map(q => (
+                  <label key={q} className="flex items-center gap-2 cursor-pointer select-none">
+                    <input type="radio" name="atp-quality" value={q} checked={quality === q}
+                      onChange={() => { setQuality(q); if (q === "Player grade" && size === "XXL") setSize("") }}
+                      className="accent-[#1A6B2C] w-4 h-4" />
+                    <span className="text-sm text-[#111]">{q}</span>
+                    <span className="text-xs text-gray-400 ml-auto">{formatNGN(q === "Player grade" ? 30000 : 15000)}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+          <div>
+            <p className="text-[10px] tracking-widest uppercase text-gray-400 mb-3">Size</p>
+            <div className="flex flex-wrap gap-2">
+              {SIZES.filter(s => !(isKit && quality === "Player grade" && s === "XXL")).map(s => (
+                <button key={s} onClick={() => setSize(s)}
+                  className={`min-w-[44px] h-[44px] text-xs border transition-colors ${
+                    size === s ? "border-[#111] bg-[#111] text-white" : "border-gray-200 text-[#111] hover:border-[#111]"
+                  }`}
+                >{s}</button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <p className="text-[10px] tracking-widest uppercase text-gray-400 mb-3">Quantity</p>
+            <div className="flex items-center gap-3">
+              <button onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                className="w-9 h-9 border border-gray-200 flex items-center justify-center text-lg hover:border-[#111] transition-colors">−</button>
+              <span className="text-base w-6 text-center">{quantity}</span>
+              <button onClick={() => setQuantity(q => Math.min(10, q + 1))}
+                className="w-9 h-9 border border-gray-200 flex items-center justify-center text-lg hover:border-[#111] transition-colors">+</button>
+            </div>
+          </div>
+          <button onClick={handleAdd} disabled={!canAdd}
+            className="w-full bg-[#1A6B2C] text-white py-3.5 text-xs tracking-widest uppercase disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#145422] transition-colors">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── Cart Drawer ──────────────────────────────────────────────────────────────
+
+function CartDrawer({ cart, onRemove, onUpdateQty, onCheckout, onClose }: {
+  cart: CartItem[]
+  onRemove: (idx: number) => void
+  onUpdateQty: (idx: number, qty: number) => void
+  onCheckout: () => void
+  onClose: () => void
+}) {
+  const subtotal = cart.reduce((s, item) => s + item.unitPrice * item.quantity, 0)
+  const totalQty = cart.reduce((s, item) => s + item.quantity, 0)
+
+  return (
+    <div className="fixed inset-0 z-50 flex justify-end" onClick={onClose}>
+      <div className="bg-white w-full max-w-sm h-full flex flex-col shadow-2xl" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+          <div>
+            <p className="text-base text-[#111]">Your Cart</p>
+            <p className="text-[10px] text-gray-400 tracking-widest uppercase">{totalQty} item{totalQty !== 1 ? "s" : ""}</p>
+          </div>
+          <button onClick={onClose} className="text-gray-400 hover:text-black text-xl">✕</button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+          {cart.length === 0 ? (
+            <p className="text-gray-400 text-sm text-center py-12">Your cart is empty</p>
+          ) : cart.map((item, idx) => (
+            <div key={idx} className="border border-gray-100 p-3 space-y-2">
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="text-sm text-[#111] font-medium">{item.product.name}</p>
+                  <p className="text-[10px] text-gray-400 mt-0.5">
+                    Size: {item.size}
+                    {item.gender && ` · ${item.gender}`}
+                    {item.quality && ` · ${item.quality}`}
+                  </p>
+                </div>
+                <p className="text-sm text-[#111] shrink-0">{formatNGN(item.unitPrice * item.quantity)}</p>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <button onClick={() => item.quantity > 1 ? onUpdateQty(idx, item.quantity - 1) : onRemove(idx)}
+                    className="w-7 h-7 border border-gray-200 flex items-center justify-center text-sm hover:border-[#111] transition-colors">−</button>
+                  <span className="text-sm w-5 text-center">{item.quantity}</span>
+                  <button onClick={() => onUpdateQty(idx, Math.min(10, item.quantity + 1))}
+                    className="w-7 h-7 border border-gray-200 flex items-center justify-center text-sm hover:border-[#111] transition-colors">+</button>
+                </div>
+                <button onClick={() => onRemove(idx)}
+                  className="text-[10px] text-gray-400 hover:text-red-500 tracking-widest uppercase transition-colors">Remove</button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {cart.length > 0 && (
+          <div className="border-t border-gray-100 px-5 py-5 space-y-4">
+            <div className="flex justify-between text-base text-[#111]">
+              <span>Subtotal</span>
+              <span>{formatNGN(subtotal)}</span>
+            </div>
+            <p className="text-[10px] text-gray-400">Delivery fee calculated at checkout</p>
+            <button onClick={onCheckout}
+              className="w-full bg-[#1A6B2C] text-white py-4 text-xs tracking-widest uppercase hover:bg-[#145422] transition-colors">
+              Checkout
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// ─── Cart Checkout Modal ──────────────────────────────────────────────────────
+
+function CartCheckoutModal({ cart, onClose }: { cart: CartItem[]; onClose: () => void }) {
+  const [step, setStep] = useState<1 | 2 | 3>(1)
+  const subtotal = cart.reduce((s, item) => s + item.unitPrice * item.quantity, 0)
+
+  // Step 1 — contact + fulfillment
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [email, setEmail] = useState("")
+  const [whatsapp, setWhatsapp] = useState("")
+  const [fulfillmentType, setFulfillmentType] = useState<"delivery" | "pickup">("delivery")
+  const [selectedZone, setSelectedZone] = useState<DeliveryZone | null>(null)
+  const [isInterstate, setIsInterstate] = useState(false)
+  const [deliveryAddress, setDeliveryAddress] = useState("")
+
+  const deliveryFee = fulfillmentType === "pickup" ? 0 : (isInterstate ? 0 : (selectedZone?.price ?? 0))
+  const total = subtotal + deliveryFee
+
+  const step1Complete = !!(firstName && lastName && email && whatsapp) &&
+    (fulfillmentType === "pickup" || !!(deliveryAddress && (isInterstate || selectedZone)))
+
+  const handleZoneChange = (value: string) => {
+    if (value === "interstate") { setIsInterstate(true); setSelectedZone(null) }
+    else { setIsInterstate(false); setSelectedZone(DELIVERY_ZONES.find(z => z.zone === value) ?? null) }
+  }
+
+  // Step 2 — bank transfer
+  const [bankDetails, setBankDetails] = useState<BankTransferDetails | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [verifying, setVerifying] = useState(false)
+
+  const handleInitPayment = async () => {
+    setLoading(true); setError(null)
+    try {
+      const { data } = await axios.post(`${API_URL}/api/plateau-united/initialize-cart-payment`, {
+        email, firstName, lastName, phone: whatsapp,
+        items: cart.map(item => ({
+          kitName: item.product.name,
+          size: item.size,
+          gender: item.gender || undefined,
+          quality: item.quality || undefined,
+          quantity: item.quantity,
+        })),
+        fulfillmentType,
+        deliveryAddress: fulfillmentType === "pickup" ? null : deliveryAddress,
+        deliveryZone: fulfillmentType === "pickup" ? null : (isInterstate ? "interstate" : selectedZone?.zone),
+        deliveryFee,
+        isInterstate: fulfillmentType === "pickup" ? false : isInterstate,
+        totalAmount: total,
+      })
+      const account = data.data
+      setBankDetails({
+        accountId: account.id,
+        accountNumber: account.account_number,
+        bankName: account.bank_name,
+        accountName: account.account_name,
+        amount: total,
+        reference: account.reference,
+        validUntil: new Date(Date.now() + 3600 * 1000),
+      })
+      setStep(2)
+    } catch (e) {
+      setError(axios.isAxiosError(e) ? e.response?.data?.error ?? e.message : "Something went wrong. Please try again.")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleVerify = async () => {
+    if (!bankDetails) return
+    setVerifying(true)
+    try {
+      const { data } = await axios.get(`${API_URL}/api/plateau-united/verify-payment/${bankDetails.accountId}`)
+      if (data.status === "completed" || data.payment_status === "SUCCESSFUL") setStep(3)
+      else setError("Payment not yet received. Please wait a moment and try again.")
+    } catch {
+      setError("Could not verify payment. Contact us with your reference: " + bankDetails.reference)
+    } finally {
+      setVerifying(false)
+    }
+  }
+
+  const stepLabel = step === 1 ? "Your Details" : step === 2 ? "Bank Transfer" : "Confirmed"
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50" onClick={onClose}>
+      <div className="bg-white w-full sm:max-w-md max-h-[95vh] overflow-y-auto flex flex-col" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-gray-100 sticky top-0 bg-white z-10">
+          <div className="flex items-center gap-3 min-w-0">
+            {step === 1 ? null : step < 3 ? (
+              <button onClick={() => setStep(s => (s - 1) as 1 | 2 | 3)} className="text-gray-400 hover:text-black text-sm shrink-0">←</button>
+            ) : null}
+            <div className="min-w-0">
+              <p className="text-base md:text-xl text-[#111]">Cart — {cart.length} item{cart.length !== 1 ? "s" : ""}</p>
+              <p className="text-[10px] tracking-widest uppercase text-gray-400">{stepLabel}</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="text-gray-400 hover:text-black text-xl">✕</button>
+        </div>
+
+        {step < 3 && (
+          <div className="flex border-b border-gray-100">
+            {[1, 2].map(s => (
+              <div key={s} className={`flex-1 h-0.5 ${s <= step ? "bg-[#1A6B2C]" : "bg-gray-100"} transition-all`} />
+            ))}
+          </div>
+        )}
+
+        {/* Step 1 — Contact + Fulfillment */}
+        {step === 1 && (
+          <div className="px-4 md:px-6 py-5 space-y-4">
+            {/* Cart summary */}
+            <div className="bg-gray-50 p-3 space-y-2">
+              {cart.map((item, idx) => (
+                <div key={idx} className="flex justify-between text-sm">
+                  <span className="text-gray-600">
+                    {item.product.name} × {item.quantity}
+                    {item.size && <span className="text-gray-400 text-xs"> ({item.size}{item.gender ? `, ${item.gender}` : ""}{item.quality ? `, ${item.quality}` : ""})</span>}
+                  </span>
+                  <span>{formatNGN(item.unitPrice * item.quantity)}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { label: "First Name", value: firstName, set: setFirstName, placeholder: "First" },
+                { label: "Last Name",  value: lastName,  set: setLastName,  placeholder: "Last" },
+              ].map(({ label, value, set, placeholder }) => (
+                <div key={label}>
+                  <p className="text-[10px] tracking-widest uppercase text-gray-400 mb-1.5">{label}</p>
+                  <input value={value} onChange={e => set(e.target.value)} placeholder={placeholder}
+                    className="w-full border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:border-[#111]" />
+                </div>
+              ))}
+            </div>
+
+            <div>
+              <p className="text-[10px] tracking-widest uppercase text-gray-400 mb-1.5">Email</p>
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="your@email.com"
+                className="w-full border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:border-[#111]" />
+            </div>
+
+            <div>
+              <p className="text-[10px] tracking-widest uppercase text-gray-400 mb-1.5">WhatsApp Number</p>
+              <input type="tel" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} placeholder="08012345678"
+                className="w-full border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:border-[#111]" />
+            </div>
+
+            {/* Fulfillment toggle */}
+            <div>
+              <p className="text-[10px] tracking-widest uppercase text-gray-400 mb-1.5">Fulfillment</p>
+              <div className="grid grid-cols-2 gap-2">
+                {(["delivery", "pickup"] as const).map(type => (
+                  <button key={type} type="button" onClick={() => setFulfillmentType(type)}
+                    className={`py-2.5 text-xs tracking-widest uppercase border transition-colors ${
+                      fulfillmentType === type
+                        ? "bg-[#1A6B2C] text-white border-[#1A6B2C]"
+                        : "bg-white text-gray-600 border-gray-200 hover:border-gray-400"
+                    }`}>
+                    {type === "delivery" ? "🚚 Delivery" : "🏟 Pickup"}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {fulfillmentType === "pickup" ? (
+              <div className="bg-green-50 border border-green-200 p-3 text-xs text-green-800 leading-relaxed">
+                📍 <strong>Pickup Address:</strong> No. 6, Amazing Grace House, Shok Bature Street, off Peter Gyang Sha Road, from Rayfield Golf Club, Rayfield, Jos. No delivery fee applies.
+              </div>
+            ) : (
+              <>
+                <div>
+                  <p className="text-[10px] tracking-widest uppercase text-gray-400 mb-1.5">Delivery Area</p>
+                  <select onChange={e => handleZoneChange(e.target.value)} defaultValue=""
+                    className="w-full border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:border-[#111] bg-white">
+                    <option value="" disabled>Select your area</option>
+                    {DELIVERY_ZONES.map(z => (
+                      <optgroup key={z.zone} label={`${z.label} — ${formatNGN(z.price)}`}>
+                        {z.areas.map(area => <option key={area} value={z.zone}>{area}</option>)}
+                      </optgroup>
+                    ))}
+                    <option value="interstate">Outside Jos / Plateau State</option>
+                  </select>
+                </div>
+                {isInterstate && (
+                  <div className="bg-amber-50 border border-amber-200 p-3 text-xs text-amber-800 leading-relaxed">
+                    ⭐ <strong>Manual Dispatch Order</strong> — Interstate delivery is arranged manually. Our team will contact you via WhatsApp after payment.
+                  </div>
+                )}
+                {selectedZone && (
+                  <div className="bg-gray-50 border border-gray-100 p-3 text-xs text-gray-600">
+                    📦 Delivery to <strong>{selectedZone.label}</strong> — {formatNGN(selectedZone.price)} via Bamjiye
+                  </div>
+                )}
+                <div>
+                  <p className="text-[10px] tracking-widest uppercase text-gray-400 mb-1.5">Full Delivery Address</p>
+                  <textarea value={deliveryAddress} onChange={e => setDeliveryAddress(e.target.value)} rows={2}
+                    placeholder="House number, street, area..."
+                    className="w-full border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:border-[#111] resize-none" />
+                </div>
+              </>
+            )}
+
+            {/* Order total */}
+            <div className="bg-gray-50 p-4 space-y-1.5">
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-500">Subtotal ({cart.reduce((s, i) => s + i.quantity, 0)} items)</span>
+                <span>{formatNGN(subtotal)}</span>
+              </div>
+              {fulfillmentType === "pickup" ? (
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Pickup</span>
+                  <span className="text-green-700">Free</span>
+                </div>
+              ) : !isInterstate && selectedZone ? (
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Delivery ({selectedZone.zone})</span>
+                  <span>{formatNGN(selectedZone.price)}</span>
+                </div>
+              ) : isInterstate ? (
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Delivery</span>
+                  <span className="text-amber-600">Arranged manually</span>
+                </div>
+              ) : null}
+              <div className="flex justify-between border-t border-gray-200 pt-2 mt-2">
+                <span className="text-base">Total</span>
+                <span className="text-base">{formatNGN(total)}</span>
+              </div>
+            </div>
+
+            {error && <p className="text-red-500 text-xs">{error}</p>}
+
+            <button onClick={handleInitPayment} disabled={!step1Complete || loading}
+              className="w-full bg-[#1A6B2C] text-white py-4 text-xs tracking-widest uppercase hover:bg-[#145422] transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+              {loading ? "Generating account..." : `Pay ${formatNGN(total)} via Bank Transfer`}
+            </button>
+            <p className="text-[10px] text-gray-400 text-center tracking-wide">Powered by Lint · SafeHaven MFB</p>
+          </div>
+        )}
+
+        {/* Step 2 — Bank Transfer */}
+        {step === 2 && bankDetails && (
+          <>
+            {error && <p className="text-red-500 text-xs px-6 pt-4">{error}</p>}
+            <BankTransferScreen details={bankDetails} onVerify={handleVerify} verifying={verifying} />
+          </>
+        )}
+
+        {/* Step 3 — Success */}
+        {step === 3 && (
+          <div className="px-6 py-12 text-center space-y-4">
+            <div className="w-14 h-14 bg-[#1A6B2C] rounded-full flex items-center justify-center mx-auto">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M5 13l4 4L19 7" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <p className="text-3xl text-[#111]">Order Confirmed</p>
+            {fulfillmentType === "pickup" ? (
+              <div className="bg-green-50 border border-green-200 p-3 text-xs text-green-800 text-left leading-relaxed">
+                🏟 <strong>Pickup Address:</strong> No. 6, Amazing Grace House, Shok Bature Street, off Peter Gyang Sha Road, from Rayfield Golf Club, Rayfield, Jos. Our team will confirm timing via WhatsApp ({whatsapp}).
+              </div>
+            ) : isInterstate ? (
+              <div className="bg-amber-50 border border-amber-200 p-3 text-xs text-amber-800 text-left leading-relaxed">
+                ⭐ <strong>Manual Dispatch</strong> — Our team will contact you on WhatsApp ({whatsapp}) to arrange interstate delivery.
+              </div>
+            ) : null}
+            <p className="text-gray-500 text-sm leading-relaxed">
+              A confirmation has been sent to <strong>{email}</strong>.
+              {fulfillmentType === "delivery" && !isInterstate && selectedZone && ` Delivery to ${selectedZone.label} — expect your order within 1–3 days.`}
+            </p>
+            <button onClick={onClose}
+              className="mt-4 border border-[#111] px-8 py-3 text-xs tracking-widest uppercase hover:bg-[#111] hover:text-white transition-colors">
+              Done
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
@@ -755,6 +1220,29 @@ export function PlateauUnitedPage() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [heroIndex, setHeroIndex] = useState(0)
   const [mobileHeroIndex, setMobileHeroIndex] = useState(0)
+  const [cart, setCart] = useState<CartItem[]>([])
+  const [cartOpen, setCartOpen] = useState(false)
+  const [cartCheckout, setCartCheckout] = useState(false)
+  const [addToCartProduct, setAddToCartProduct] = useState<Product | null>(null)
+
+  const addToCart = (item: CartItem) => {
+    setCart(prev => {
+      const idx = prev.findIndex(
+        c => c.product.id === item.product.id && c.size === item.size && c.gender === item.gender && c.quality === item.quality
+      )
+      if (idx !== -1) {
+        const next = [...prev]
+        next[idx] = { ...next[idx], quantity: Math.min(10, next[idx].quantity + item.quantity) }
+        return next
+      }
+      return [...prev, item]
+    })
+  }
+
+  const removeFromCart = (idx: number) => setCart(prev => prev.filter((_, i) => i !== idx))
+  const updateCartQty = (idx: number, qty: number) =>
+    setCart(prev => prev.map((item, i) => i === idx ? { ...item, quantity: qty } : item))
+  const cartCount = cart.reduce((s, item) => s + item.quantity, 0)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -950,12 +1438,20 @@ export function PlateauUnitedPage() {
                       )}
                     </div>
                   </div>
-                  <button
-                    onClick={() => setSelectedProduct(product)}
-                    className="w-full border border-[#111] py-3 text-[10px] md:text-xs tracking-wide md:tracking-widest uppercase text-[#111] hover:bg-[#111] hover:text-white transition-colors"
-                  >
-                    Select & Order
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setAddToCartProduct(product)}
+                      className="flex-1 border border-[#1A6B2C] py-3 text-[10px] tracking-wide uppercase text-[#1A6B2C] hover:bg-[#1A6B2C] hover:text-white transition-colors"
+                    >
+                      + Cart
+                    </button>
+                    <button
+                      onClick={() => setSelectedProduct(product)}
+                      className="flex-1 border border-[#111] py-3 text-[10px] tracking-wide uppercase text-[#111] hover:bg-[#111] hover:text-white transition-colors"
+                    >
+                      Order Now
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -1009,6 +1505,48 @@ export function PlateauUnitedPage() {
 
       {selectedProduct && (
         <OrderModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />
+      )}
+
+      {addToCartProduct && (
+        <AddToCartPicker
+          product={addToCartProduct}
+          onAdd={item => { addToCart(item); setCartOpen(true) }}
+          onClose={() => setAddToCartProduct(null)}
+        />
+      )}
+
+      {cartOpen && !cartCheckout && (
+        <CartDrawer
+          cart={cart}
+          onRemove={removeFromCart}
+          onUpdateQty={updateCartQty}
+          onCheckout={() => { setCartOpen(false); setCartCheckout(true) }}
+          onClose={() => setCartOpen(false)}
+        />
+      )}
+
+      {cartCheckout && (
+        <CartCheckoutModal
+          cart={cart}
+          onClose={() => { setCartCheckout(false); setCart([]) }}
+        />
+      )}
+
+      {/* Floating cart button */}
+      {cartCount > 0 && !cartOpen && !cartCheckout && !selectedProduct && !addToCartProduct && (
+        <button
+          onClick={() => setCartOpen(true)}
+          className="fixed bottom-6 right-6 z-40 bg-[#1A6B2C] text-white px-5 py-3 flex items-center gap-3 shadow-lg hover:bg-[#145422] transition-colors"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+          <span className="text-xs tracking-widest uppercase">Cart</span>
+          <span className="bg-[#F7D000] text-[#111] text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+            {cartCount}
+          </span>
+        </button>
       )}
     </BaseLayout>
   )
