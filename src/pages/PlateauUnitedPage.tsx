@@ -52,7 +52,7 @@ const PRODUCTS: Product[] = [
     id: "home-kit",
     name: "Home Kit",
     category: "kits",
-    price: 10,
+    price: 15000,
     promoPrice: null,
     bgColor: "#F7D000",
     textColor: "#1A6B2C",
@@ -63,7 +63,7 @@ const PRODUCTS: Product[] = [
     id: "away-kit",
     name: "Away Kit",
     category: "kits",
-    price: 10,
+    price: 15000,
     promoPrice: null,
     bgColor: "#f0f0f0",
     textColor: "#1A6B2C",
@@ -74,7 +74,7 @@ const PRODUCTS: Product[] = [
     id: "alternate-kit",
     name: "Alternate Kit",
     category: "kits",
-    price: 10,
+    price: 15000,
     promoPrice: null,
     bgColor: "#2a1a0a",
     textColor: "#FFFFFF",
@@ -85,7 +85,7 @@ const PRODUCTS: Product[] = [
     id: "training-kit-1",
     name: "Fwavei",
     category: "training",
-    price: 10,
+    price: 30000,
     promoPrice: null,
     bgColor: "#1a6b6b",
     textColor: "#F7D000",
@@ -96,7 +96,7 @@ const PRODUCTS: Product[] = [
     id: "training-kit-2",
     name: "Farin Gada",
     category: "training",
-    price: 10,
+    price: 30000,
     promoPrice: null,
     bgColor: "#f0f0f0",
     textColor: "#1A6B2C",
@@ -107,7 +107,7 @@ const PRODUCTS: Product[] = [
     id: "training-kit-3",
     name: "Terminus",
     category: "training",
-    price: 10,
+    price: 30000,
     promoPrice: null,
     bgColor: "#0d4a3a",
     textColor: "#7EFFD4",
@@ -118,7 +118,7 @@ const PRODUCTS: Product[] = [
     id: "hoodie",
     name: "Hoodie",
     category: "hoodies",
-    price: 10,
+    price: 35000,
     promoPrice: null,
     bgColor: "#7FE000",
     textColor: "#FFFFFF",
@@ -129,7 +129,7 @@ const PRODUCTS: Product[] = [
     id: "tracksuit",
     name: "Tracksuit",
     category: "tracksuits",
-    price: 10,
+    price: 35000,
     promoPrice: null,
     bgColor: "#f5f5f5",
     textColor: "#1A6B2C",
@@ -192,7 +192,7 @@ function formatNGN(n: number) {
 }
 
 function computeUnitPrice(product: Product, quality: string): number {
-  if (product.category === "kits") return quality === "Player grade" ? 10 : 10
+  if (product.category === "kits") return quality === "Player grade" ? 30000 : 15000
   return product.promoPrice ?? product.price
 }
 
@@ -354,7 +354,7 @@ function AddToCartPicker({ product, onAdd, onClose }: {
                       onChange={() => { setQuality(q); if (q === "Player grade" && size === "XXL") setSize("") }}
                       className="accent-[#1A6B2C] w-4 h-4" />
                     <span className="text-sm text-[#111]">{q}</span>
-                    <span className="text-xs text-gray-400 ml-auto">{formatNGN(q === "Player grade" ? 10 : 10)}</span>
+                    <span className="text-xs text-gray-400 ml-auto">{formatNGN(q === "Player grade" ? 30000 : 15000)}</span>
                   </label>
                 ))}
               </div>
@@ -779,7 +779,7 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
   const [verifying, setVerifying] = useState(false)
 
   const unitPrice = isKit
-    ? (quality === "Player grade" ? 10 : 10)
+    ? (quality === "Player grade" ? 30000 : 15000)
     : (product.promoPrice ?? product.price)
   const deliveryFee = fulfillmentType === "pickup" ? 0 : (isInterstate ? 0 : (selectedZone?.price ?? 0))
   const total = unitPrice * quantity + deliveryFee
