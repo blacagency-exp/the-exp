@@ -33,6 +33,7 @@ interface CartItem {
   quality: string
   quantity: number
   unitPrice: number
+  sizeMeasurements: string
 }
 
 interface BankTransferDetails {
@@ -196,6 +197,140 @@ function computeUnitPrice(product: Product, quality: string): number {
   return product.promoPrice ?? product.price
 }
 
+// ─── Size Guide ────────────────────────────────────────────────────────────────
+
+const SIZE_GUIDE = {
+  male: {
+    header: ["Size", "Shoulder", "Length", "Chest"],
+    rows: [
+      { size: "S",   vals: ['16"',   '27.5"', '39"']  },
+      { size: "M",   vals: ['16.8"', '28.5"', '41"']  },
+      { size: "L",   vals: ['17.5"', '29.5"', '44"']  },
+      { size: "XL",  vals: ['18"',   '30"',   '44"']  },
+      { size: "XXL", vals: ['19.5"', '31.5"', '46"']  },
+    ],
+  },
+  female: {
+    header: ["Size", "Shoulder", "Length", "Bust"],
+    rows: [
+      { size: "S",   vals: ['14"',   '24"',   '32"']  },
+      { size: "M",   vals: ['15"',   '25.3"', '35"']  },
+      { size: "L",   vals: ['15.5"', '25.5"', '35"']  },
+      { size: "XL",  vals: ['15.5"', '26.8"', '36"']  },
+      { size: "XXL", vals: ["—",     "—",     "—"]    },
+    ],
+  },
+  hoodie: {
+    header: ["Size", "Sleeve"],
+    rows: [
+      { size: "S",   vals: ['23"'] },
+      { size: "M",   vals: ['24"'] },
+      { size: "L",   vals: ['25"'] },
+      { size: "XL",  vals: ['26"'] },
+      { size: "XXL", vals: ['26"'] },
+    ],
+  },
+  pants: {
+    header: ["Size", "Length", "Waist"],
+    rows: [
+      { size: "S",   vals: ['26"',   '32"'] },
+      { size: "M",   vals: ['27"',   '36"'] },
+      { size: "L",   vals: ['38"',   '38"'] },
+      { size: "XL",  vals: ['38.5"', '38"'] },
+      { size: "XXL", vals: ['39.5"', '39"'] },
+    ],
+  },
+}
+
+function getSizeMeasurements(product: Product, gender: string, size: string): string {
+  if (!size) return ""
+  if (product.category === "kits" || product.category === "training") {
+    const table = gender === "Female" ? SIZE_GUIDE.female : SIZE_GUIDE.male
+    const row = table.rows.find(r => r.size === size)
+    if (row) {
+      const labels = table.header.slice(1)
+      return `${gender || "Male"} ${size} — ${labels.map((l, i) => `${l}: ${row.vals[i]}`).join(", ")}`
+    }
+  } else if (product.category === "hoodies") {
+    const row = SIZE_GUIDE.hoodie.rows.find(r => r.size === size)
+    if (row) return `${size} — Sleeve: ${row.vals[0]}`
+  } else if (product.category === "tracksuits") {
+    const topRow = SIZE_GUIDE.hoodie.rows.find(r => r.size === size)
+    const pantsRow = SIZE_GUIDE.pants.rows.find(r => r.size === size)
+    const parts: string[] = []
+    if (topRow) parts.push(`Sleeve: ${topRow.vals[0]}`)
+    if (pantsRow) parts.push(`Length: ${pantsRow.vals[0]}, Waist: ${pantsRow.vals[1]}`)
+    return `${size} — ${parts.join(" | ")}`
+  }
+  return size
+}
+
+function SizeGuideTable({ product, gender, activeSize }: { product: Product; gender: string; activeSize: string }) {
+  const isKit = product.category === "kits" || product.category === "training"
+  const isHoodie = product.category === "hoodies"
+  const isTracksuit = product.category === "tracksuits"
+  const table = isKit ? (gender === "Female" ? SIZE_GUIDE.female : SIZE_GUIDE.male) : null
+
+  const tableClass = "w-full text-[11px] border-collapse"
+  const thClass = "text-left py-1.5 px-2 bg-gray-50 text-gray-500 font-medium border border-gray-100"
+  const tdClass = (isActive: boolean) =>
+    `py-1.5 px-2 border border-gray-100 ${isActive ? "bg-[#1A6B2C] text-white font-semibold" : "text-[#111]"}`
+
+  return (
+    <div className="space-y-3">
+      <p className="text-[10px] text-gray-400 italic">All measurements in inches</p>
+      {table && (
+        <table className={tableClass}>
+          <thead>
+            <tr>{table.header.map(h => <th key={h} className={thClass}>{h}</th>)}</tr>
+          </thead>
+          <tbody>
+            {table.rows.map(row => (
+              <tr key={row.size}>
+                <td className={tdClass(row.size === activeSize)}>{row.size}</td>
+                {row.vals.map((v, i) => <td key={i} className={tdClass(row.size === activeSize)}>{v}</td>)}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      {(isHoodie || isTracksuit) && (
+        <table className={tableClass}>
+          <thead>
+            <tr>{SIZE_GUIDE.hoodie.header.map(h => <th key={h} className={thClass}>{h}</th>)}</tr>
+          </thead>
+          <tbody>
+            {SIZE_GUIDE.hoodie.rows.map(row => (
+              <tr key={row.size}>
+                <td className={tdClass(row.size === activeSize)}>{row.size}</td>
+                {row.vals.map((v, i) => <td key={i} className={tdClass(row.size === activeSize)}>{v}</td>)}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      {isTracksuit && (
+        <>
+          <p className="text-[10px] text-gray-400 uppercase tracking-widest pt-1">Pants</p>
+          <table className={tableClass}>
+            <thead>
+              <tr>{SIZE_GUIDE.pants.header.map(h => <th key={h} className={thClass}>{h}</th>)}</tr>
+            </thead>
+            <tbody>
+              {SIZE_GUIDE.pants.rows.map(row => (
+                <tr key={row.size}>
+                  <td className={tdClass(row.size === activeSize)}>{row.size}</td>
+                  {row.vals.map((v, i) => <td key={i} className={tdClass(row.size === activeSize)}>{v}</td>)}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
+    </div>
+  )
+}
+
 // ─── Partner Strip ─────────────────────────────────────────────────────────────
 
 // ─── Bank Transfer Screen ──────────────────────────────────────────────────────
@@ -309,13 +444,19 @@ function AddToCartPicker({ product, onAdd, onClose }: {
   const [gender, setGender] = useState("")
   const [quality, setQuality] = useState("")
   const [quantity, setQuantity] = useState(1)
+  const [showGuide, setShowGuide] = useState(false)
 
   const isKit = product.category === "kits"
+  const isKitOrTraining = isKit || product.category === "training"
   const canAdd = !!size && (!isKit || (!!gender && !!quality))
 
   const handleAdd = () => {
     if (!canAdd) return
-    onAdd({ product, size, gender, quality, quantity, unitPrice: computeUnitPrice(product, quality) })
+    onAdd({
+      product, size, gender, quality, quantity,
+      unitPrice: computeUnitPrice(product, quality),
+      sizeMeasurements: getSizeMeasurements(product, gender, size),
+    })
     onClose()
   }
 
@@ -361,8 +502,17 @@ function AddToCartPicker({ product, onAdd, onClose }: {
             </div>
           )}
           <div>
-            <p className="text-[10px] tracking-widest uppercase text-gray-400 mb-3">Size</p>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-[10px] tracking-widest uppercase text-gray-400">Size</p>
+              <button
+                type="button"
+                onClick={() => setShowGuide(g => !g)}
+                className="text-[10px] tracking-widest uppercase text-[#1A6B2C] hover:underline"
+              >
+                {showGuide ? "Hide Guide" : "Size Guide"}
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2 mb-3">
               {SIZES.filter(s => !(isKit && quality === "Player grade" && s === "XXL")).map(s => (
                 <button key={s} onClick={() => setSize(s)}
                   className={`min-w-[44px] h-[44px] text-xs border transition-colors ${
@@ -371,6 +521,11 @@ function AddToCartPicker({ product, onAdd, onClose }: {
                 >{s}</button>
               ))}
             </div>
+            {showGuide && (
+              <div className="border border-gray-100 p-3 bg-gray-50">
+                <SizeGuideTable product={product} gender={isKitOrTraining ? gender : ""} activeSize={size} />
+              </div>
+            )}
           </div>
           <div>
             <p className="text-[10px] tracking-widest uppercase text-gray-400 mb-3">Quantity</p>
@@ -508,6 +663,7 @@ function CartCheckoutModal({ cart, onClose }: { cart: CartItem[]; onClose: () =>
           gender: item.gender || undefined,
           quality: item.quality || undefined,
           quantity: item.quantity,
+          sizeMeasurements: item.sizeMeasurements || undefined,
         })),
         fulfillmentType,
         deliveryAddress: fulfillmentType === "pickup" ? null : deliveryAddress,
@@ -1438,20 +1594,12 @@ export function PlateauUnitedPage() {
                       )}
                     </div>
                   </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => setAddToCartProduct(product)}
-                      className="flex-1 border border-[#1A6B2C] py-3 text-[10px] tracking-wide uppercase text-[#1A6B2C] hover:bg-[#1A6B2C] hover:text-white transition-colors"
-                    >
-                      + Cart
-                    </button>
-                    <button
-                      onClick={() => setSelectedProduct(product)}
-                      className="flex-1 border border-[#111] py-3 text-[10px] tracking-wide uppercase text-[#111] hover:bg-[#111] hover:text-white transition-colors"
-                    >
-                      Order Now
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => setAddToCartProduct(product)}
+                    className="w-full border border-[#1A6B2C] py-3 text-[10px] md:text-xs tracking-wide md:tracking-widest uppercase text-[#1A6B2C] hover:bg-[#1A6B2C] hover:text-white transition-colors"
+                  >
+                    Add to Cart
+                  </button>
                 </div>
               </div>
             ))}
