@@ -192,6 +192,14 @@ function formatNGN(n: number) {
   return `₦${n.toLocaleString()}`
 }
 
+const LINT_FEE_CAP = 300
+
+function computeGross(netAmount: number): number {
+  const grossUncapped = Math.ceil(netAmount / 0.99)
+  if (grossUncapped - netAmount > LINT_FEE_CAP) return netAmount + LINT_FEE_CAP
+  return grossUncapped
+}
+
 function computeUnitPrice(product: Product, quality: string): number {
   if (product.category === "kits") return quality === "Player grade" ? 30000 : 15000
   return product.promoPrice ?? product.price
@@ -637,6 +645,8 @@ function CartCheckoutModal({ cart, onClose }: { cart: CartItem[]; onClose: () =>
 
   const deliveryFee = fulfillmentType === "pickup" ? 0 : (isInterstate ? 0 : (selectedZone?.price ?? 0))
   const total = subtotal + deliveryFee
+  const gross = computeGross(total)
+  const processingFee = gross - total
 
   const step1Complete = !!(firstName && lastName && email && whatsapp) &&
     (fulfillmentType === "pickup" || !!(deliveryAddress && (isInterstate || selectedZone)))
@@ -678,7 +688,7 @@ function CartCheckoutModal({ cart, onClose }: { cart: CartItem[]; onClose: () =>
         accountNumber: account.account_number,
         bankName: account.bank_name,
         accountName: account.account_name,
-        amount: total,
+        amount: gross,
         reference: account.reference,
         validUntil: new Date(Date.now() + 3600 * 1000),
       })
@@ -848,9 +858,15 @@ function CartCheckoutModal({ cart, onClose }: { cart: CartItem[]; onClose: () =>
                   <span className="text-amber-600">Arranged manually</span>
                 </div>
               ) : null}
+              {processingFee > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">Processing fee (1%)</span>
+                  <span className="text-gray-400">+{formatNGN(processingFee)}</span>
+                </div>
+              )}
               <div className="flex justify-between border-t border-gray-200 pt-2 mt-2">
                 <span className="text-base">Total</span>
-                <span className="text-base">{formatNGN(total)}</span>
+                <span className="text-base">{formatNGN(gross)}</span>
               </div>
             </div>
 
@@ -858,7 +874,7 @@ function CartCheckoutModal({ cart, onClose }: { cart: CartItem[]; onClose: () =>
 
             <button onClick={handleInitPayment} disabled={!step1Complete || loading}
               className="w-full bg-[#1A6B2C] text-white py-4 text-xs tracking-widest uppercase hover:bg-[#145422] transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
-              {loading ? "Generating account..." : `Pay ${formatNGN(total)} via Bank Transfer`}
+              {loading ? "Generating account..." : `Pay ${formatNGN(gross)} via Bank Transfer`}
             </button>
             <p className="text-[10px] text-gray-400 text-center tracking-wide">Powered by Lint · SafeHaven MFB</p>
           </div>
@@ -939,6 +955,8 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
     : (product.promoPrice ?? product.price)
   const deliveryFee = fulfillmentType === "pickup" ? 0 : (isInterstate ? 0 : (selectedZone?.price ?? 0))
   const total = unitPrice * quantity + deliveryFee
+  const gross = computeGross(total)
+  const processingFee = gross - total
 
   const step1Complete = !!size && (!isKit || (!!gender && !!quality))
   const step2Complete = !!(firstName && lastName && email && whatsapp) &&
@@ -984,7 +1002,7 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
         accountNumber: account.account_number,
         bankName: account.bank_name,
         accountName: account.account_name,
-        amount: total,
+        amount: gross,
         reference: account.reference,
         validUntil: new Date(Date.now() + 3600 * 1000),
       })
@@ -1296,9 +1314,15 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
                   )}
                 </>
               )}
+              {processingFee > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">Processing fee (1%)</span>
+                  <span className="text-gray-400">+{formatNGN(processingFee)}</span>
+                </div>
+              )}
               <div className="flex justify-between border-t border-gray-200 pt-2 mt-2">
                 <span className="text-base">Total</span>
-                <span className="text-base">{formatNGN(total)}</span>
+                <span className="text-base">{formatNGN(gross)}</span>
               </div>
             </div>
 
@@ -1309,7 +1333,7 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
               disabled={!step2Complete || loading}
               className="w-full bg-[#1A6B2C] text-white py-4 text-xs tracking-widest uppercase hover:bg-[#145422] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             >
-              {loading ? "Generating account..." : <><span className="block sm:hidden">Pay {formatNGN(total)}</span><span className="hidden sm:block">Pay {formatNGN(total)} via Bank Transfer</span></>}
+              {loading ? "Generating account..." : <><span className="block sm:hidden">Pay {formatNGN(gross)}</span><span className="hidden sm:block">Pay {formatNGN(gross)} via Bank Transfer</span></>}
             </button>
 
             <p className="text-[10px] text-gray-400 text-center tracking-wide">
