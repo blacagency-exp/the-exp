@@ -17,6 +17,7 @@ interface Product {
   textColor: string
   description: string
   image?: string
+  outOfStock?: boolean
 }
 
 interface DeliveryZone {
@@ -102,6 +103,7 @@ const PRODUCTS: Product[] = [
     bgColor: "#f0f0f0",
     textColor: "#1A6B2C",
     description: "Second colourway of the official PU training range — lightweight, performance-ready.",
+    outOfStock: true,
     image: "https://cdn.sanity.io/images/252rx5c8/production/af1bc68097e1ed62395e0fb518d0b6338de90e85-900x1200.jpg",
   },
   {
@@ -1577,7 +1579,12 @@ export function PlateauUnitedPage() {
                   style={{ backgroundColor: product.bgColor, aspectRatio: "3/4" }}
                   onClick={() => setSelectedProduct(product)}
                 >
-                  {product.promoPrice && (
+                  {product.outOfStock && (
+                    <span className="absolute top-4 left-4 z-10 bg-[#111] text-white text-[10px] font-black tracking-widest uppercase px-2.5 py-1">
+                      Out of Stock
+                    </span>
+                  )}
+                  {product.promoPrice && !product.outOfStock && (
                     <span className="absolute top-4 left-4 z-10 bg-[#F7D000] text-[#111] text-[10px] font-black tracking-widest uppercase px-2.5 py-1">
                       Save ₦5,000
                     </span>
@@ -1586,7 +1593,7 @@ export function PlateauUnitedPage() {
                     <img
                       src={product.image}
                       alt={product.name}
-                      className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                      className={`absolute inset-0 w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105 ${product.outOfStock ? "opacity-40 grayscale" : ""}`}
                     />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center">
@@ -1619,10 +1626,15 @@ export function PlateauUnitedPage() {
                     </div>
                   </div>
                   <button
-                    onClick={() => setAddToCartProduct(product)}
-                    className="w-full border border-[#1A6B2C] py-3 text-[10px] md:text-xs tracking-wide md:tracking-widest uppercase text-[#1A6B2C] hover:bg-[#1A6B2C] hover:text-white transition-colors"
+                    onClick={() => !product.outOfStock && setAddToCartProduct(product)}
+                    disabled={product.outOfStock}
+                    className={`w-full border py-3 text-[10px] md:text-xs tracking-wide md:tracking-widest uppercase transition-colors ${
+                      product.outOfStock
+                        ? "border-gray-200 text-gray-300 cursor-not-allowed"
+                        : "border-[#1A6B2C] text-[#1A6B2C] hover:bg-[#1A6B2C] hover:text-white"
+                    }`}
                   >
-                    Add to Cart
+                    {product.outOfStock ? "Out of Stock" : "Add to Cart"}
                   </button>
                 </div>
               </div>
