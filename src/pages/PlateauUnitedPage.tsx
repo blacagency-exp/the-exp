@@ -955,6 +955,7 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
   const [quality, setQuality] = useState("")
 
   const isKit = product.category === "kits"
+  const isKitOrTraining = isKit || product.category === "training"
 
   // Step 2
   const [firstName, setFirstName] = useState("")
@@ -980,7 +981,7 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
   const gross = computeGross(total)
   const processingFee = gross - total
 
-  const step1Complete = !!size && (!isKit || (!!gender && !!quality))
+  const step1Complete = !!size && (!isKitOrTraining || !!gender) && (!isKit || !!quality)
   const step2Complete = !!(firstName && lastName && email && whatsapp) &&
     (fulfillmentType === "pickup" || !!(deliveryAddress && (isInterstate || selectedZone)))
 
@@ -1006,7 +1007,7 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
         phone: whatsapp,
         kitName: product.name,
         size,
-        gender: isKit ? gender : undefined,
+        gender: isKitOrTraining ? gender : undefined,
         quality: isKit ? quality : undefined,
         quantity,
         fulfillmentType,
@@ -1098,8 +1099,8 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
         {step === 1 && (
           <div className="px-4 md:px-6 py-5 md:py-6 space-y-5 md:space-y-6">
 
-            {/* Gender — kits only */}
-            {isKit && (
+            {/* Gender — kits and training */}
+            {isKitOrTraining && (
               <div>
                 <p className="text-xs tracking-widest uppercase text-gray-400 mb-3">Gender</p>
                 <div className="flex gap-6">
@@ -1110,7 +1111,7 @@ function OrderModal({ product, onClose }: { product: Product; onClose: () => voi
                         name="gender"
                         value={g}
                         checked={gender === g}
-                        onChange={() => setGender(g)}
+                        onChange={() => { setGender(g); if (isSizeUnavailable(product, g, size)) setSize("") }}
                         className="accent-[#1A6B2C] w-4 h-4"
                       />
                       <span className="text-sm text-[#111]">{g}</span>
