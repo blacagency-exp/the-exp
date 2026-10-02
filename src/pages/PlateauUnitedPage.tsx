@@ -461,7 +461,8 @@ function AddToCartPicker({ product, onAdd, onClose }: {
 
   const isKit = product.category === "kits"
   const isKitOrTraining = isKit || product.category === "training"
-  const canAdd = !!size && (!isKit || (!!gender && !!quality))
+  const needsGender = isKitOrTraining
+  const canAdd = !!size && (!needsGender || !!gender) && (!isKit || !!quality)
 
   const handleAdd = () => {
     if (!canAdd) return
@@ -484,14 +485,15 @@ function AddToCartPicker({ product, onAdd, onClose }: {
           <button onClick={onClose} className="text-gray-400 hover:text-black text-xl">✕</button>
         </div>
         <div className="px-5 py-5 space-y-5">
-          {isKit && (
+          {isKitOrTraining && (
             <div>
               <p className="text-[10px] tracking-widest uppercase text-gray-400 mb-3">Gender</p>
               <div className="flex gap-6">
                 {["Male", "Female"].map(g => (
                   <label key={g} className="flex items-center gap-2 cursor-pointer select-none">
                     <input type="radio" name="atp-gender" value={g} checked={gender === g}
-                      onChange={() => setGender(g)} className="accent-[#1A6B2C] w-4 h-4" />
+                      onChange={() => { setGender(g); if (isSizeUnavailable(product, g, size)) setSize("") }}
+                      className="accent-[#1A6B2C] w-4 h-4" />
                     <span className="text-sm text-[#111]">{g}</span>
                   </label>
                 ))}
